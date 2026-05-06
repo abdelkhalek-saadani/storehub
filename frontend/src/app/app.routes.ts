@@ -1,0 +1,52 @@
+import {Routes} from '@angular/router';
+import Layout from './layout/layout/layout';
+
+export const routes: Routes = [
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'dev'
+  },
+  {
+    path: 'dev',
+    pathMatch: 'full',
+    loadComponent: () => import('./dev/dev')
+  },
+
+  {
+    path: '',
+    loadComponent: () => import('./layout/layout/layout'),
+    children: [
+
+      {
+        path: 'products',
+        pathMatch: 'full',
+        redirectTo: 'products/all'
+      },
+      {
+        path: 'products/:category',
+        loadComponent: () => import('./pages/products-grid/products-grid')
+      },
+      {
+        path: 'wishlist',
+        loadComponent: () => import('./pages/my-wishlist/my-wishlist')
+      },
+      {
+        path: 'cart',
+        loadComponent: () => import('./pages/cart/cart')
+      },
+      {
+        path: 'checkout',
+        loadComponent: () => import('./pages/checkout/checkout')
+      },
+      {
+        path: 'order-success',
+        loadComponent: () => import('./pages/order-success/order-success')
+      },
+      {
+        path: 'product/:productId',
+        loadComponent: () => import('./pages/product-details/product-details')
+      }
+    ]
+  }
+];

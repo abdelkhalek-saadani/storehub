@@ -1,0 +1,277 @@
+// Include theming for Angular Material with `mat.theme()`.
+// This Sass mixin will define CSS variables that are used for styling Angular Material
+// components according to the Material 3 design spec.
+// Learn more about theming and how to use it for your application's
+// custom components at https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+@use 'tailwindcss';
+/* Importing @ngxpert/hot-toast SCSS file. */
+@use '@ngxpert/hot-toast/styles';
+
+@theme {
+  --color-primary: rgba(72, 158, 255, 1);
+  --color-primary-blur: rgba(72, 158, 255, 0.1);
+}
+
+html {
+  @include mat.theme(
+      (
+        color: (
+          primary: mat.$azure-palette,
+          tertiary: mat.$blue-palette,
+        ),
+        typography: (
+          plain-family: 'Inter',
+          brand-family: 'Inter',
+          bold-weight: 600,
+          medium-weight: 500,
+          regular-weight: 400,
+        ),
+        density: 0,
+      )
+  );
+  @include mat.button-overrides(
+      (
+        filled-container-shape: 12px,
+        filled-container-height: 44px,
+        filled-container-color: var(--color-primary),
+        filled-label-text-weight: var(--font-weight-semibold),
+        filled-horizontal-padding: 24px,
+        filled-disabled-container-color: #E5E5E5,
+        filled-disabled-label-text-color: white,
+        outlined-outline-color: #E2E2E2,
+        outlined-container-shape: 12px,
+        outlined-label-text-color: #494349,
+        text-container-shape: 6px,
+
+        tonal-container-shape: 6px,
+        outlined-horizontal-padding: 12px,
+        text-horizontal-padding: 12px,
+
+        tonal-horizontal-padding: 12px,
+        outlined-container-height: 36px,
+        text-container-height: 36px,
+        tonal-container-height: 36px,
+
+        protected-container-shape: 12px,
+        protected-horizontal-padding: 24px,
+        protected-icon-spacing: 8px,
+        protected-container-color: var(--color-primary),
+        protected-label-text-color: white,
+        protected-container-height: 58px,
+        protected-label-text-weight: var(--font-weight-semibold)
+      )
+  );
+  @include mat.fab-overrides(
+      (
+        extended-container-elevation-shadow: none,
+        extended-focus-container-elevation-shadow: none,
+        extended-hover-container-elevation-shadow: none,
+        extended-pressed-container-elevation-shadow: none,
+        container-color: none,
+        foreground-color: #494349,
+        extended-container-height:44px
+      )
+  );
+
+  @include mat.form-field-overrides((
+    outlined-label-text-size: 16px
+  ))
+}
+
+// No MDC token exists for extended-fab border
+// Revisit if a token is added in future versions
+.mat-mdc-extended-fab {
+  border: 1px solid #E2E2E2 !important;
+  padding-inline: 24px !important;
+
+  &.active {
+    @include mat.fab-overrides((
+      container-color: var(--color-primary-blur),
+      foreground-color: var(--color-primary),
+    ));
+    border: 1px solid var(--color-primary) !important
+  }
+}
+
+body {
+  // Default the application to a light color theme. This can be changed to
+  // `dark` to enable the dark color theme, or to `light dark` to defer to the
+  // user's system settings.
+  color-scheme: light;
+
+  // Set a default background, font and text colors for the application using
+  // Angular Material's system-level CSS variables. Learn more about these
+  // variables at https://material.angular.dev/guide/system-variables
+  background-color: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-medium);
+
+  // Reset the user agent margin.
+  margin: 0;
+
+  @include mat.dialog-overrides(
+      (
+        container-shape: 6px,
+      )
+  );
+
+  --mat-sys-body-large-size: 0.875rem;
+}
+
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter',
+  -apple-system,
+  BlinkMacSystemFont,
+  'Segoe UI',
+  sans-serif;
+}
+
+.elevated {
+  box-shadow: var(--mat-sys-level2);
+}
+
+
+// Move this to the component scss file when creating components
+button[matButton='filled'].btn-lg {
+  @include mat.button-overrides(
+      (
+        filled-container-height: 58px,
+        filled-horizontal-padding: 24px,
+        filled-icon-spacing: 8px,
+        filled-container-shape: 12px
+      )
+  )
+}
+button[matButton='filled'].btn-md {
+  @include mat.button-overrides(
+      (
+        filled-container-height: 38px,
+        filled-horizontal-padding: 20px,
+        filled-icon-spacing: 4px,
+        filled-container-shape: 32px
+      )
+  )
+}
+button[matButton='filled'].btn-sm {
+  @include mat.button-overrides(
+      (
+        filled-container-height: 23px,
+        filled-horizontal-padding: 20px,
+        filled-icon-spacing: 4px,
+        filled-container-shape: 32px,
+        filled-label-text-weight: var(--font-weight-medium),
+      )
+  )
+}
+button[matButton='filled'].btn-icon {
+  @include mat.button-overrides(
+      (
+        filled-container-height: 38px,
+        filled-horizontal-padding: 20px,
+        filled-icon-spacing: 8px,
+        filled-container-shape: 32px,
+        filled-label-text-weight: var(--font-weight-semibold),
+      )
+  )
+}
+
+button[matButton='outlined'].danger {
+  @include mat.button-overrides(
+      (
+        outlined-label-text-color: var(--mat-sys-error),
+        outlined-outline-color: var(--mat-sys-error),
+        outlined-state-layer-color: var(--mat-sys-error),
+      )
+  );
+}
+
+button[matIconButton] {
+  @include mat.icon-button-overrides(
+      (
+        container-shape: 6px,
+      )
+  );
+}
+
+button[matIconButton].danger {
+  @include mat.icon-button-overrides(
+      (
+        icon-color: var(--mat-sys-error),
+        state-layer-color: var(--mat-sys-error),
+      )
+  );
+}
+
+
+button[matIconButton].small {
+  @include mat.icon-button-overrides(
+      (
+        icon-size: 24px,
+        touch-target-size: 28px,
+        state-layer-size: 28px,
+      )
+  );
+}
+
+mat-icon.small {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+.danger {
+  color: var(--mat-sys-error);
+}
+
+mat-form-field {
+  @include mat.theme(
+      (
+        density: -1,
+      )
+  );
+
+  width: 100%;
+}
+
+mat-sidenav {
+  @include mat.sidenav-overrides(
+      (
+        container-width: 250px,
+        container-shape: 0px,
+        container-background-color: white,
+        container-divider-color: var(--mat-sys-outline-variant),
+      )
+  );
+
+  @include mat.list-overrides(
+      (
+        active-indicator-color: var(--mat-sys-primary),
+        active-indicator-shape: 6px,
+        list-item-one-line-container-height: 40px,
+        list-item-label-text-color: red,
+      )
+  );
+}
+
+// Style to fix the weird border with angular material + tailwindcss
+.mdc-notched-outline__notch {
+  border-right: none !important;
+}
+
+//Responsive grid
+.responsive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 1rem;
+}
+
+

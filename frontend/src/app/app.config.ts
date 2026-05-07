@@ -13,6 +13,7 @@ import {MAT_DIALOG_DEFAULT_OPTIONS} from '@angular/material/dialog';
 import {DomSanitizer, provideClientHydration, withEventReplay} from '@angular/platform-browser';
 import {provideHttpClient} from '@angular/common/http';
 import {MatIconRegistry} from '@angular/material/icon';
+import {provideNativeDateAdapter} from '@angular/material/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -47,5 +48,6 @@ export const appConfig: ApplicationConfig = {
         );
       });
     }),
+    provideNativeDateAdapter()
   ]
 };

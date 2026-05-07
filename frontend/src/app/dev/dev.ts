@@ -11,6 +11,9 @@ import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {DomSanitizer} from '@angular/platform-browser';
 import {MatBadge} from '@angular/material/badge';
+import {MatButtonToggle, MatButtonToggleGroup} from '@angular/material/button-toggle';
+import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
+import {MatTimepicker, MatTimepickerInput, MatTimepickerToggle} from '@angular/material/timepicker';
 
 
 
@@ -19,7 +22,7 @@ import {MatBadge} from '@angular/material/badge';
   imports: [
     MatButton,
     MatIconModule,
-    CommonModule, FormsModule, Logo, LogoText, MatFabButton, MatFormField, MatInput, MatFormFieldModule, MatBadge, MatIconButton
+    CommonModule, FormsModule, Logo, LogoText, MatFabButton, MatFormField, MatInput, MatFormFieldModule, MatBadge, MatIconButton, MatButtonToggleGroup, MatButtonToggle, MatDatepicker, MatDatepickerToggle, MatDatepickerInput, MatTimepickerInput, MatTimepicker, MatTimepickerToggle
   ],
   template: `
     <!-- dev.component.html -->
@@ -30,6 +33,32 @@ import {MatBadge} from '@angular/material/badge';
         <h2 class="section-title">Inputs</h2>
         <div class="rows">
           <div class="row">
+            <span class="label">mat-form-field + mat-datepicker + mat-timepicker</span>
+            <span class="variant">default</span>
+            <div class="preview">
+              <div class="flex gap-1 max-w-xs">
+                <mat-form-field>
+                  <mat-label>Delivery Date</mat-label>
+                  <input matInput [matDatepicker]="datepicker" [(ngModel)]="value">
+                  <mat-datepicker #datepicker/>
+                  <mat-datepicker-toggle [for]="datepicker" matSuffix/>
+                </mat-form-field>
+
+                <mat-form-field>
+                  <mat-label>Time Slot</mat-label>
+                  <input matInput
+                         [matTimepicker]="timepicker"
+                         [(ngModel)]="value"
+                         [ngModelOptions]="{updateOn: 'blur'}">
+                  <mat-timepicker #timepicker/>
+                  <mat-timepicker-toggle [for]="timepicker" matSuffix/>
+                </mat-form-field>
+              </div>
+              <br>
+              <p>Value: {{ value }}</p>
+            </div>
+          </div>
+          <div class="row">
             <span class="label">mat-form-field</span>
             <span class="variant">default</span>
             <div class="preview">
@@ -39,9 +68,58 @@ import {MatBadge} from '@angular/material/badge';
               </mat-form-field>
             </div>
           </div>
+          <div class="row">
+            <span class="label">mat-form-field</span>
+            <span class="variant">rounded</span>
+            <div class="preview">
+              <mat-form-field class="rounded">
+                <mat-label>Enter Coupon</mat-label>
+                <input matInput>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <span class="label">mat-form-field + search</span>
+            <span class="variant">search</span>
+            <div class="preview">
+              <mat-form-field appearance="outline" class="search">
+                <mat-label>Search By</mat-label>
+                <input matInput placeholder="Placeholder">
+                <mat-icon class="ms-2" matPrefix>search</mat-icon>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row">
+            <span class="label">mat-button-toggle-group</span>
+            <span class="variant">default</span>
+            <div class="preview">
+              <mat-button-toggle-group>
+                <mat-button-toggle value="home">
+                  <mat-icon>home</mat-icon>
+                  Home
+                </mat-button-toggle>
+                <mat-button-toggle value="apartment">
+                  <mat-icon>apartment</mat-icon>
+                  Apartment
+                </mat-button-toggle>
+                <mat-button-toggle value="office">
+                  <mat-icon>work</mat-icon>
+                  Office
+                </mat-button-toggle>
+              </mat-button-toggle-group>
+            </div>
+          </div>
         </div>
       </section>
 
+      <section class="mb-10">
+        <h2 class="section-title">Divider</h2>
+        <div class="flex items-center gap-2">
+          <hr class="flex-1 border-border">
+          <span class="text-sm text-muted">OR</span>
+          <hr class="flex-1 border-border">
+        </div>
+      </section>
       <!-- ── LOGOS ── -->
       <section class="mb-10">
         <h2 class="section-title">Logos</h2>
@@ -63,6 +141,32 @@ import {MatBadge} from '@angular/material/badge';
         </div>
       </section>
 
+      <!-- Text Button -->
+      <section class="mb-10">
+        <h2 class="section-title">Buttons — matButton="filled"</h2>
+        <div class="rows">
+          <div class="row">
+            <span class="label">matButton + text</span>
+            <span class="variant">default</span>
+            <div class="preview">
+              <button matButton="text">
+                <mat-icon>picture_as_pdf</mat-icon>
+                Invoice.pdf
+              </button>
+            </div>
+          </div>
+          <div class="row">
+            <span class="label">matButton + text + danger</span>
+            <span class="variant">default</span>
+            <div class="preview">
+              <button matButton="text" class="danger">
+                <mat-icon>remove</mat-icon>
+                Remove Coupon
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
       <!-- ── ICON BUTTONS ── -->
       <section class="mb-10">
         <h2 class="section-title">Buttons — matIconButton</h2>
@@ -97,7 +201,7 @@ import {MatBadge} from '@angular/material/badge';
                     <mat-icon>payment</mat-icon>
                     Checkout
                   </span>
-                  <span>$120.00</span>
+                <span>$120.00</span>
               </button>
             </div>
           </div>
@@ -343,156 +447,6 @@ import {MatBadge} from '@angular/material/badge';
       </section>
 
     </div>
-    <!--    <p class="bg-primary-blur">-->
-    <!--      Components-->
-    <!--    </p>-->
-
-
-    <!--    <h1>Inputs</h1>-->
-    <!--    <hr class="mb-2">-->
-    <!--    <div class="flex flex-wrap gap-3 p-2">-->
-    <!--      <mat-form-field>-->
-    <!--        <mat-label>Input</mat-label>-->
-    <!--        <input matInput>-->
-    <!--      </mat-form-field>-->
-    <!--    </div>-->
-
-
-    <!--    <h1>Logos</h1>-->
-    <!--    <hr class="mb-2">-->
-    <!--    <div class="flex flex-wrap gap-3 p-2">-->
-    <!--      <app-logo/>-->
-    <!--      <app-logo-text/>-->
-    <!--      <hr class="my-2">-->
-    <!--    </div>-->
-
-    <!--    <h1>Buttons</h1>-->
-    <!--    <hr class="mb-2">-->
-    <!--    <div class="flex flex-wrap gap-3 p-2">-->
-
-    <!--      <div style="display:flex; align-items:center; gap:8px;">-->
-    <!--        <button matIconButton>-->
-    <!--          <mat-icon>remove</mat-icon>-->
-    <!--        </button>-->
-    <!--        <span>1</span>-->
-    <!--        <button matIconButton>-->
-    <!--          <mat-icon>add</mat-icon>-->
-    <!--        </button>-->
-    <!--      </div>-->
-
-    <!--      <button matButton="filled" class="w-full btn-pill" >-->
-    <!--        <div class="flex items-center">-->
-    <!--          <span style="display:flex; align-items:center; gap:8px;">-->
-    <!--            <mat-icon>payment</mat-icon>-->
-    <!--            Checkout-->
-    <!--          </span>-->
-    <!--          <div class="w-20"></div>-->
-    <!--          <span>$120.00</span>-->
-    <!--        </div>-->
-    <!--      </button>-->
-
-    <!--      <button matButton="filled" class="btn-pill-xs">-->
-    <!--        <mat-icon>add_2</mat-icon>-->
-    <!--        Add to cart-->
-    <!--      </button>-->
-
-    <!--      <button matButton="filled" class="btn-pill-sm">-->
-    <!--        <mat-icon>shopping_cart</mat-icon>-->
-    <!--        <span>15 TND</span>-->
-    <!--        <span class="text-white bg-primary rounded-full p-1 text-sm ms-1">12</span>-->
-    <!--      </button>-->
-
-    <!--      <button matButton="filled" class="btn-pill-sm">-->
-    <!--        <mat-icon>favorite</mat-icon>-->
-    <!--        3 Products-->
-    <!--      </button>-->
-
-    <!--      <button matButton="filled" class="danger">-->
-    <!--        Cancel Order-->
-    <!--      </button>-->
-
-    <!--      <button matButton="outlined" class="btn-sm">-->
-    <!--        12, Rennes-->
-    <!--        <mat-icon>location_on</mat-icon>-->
-    <!--      </button>-->
-    <!--      <button matButton="outlined">-->
-    <!--        Go back home-->
-    <!--        <mat-icon iconPositionEnd>arrow_forward</mat-icon>-->
-    <!--      </button>-->
-
-    <!--      <button matButton="filled" class="btn-sign">-->
-    <!--        <span class="text-black"> Sign In With Google</span>-->
-    <!--        <mat-icon svgIcon="google"></mat-icon>-->
-    <!--      </button>-->
-
-    <!--      <button matButton="filled" class="btn-sign">-->
-    <!--        Sign In With Meta-->
-    <!--        <mat-icon svgIcon="meta"></mat-icon>-->
-    <!--      </button>-->
-
-
-    <!--      <button matButton="filled" class="btn-pill">-->
-    <!--        Save Changes-->
-    <!--        <mat-icon>location_on</mat-icon>-->
-    <!--      </button>-->
-
-    <!--      <button matButton="filled" class="btn-pill">-->
-    <!--        Add to Cart-->
-    <!--        <mat-icon>add_shopping_cart</mat-icon>-->
-    <!--      </button>-->
-
-    <!--      <button matButton="outlined">-->
-    <!--        Go back home-->
-    <!--        <mat-icon iconPositionEnd>arrow_forward</mat-icon>-->
-    <!--      </button>-->
-
-    <!--      <button matButton="filled" class="btn-lg">-->
-    <!--        Continue Checkout-->
-    <!--        <mat-icon iconPositionEnd>arrow_forward</mat-icon>-->
-    <!--      </button>-->
-
-    <!--      <button matButton="elevated" class="w-full">-->
-    <!--        Continue Checkout-->
-    <!--        <mat-icon iconPositionEnd>arrow_forward</mat-icon>-->
-    <!--      </button>-->
-
-    <!--      <button matButton="filled" class="btn-icon">-->
-    <!--        Download-->
-    <!--        <mat-icon iconPositionEnd>download</mat-icon>-->
-    <!--      </button>-->
-
-    <!--      <button matButton="filled" class="btn-sm">-->
-    <!--        View All-->
-    <!--        <mat-icon iconPositionEnd>arrow_forward</mat-icon>-->
-    <!--      </button>-->
-
-    <!--      <button matButton="filled" class="btn-md">-->
-    <!--        View All-->
-    <!--        <mat-icon iconPositionEnd>arrow_forward</mat-icon>-->
-    <!--      </button>-->
-    <!--      <button matButton="filled">-->
-    <!--        Continue-->
-    <!--        <mat-icon iconPositionEnd>arrow_forward</mat-icon>-->
-    <!--      </button>-->
-
-    <!--      <button matButton="filled" disabled>-->
-    <!--        Continue-->
-    <!--        <mat-icon iconPositionEnd>arrow_forward</mat-icon>-->
-    <!--      </button>-->
-
-    <!--      <br>-->
-    <!--      <button matButton="outlined">Outlined button</button>-->
-    <!--      <br>-->
-    <!--      <button matFab extended-->
-    <!--              [class.active]="activeTab() === 'phone'"-->
-
-    <!--              (click)="toggleActiveTab()"-->
-    <!--      >-->
-    <!--        <mat-icon>phone</mat-icon>-->
-    <!--        Phone-->
-    <!--      </button>-->
-    <!--      <hr class="my-2">-->
-    <!--    </div>-->
 
   `,
   styles: `
@@ -548,7 +502,7 @@ import {MatBadge} from '@angular/material/badge';
 })
 export default class Dev {
 
-
+  value!: Date;
 
   activeTab = signal("email");
   toggleActiveTab() {

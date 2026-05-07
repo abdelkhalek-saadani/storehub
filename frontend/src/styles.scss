@@ -59,7 +59,9 @@ html {
         protected-container-color: var(--color-primary),
         protected-label-text-color: white,
         protected-container-height: 58px,
-        protected-label-text-weight: var(--font-weight-semibold)
+        protected-label-text-weight: var(--font-weight-semibold),
+        text-label-text-color: var(--color-primary),
+        text-label-text-size: 16px
       )
   );
   @include mat.fab-overrides(
@@ -74,8 +76,19 @@ html {
       )
   );
 
+  @include mat.button-toggle-overrides(
+        (
+          text-color: #E2E2E2,
+          divider-color: #E2E2E2,
+          selected-state-background-color: var(--color-primary-blur),
+          selected-state-text-color: var(--color-primary)
+        )
+  );
+
   @include mat.form-field-overrides((
-    outlined-label-text-size: 16px
+    outlined-label-text-size: 16px,
+    outlined-container-shape: 8px,
+    outlined-label-text-weight: var(--font-weight-medium),
   ))
 }
 
@@ -139,6 +152,30 @@ body {
   box-shadow: var(--mat-sys-level2);
 }
 
+button[matButton='text'].danger {
+  @include mat.button-overrides(
+        (
+          text-label-text-color: #AB2538,
+          text-label-text-size: 14px
+        )
+  )
+}
+
+mat-form-field.rounded{
+  @include mat.form-field-overrides((
+    outlined-container-shape: 24px,
+  ))
+}
+
+mat-form-field.search{
+  @include mat.form-field-overrides((
+    outlined-container-shape: 12px,
+    container-height: 48px,
+    outlined-label-text-weight: var(--font-weight-regular),
+    outlined-label-text-size: 14px,
+    leading-icon-color: var(--color-primary),
+  ))
+}
 
 // Move this to the component scss file when creating components
 button[matButton='filled'].btn-lg {

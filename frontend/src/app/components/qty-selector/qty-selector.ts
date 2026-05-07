@@ -17,6 +17,7 @@ import {Product} from '../../models/Product';
         <button
           matIconButton
           [disabled]="quantity()==1"
+          class="bg-primary"
         >
           <mat-icon (click)="qtyUpdated.emit('decrement')">
             remove
@@ -24,7 +25,7 @@ import {Product} from '../../models/Product';
 
         </button>
         <div class="px-3">{{ quantity() }}</div>
-        <button matIconButton>
+        <button matIconButton class="bg-primary">
           <mat-icon (click)="qtyUpdated.emit('increment')">
             add
           </mat-icon>

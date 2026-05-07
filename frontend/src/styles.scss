@@ -39,20 +39,20 @@ html {
         filled-horizontal-padding: 24px,
         filled-disabled-container-color: #E5E5E5,
         filled-disabled-label-text-color: white,
-        outlined-outline-color: #E2E2E2,
-        outlined-container-shape: 12px,
-        outlined-label-text-color: #494349,
+        outlined-outline-color: var(--color-primary),
+        outlined-container-shape: 30px,
+        outlined-container-height: 54px,
+        outlined-label-text-color: var(--color-primary),
+        outlined-horizontal-padding: 24px,
+        outlined-icon-spacing: 8px,
+        outlined-label-text-weight: var(--font-weight-semibold),
+        outlined-label-text-size: 20px,
         text-container-shape: 6px,
-
         tonal-container-shape: 6px,
-        outlined-horizontal-padding: 12px,
         text-horizontal-padding: 12px,
-
         tonal-horizontal-padding: 12px,
-        outlined-container-height: 36px,
         text-container-height: 36px,
         tonal-container-height: 36px,
-
         protected-container-shape: 12px,
         protected-horizontal-padding: 24px,
         protected-icon-spacing: 8px,
@@ -151,6 +151,7 @@ button[matButton='filled'].btn-lg {
       )
   )
 }
+
 button[matButton='filled'].btn-md {
   @include mat.button-overrides(
       (
@@ -161,6 +162,7 @@ button[matButton='filled'].btn-md {
       )
   )
 }
+
 button[matButton='filled'].btn-sm {
   @include mat.button-overrides(
       (
@@ -172,6 +174,7 @@ button[matButton='filled'].btn-sm {
       )
   )
 }
+
 button[matButton='filled'].btn-icon {
   @include mat.button-overrides(
       (
@@ -183,6 +186,102 @@ button[matButton='filled'].btn-icon {
       )
   )
 }
+
+button[matButton='filled'].btn-pill {
+  @include mat.button-overrides(
+      (
+        filled-container-height: 46px,
+        filled-horizontal-padding: 24px,
+        filled-icon-spacing: 8px,
+        filled-container-shape: 38px,
+        filled-label-text-weight: var(--font-weight-semibold),
+      )
+  )
+}
+
+button[matButton='filled'].btn-sign {
+  @include mat.button-overrides(
+      (
+        filled-container-height: 48px,
+        filled-icon-spacing: 14px,
+        filled-container-shape: 12px,
+        filled-label-text-weight: var(--font-weight-semibold),
+        filled-container-color: white,
+        filled-label-text-color: var(--color-primary)
+      )
+  )
+}
+
+button[matButton='filled'].btn-pill-sm {
+  @include mat.button-overrides(
+      (
+        filled-container-height: 42px,
+        filled-icon-spacing: 10px,
+        filled-container-shape: 30px,
+        filled-label-text-weight: var(--font-weight-medium),
+        filled-label-text-size: 16px,
+        filled-container-color: white,
+        filled-label-text-color: black,
+        filled-horizontal-padding: 20px,
+      )
+  );
+
+  mat-icon {
+    color: var(--color-primary);
+  }
+}
+
+button[matButton='filled'].btn-pill-xs {
+  @include mat.button-overrides(
+      (
+        filled-container-height: 36px,
+        filled-icon-spacing: 4px,
+        filled-container-shape: 30px,
+        filled-label-text-weight: var(--font-weight-medium),
+        filled-label-text-size: 14px,
+        filled-container-color: white,
+        filled-label-text-color: black,
+        filled-horizontal-padding: 16px,
+      )
+  );
+
+  mat-icon {
+    color: var(--color-primary);
+  }
+}
+
+button[matButton='filled'].space-between .mdc-button__label {
+
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+}
+
+
+button[matButton='filled'].danger {
+  border: 1px solid #E43950 !important;
+  @include mat.button-overrides(
+      (
+        filled-container-height: 38px,
+        filled-container-shape: 32px,
+        filled-label-text-weight: var(--font-weight-regular),
+        filled-container-color: #FEF2F3,
+        filled-label-text-color: #E43950
+      )
+  )
+}
+
+button[matButton='outlined'].btn-sm {
+  @include mat.button-overrides(
+      (
+        outlined-container-height: 38px,
+        outlined-label-text-size: 14px,
+        outlined-icon-spacing: 4px,
+      )
+  )
+}
+
 
 button[matButton='outlined'].danger {
   @include mat.button-overrides(
@@ -197,9 +296,13 @@ button[matButton='outlined'].danger {
 button[matIconButton] {
   @include mat.icon-button-overrides(
       (
-        container-shape: 6px,
+        icon-color: white,
       )
   );
+
+  &.bg-primary {
+    background-color: var(--color-primary);
+  }
 }
 
 button[matIconButton].danger {

@@ -51,7 +51,8 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/swiper/swiper-bundle.min.css"
             ],
             "server": "src/main.server.ts",
             "outputMode": "server",
@@ -113,7 +114,8 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/swiper/swiper-bundle.min.css"
             ]
           }
         }

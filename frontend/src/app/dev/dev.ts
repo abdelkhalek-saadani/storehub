@@ -1,19 +1,17 @@
-import {Component, inject, signal} from '@angular/core';
+import {Component, signal} from '@angular/core';
 import {MatButton, MatFabButton, MatIconButton} from '@angular/material/button';
-import {MatIconModule, MatIconRegistry} from '@angular/material/icon';
+import {MatIconModule} from '@angular/material/icon';
 import {FormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {Logo} from '../components/atoms/logo/logo';
 import {LogoText} from '../components/atoms/logo-text/logo-text';
 import {MatInput} from '@angular/material/input';
 import {MatFormField} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
-import {DomSanitizer} from '@angular/platform-browser';
-import {MatBadge} from '@angular/material/badge';
 import {MatButtonToggle, MatButtonToggleGroup} from '@angular/material/button-toggle';
 import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
 import {MatTimepicker, MatTimepickerInput, MatTimepickerToggle} from '@angular/material/timepicker';
+import {OffersSection} from '../components/molecules/offers-section';
 
 
 
@@ -22,12 +20,19 @@ import {MatTimepicker, MatTimepickerInput, MatTimepickerToggle} from '@angular/m
   imports: [
     MatButton,
     MatIconModule,
-    CommonModule, FormsModule, Logo, LogoText, MatFabButton, MatFormField, MatInput, MatFormFieldModule, MatBadge, MatIconButton, MatButtonToggleGroup, MatButtonToggle, MatDatepicker, MatDatepickerToggle, MatDatepickerInput, MatTimepickerInput, MatTimepicker, MatTimepickerToggle
+    CommonModule, FormsModule, Logo, LogoText, MatFabButton, MatFormField, MatInput, MatFormFieldModule, MatIconButton, MatButtonToggleGroup, MatButtonToggle, MatDatepicker, MatDatepickerToggle, MatDatepickerInput, MatTimepickerInput, MatTimepicker, MatTimepickerToggle, OffersSection
   ],
   template: `
-    <!-- dev.component.html -->
+
     <div class="catalog p-6 font-sans">
 
+      <section class="mb-10">
+        <h2 class="section-title">Components</h2>
+        <div class="rows">
+          <span class="label">OffersSection</span>
+          <app-offers-section/>
+        </div>
+      </section>
       <!-- ── INPUTS ── -->
       <section class="mb-10">
         <h2 class="section-title">Inputs</h2>
@@ -450,7 +455,6 @@ import {MatTimepicker, MatTimepickerInput, MatTimepickerToggle} from '@angular/m
 
   `,
   styles: `
-    // dev.component.scss
     .section-title {
       font-size: 11px;
       font-weight: 500;

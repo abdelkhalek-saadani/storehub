@@ -1,7 +1,7 @@
 import {Component, signal} from '@angular/core';
 import {MatButton, MatFabButton, MatIconButton} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {Logo} from '../components/atoms/logo/logo';
 import {LogoText} from '../components/atoms/logo-text/logo-text';
@@ -12,15 +12,20 @@ import {MatButtonToggle, MatButtonToggleGroup} from '@angular/material/button-to
 import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
 import {MatTimepicker, MatTimepickerInput, MatTimepickerToggle} from '@angular/material/timepicker';
 import {OffersSection} from '../components/molecules/offers-section';
-
-
+import {MatChipsModule} from '@angular/material/chips';
+import {Divider} from '../components/atoms/divider/divider';
+import {SigninButton} from '../components/atoms/signin-button/signin-button';
+import {MatTabsModule} from '@angular/material/tabs';
+import {PhoneInput} from '../components/atoms/phone-input/phone-input';
+import {LoginForm} from '../components/molecules/login-form/login-form';
 
 @Component({
   selector: 'app-dev',
   imports: [
+    MatChipsModule,
     MatButton,
-    MatIconModule,
-    CommonModule, FormsModule, Logo, LogoText, MatFabButton, MatFormField, MatInput, MatFormFieldModule, MatIconButton, MatButtonToggleGroup, MatButtonToggle, MatDatepicker, MatDatepickerToggle, MatDatepickerInput, MatTimepickerInput, MatTimepicker, MatTimepickerToggle, OffersSection
+    MatIconModule, MatTabsModule,
+    CommonModule, FormsModule, Logo, LogoText, MatFabButton, MatFormField, MatInput, MatFormFieldModule, MatIconButton, MatButtonToggleGroup, MatButtonToggle, MatDatepicker, MatDatepickerToggle, MatDatepickerInput, MatTimepickerInput, MatTimepicker, MatTimepickerToggle, OffersSection, Divider, SigninButton, ReactiveFormsModule, LoginForm
   ],
   template: `
 
@@ -29,8 +34,26 @@ import {OffersSection} from '../components/molecules/offers-section';
       <section class="mb-10">
         <h2 class="section-title">Components</h2>
         <div class="rows">
+          <span class="label">The Login Form</span>
+
+          <app-login-form />
+
+
+          <span class="label">Chips + category-chip class</span>
+          <mat-chip-set class="category-chip" aria-label="Fish selection">
+            <mat-chip><img
+              matChipAvatar
+              src="https://material.angular.dev/assets/img/examples/shiba1.jpg"
+              alt="Photo of a Shiba Inu"
+            />Bread
+            </mat-chip>
+            <mat-chip>Two fish</mat-chip>
+            <mat-chip>Three fish</mat-chip>
+            <mat-chip disabled>Four fish</mat-chip>
+          </mat-chip-set>
           <span class="label">OffersSection</span>
           <app-offers-section/>
+
         </div>
       </section>
       <!-- ── INPUTS ── -->
@@ -119,11 +142,7 @@ import {OffersSection} from '../components/molecules/offers-section';
 
       <section class="mb-10">
         <h2 class="section-title">Divider</h2>
-        <div class="flex items-center gap-2">
-          <hr class="flex-1 border-border">
-          <span class="text-sm text-muted">OR</span>
-          <hr class="flex-1 border-border">
-        </div>
+        <app-divider/>
       </section>
       <!-- ── LOGOS ── -->
       <section class="mb-10">
@@ -257,10 +276,7 @@ import {OffersSection} from '../components/molecules/offers-section';
             <span class="label">filled + btn-sign</span>
             <span class="variant">OAuth / Google</span>
             <div class="preview">
-              <button matButton="filled" class="btn-sign">
-                <span class="text-black"> Sign In With Google</span>
-                <mat-icon svgIcon="google"></mat-icon>
-              </button>
+              <app-signin-button type="google"/>
             </div>
           </div>
 
@@ -268,10 +284,7 @@ import {OffersSection} from '../components/molecules/offers-section';
             <span class="label">filled + btn-sign</span>
             <span class="variant">OAuth / Meta</span>
             <div class="preview">
-              <button matButton="filled" class="btn-sign">
-                Sign In With Meta
-                <mat-icon svgIcon="meta"></mat-icon>
-              </button>
+              <app-signin-button type="meta"/>
             </div>
           </div>
 
@@ -507,6 +520,7 @@ import {OffersSection} from '../components/molecules/offers-section';
 export default class Dev {
 
   value!: Date;
+
 
   activeTab = signal("email");
   toggleActiveTab() {

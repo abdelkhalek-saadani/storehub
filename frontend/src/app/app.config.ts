@@ -30,7 +30,6 @@ export const appConfig: ApplicationConfig = {
       }
     },
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {disableClose: true}},
-    provideClientHydration(withEventReplay()),
     provideHttpClient(),
     provideAppInitializer(() => {
       const registry = inject(MatIconRegistry);

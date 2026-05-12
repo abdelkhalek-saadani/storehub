@@ -89,6 +89,7 @@ html {
     outlined-label-text-size: 16px,
     outlined-container-shape: 8px,
     outlined-label-text-weight: var(--font-weight-medium),
+    container-text-weight: var(--font-weight-normal),
   ))
 }
 
@@ -174,6 +175,15 @@ mat-form-field.search{
     outlined-label-text-weight: var(--font-weight-regular),
     outlined-label-text-size: 14px,
     leading-icon-color: var(--color-primary),
+  ))
+}
+
+mat-chip-set.category-chip {
+  @include mat.chips-overrides((
+    container-shape-radius: 99px,
+    elevated-container-color: #F8F7F8,
+    outline-color: #F8F7F8,
+    container-height: 40px,
   ))
 }
 

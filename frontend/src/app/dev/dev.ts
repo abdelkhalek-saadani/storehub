@@ -23,6 +23,8 @@ import {PickStoreLocationForm} from '../components/molecules/pick-store-location
 import {BreakpointObserver} from '@angular/cdk/layout';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {DeliveryAddressForm} from '../components/molecules/delivery-address-form/delivery-address-form';
+import {CategorySquaredButton} from '../components/atoms/category-squared-button/category-squared-button';
+import {CategoryBar} from '../components/molecules/category-bar/category-bar';
 
 @Component({
   selector: 'app-dev',
@@ -30,7 +32,7 @@ import {DeliveryAddressForm} from '../components/molecules/delivery-address-form
     MatChipsModule,
     MatButton,
     MatIconModule, MatTabsModule,
-    CommonModule, FormsModule, Logo, LogoText, MatFabButton, MatFormField, MatInput, MatFormFieldModule, MatIconButton, MatButtonToggleGroup, MatButtonToggle, MatDatepicker, MatDatepickerToggle, MatDatepickerInput, MatTimepickerInput, MatTimepicker, MatTimepickerToggle, OffersSection, Divider, SigninButton, ReactiveFormsModule, LoginForm, MatSelectModule, PickStoreLocationForm, DeliveryAddressForm
+    CommonModule, FormsModule, Logo, LogoText, MatFabButton, MatFormField, MatInput, MatFormFieldModule, MatIconButton, MatButtonToggleGroup, MatButtonToggle, MatDatepicker, MatDatepickerToggle, MatDatepickerInput, MatTimepickerInput, MatTimepicker, MatTimepickerToggle, OffersSection, Divider, SigninButton, ReactiveFormsModule, LoginForm, MatSelectModule, PickStoreLocationForm, DeliveryAddressForm, CategorySquaredButton, CategoryBar
   ],
   template: `
 
@@ -39,6 +41,10 @@ import {DeliveryAddressForm} from '../components/molecules/delivery-address-form
       <section class="mb-10">
         <h2 class="section-title">Components</h2>
         <div class="rows">
+          <span class="label">Category Bar</span>
+
+          <app-category-bar/>
+
           <span class="label">Edit Delivery Address</span>
 
           <app-delivery-address-form/>
@@ -181,6 +187,9 @@ import {DeliveryAddressForm} from '../components/molecules/delivery-address-form
       <section class="mb-10">
         <h2 class="section-title">Buttons — matButton="filled"</h2>
         <div class="rows">
+          <span class="label">Category Squared Button</span>
+          <app-category-squared-button/>
+
           <div class="row">
             <span class="label">matButton + text</span>
             <span class="variant">default</span>
@@ -532,6 +541,7 @@ import {DeliveryAddressForm} from '../components/molecules/delivery-address-form
 export default class Dev {
 
   value!: Date;
+
 
 
   activeTab = signal("email");

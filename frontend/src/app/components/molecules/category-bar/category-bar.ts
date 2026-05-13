@@ -15,43 +15,35 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
   template: `
     <div class="flex flex-col items-stretch p-4 md:flex-row md:justify-center md:p-3">
       <div class="flex gap-2 justify-around md:gap-3 w-full">
-        @if (isTwoRows()) {
-          @for (i of [].constructor(5); track $index) {
+        @for (i of [].constructor(5); track $index) {
+          @if (isSquaredButton()) {
             <app-category-squared-button/>
+          } @else {
+            <mat-chip class="category-chip">
+              <img
+                matChipAvatar
+                src="https://material.angular.dev/assets/img/examples/shiba1.jpg"
+                alt="Photo of a Shiba Inu"
+              />Bread
+            </mat-chip>
           }
-        } @else {
-          <mat-chip-set class="category-chip" aria-label="category chips">
-            @for (i of [].constructor(5); track $index) {
-              <mat-chip>
-                <img
-                  matChipAvatar
-                  src="https://material.angular.dev/assets/img/examples/shiba1.jpg"
-                  alt="Photo of a Shiba Inu"
-                />Bread
-              </mat-chip>
-            }
-          </mat-chip-set>
         }
 
       </div>
-      <div class="flex gap-2 justify-around md:gap-3 w-full md:w-aut">
+      <div class="flex gap-2 justify-around md:gap-3 w-full">
 
-        @if (isTwoRows()) {
-          @for (i of [].constructor(5); track $index) {
+        @for (i of [].constructor(5); track $index) {
+          @if (isSquaredButton()) {
             <app-category-squared-button/>
+          } @else {
+            <mat-chip class="category-chip">
+              <img
+                matChipAvatar
+                src="https://material.angular.dev/assets/img/examples/shiba1.jpg"
+                alt="Photo of a Shiba Inu"
+              />Bread
+            </mat-chip>
           }
-        } @else {
-          <mat-chip-set class="category-chip" aria-label="category chips">
-            @for (i of [].constructor(5); track $index) {
-              <mat-chip>
-                <img
-                  matChipAvatar
-                  src="https://material.angular.dev/assets/img/examples/shiba1.jpg"
-                  alt="Photo of a Shiba Inu"
-                />Bread
-              </mat-chip>
-            }
-          </mat-chip-set>
         }
 
       </div>
@@ -60,12 +52,12 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
   styles: ``,
 })
 export class CategoryBar {
-  isTwoRows = signal(false);
+  isSquaredButton = signal(false);
 
   constructor(bpo: BreakpointObserver) {
     bpo
       .observe('(max-width: 1040px)')
       .pipe(takeUntilDestroyed())
-      .subscribe(result => this.isTwoRows.set(result.matches));
+      .subscribe(result => this.isSquaredButton.set(result.matches));
   }
 }

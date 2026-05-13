@@ -178,7 +178,7 @@ mat-form-field.search{
   ))
 }
 
-mat-chip-set.category-chip {
+mat-chip.category-chip {
   @include mat.chips-overrides((
     container-shape-radius: 99px,
     elevated-container-color: #F8F7F8,

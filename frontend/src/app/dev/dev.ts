@@ -20,6 +20,9 @@ import {PhoneInput} from '../components/atoms/phone-input/phone-input';
 import {LoginForm} from '../components/molecules/login-form/login-form';
 import {MatSelectModule} from '@angular/material/select';
 import {PickStoreLocationForm} from '../components/molecules/pick-store-location-form/pick-store-location-form';
+import {BreakpointObserver} from '@angular/cdk/layout';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {DeliveryAddressForm} from '../components/molecules/delivery-address-form/delivery-address-form';
 
 @Component({
   selector: 'app-dev',
@@ -27,7 +30,7 @@ import {PickStoreLocationForm} from '../components/molecules/pick-store-location
     MatChipsModule,
     MatButton,
     MatIconModule, MatTabsModule,
-    CommonModule, FormsModule, Logo, LogoText, MatFabButton, MatFormField, MatInput, MatFormFieldModule, MatIconButton, MatButtonToggleGroup, MatButtonToggle, MatDatepicker, MatDatepickerToggle, MatDatepickerInput, MatTimepickerInput, MatTimepicker, MatTimepickerToggle, OffersSection, Divider, SigninButton, ReactiveFormsModule, LoginForm, MatSelectModule, PickStoreLocationForm
+    CommonModule, FormsModule, Logo, LogoText, MatFabButton, MatFormField, MatInput, MatFormFieldModule, MatIconButton, MatButtonToggleGroup, MatButtonToggle, MatDatepicker, MatDatepickerToggle, MatDatepickerInput, MatTimepickerInput, MatTimepicker, MatTimepickerToggle, OffersSection, Divider, SigninButton, ReactiveFormsModule, LoginForm, MatSelectModule, PickStoreLocationForm, DeliveryAddressForm
   ],
   template: `
 
@@ -36,9 +39,13 @@ import {PickStoreLocationForm} from '../components/molecules/pick-store-location
       <section class="mb-10">
         <h2 class="section-title">Components</h2>
         <div class="rows">
+          <span class="label">Edit Delivery Address</span>
+
+          <app-delivery-address-form/>
+
           <span class="label">Pick Store Location</span>
 
-            <app-pick-store-location-form/>
+          <app-pick-store-location-form/>
 
           <span class="label">The Login Form</span>
 

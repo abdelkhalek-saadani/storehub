@@ -18,6 +18,8 @@ import {SigninButton} from '../components/atoms/signin-button/signin-button';
 import {MatTabsModule} from '@angular/material/tabs';
 import {PhoneInput} from '../components/atoms/phone-input/phone-input';
 import {LoginForm} from '../components/molecules/login-form/login-form';
+import {MatSelectModule} from '@angular/material/select';
+import {PickStoreLocationForm} from '../components/molecules/pick-store-location-form/pick-store-location-form';
 
 @Component({
   selector: 'app-dev',
@@ -25,7 +27,7 @@ import {LoginForm} from '../components/molecules/login-form/login-form';
     MatChipsModule,
     MatButton,
     MatIconModule, MatTabsModule,
-    CommonModule, FormsModule, Logo, LogoText, MatFabButton, MatFormField, MatInput, MatFormFieldModule, MatIconButton, MatButtonToggleGroup, MatButtonToggle, MatDatepicker, MatDatepickerToggle, MatDatepickerInput, MatTimepickerInput, MatTimepicker, MatTimepickerToggle, OffersSection, Divider, SigninButton, ReactiveFormsModule, LoginForm
+    CommonModule, FormsModule, Logo, LogoText, MatFabButton, MatFormField, MatInput, MatFormFieldModule, MatIconButton, MatButtonToggleGroup, MatButtonToggle, MatDatepicker, MatDatepickerToggle, MatDatepickerInput, MatTimepickerInput, MatTimepicker, MatTimepickerToggle, OffersSection, Divider, SigninButton, ReactiveFormsModule, LoginForm, MatSelectModule, PickStoreLocationForm
   ],
   template: `
 
@@ -34,18 +36,21 @@ import {LoginForm} from '../components/molecules/login-form/login-form';
       <section class="mb-10">
         <h2 class="section-title">Components</h2>
         <div class="rows">
+          <span class="label">Pick Store Location</span>
+
+            <app-pick-store-location-form/>
+
           <span class="label">The Login Form</span>
 
-          <app-login-form />
-
-
+          <app-login-form/>
           <span class="label">Chips + category-chip class</span>
           <mat-chip-set class="category-chip" aria-label="Fish selection">
-            <mat-chip><img
-              matChipAvatar
-              src="https://material.angular.dev/assets/img/examples/shiba1.jpg"
-              alt="Photo of a Shiba Inu"
-            />Bread
+            <mat-chip>
+              <img
+                matChipAvatar
+                src="https://material.angular.dev/assets/img/examples/shiba1.jpg"
+                alt="Photo of a Shiba Inu"
+              />Bread
             </mat-chip>
             <mat-chip>Two fish</mat-chip>
             <mat-chip>Three fish</mat-chip>

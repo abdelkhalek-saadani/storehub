@@ -1,12 +1,10 @@
 import {Component, inject, input, output} from '@angular/core';
 import {MatIconButton} from '@angular/material/button';
 import {MatIcon} from '@angular/material/icon';
-import {CartItem} from '../../models/CartItem';
-import {ProductStore} from '../../product-store';
-import {Product} from '../../models/Product';
+import {ProductStore} from '../../../product-store';
 
 @Component({
-  selector: 'app-qty-selector',
+  selector: 'app-add-to-cart-button',
   imports: [
     MatIconButton,
     MatIcon
@@ -14,17 +12,21 @@ import {Product} from '../../models/Product';
   template: `
     <div class="flex items-center gap-3 bg-white rounded-full">
       <div class="inline-flex items-center">
-        <button
-          matIconButton
-          [disabled]="quantity()==1"
-          class="bg-primary"
-        >
-          <mat-icon (click)="qtyUpdated.emit('decrement')">
-            remove
-          </mat-icon>
+        @if (quantity()!=0){
+          <button
+            matIconButton
+            [disabled]="quantity()==1"
+            class="bg-primary"
+          >
 
-        </button>
-        <div class="px-3">{{ quantity() }}</div>
+            <mat-icon (click)="qtyUpdated.emit('decrement')">
+              remove
+            </mat-icon>
+
+          </button>
+          <div class="px-3 text-sm font-medium">{{ quantity() }}</div>
+
+        }
         <button matIconButton class="bg-primary">
           <mat-icon (click)="qtyUpdated.emit('increment')">
             add
@@ -35,7 +37,7 @@ import {Product} from '../../models/Product';
   `,
   styles: ``,
 })
-export class QtySelector {
+export class AddToCartButton {
 
   quantity = input<number>();
   qtyUpdated = output<UpdateNature>();
@@ -44,3 +46,4 @@ export class QtySelector {
 }
 
 export type UpdateNature = 'increment' | 'decrement'
+

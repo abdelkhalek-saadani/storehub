@@ -1,5 +1,5 @@
 import {Component, signal} from '@angular/core';
-import {MatButton, MatFabButton, MatIconButton} from '@angular/material/button';
+import {MatButton, MatFabButton, MatIconButton, MatMiniFabButton} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {CommonModule} from '@angular/common';
@@ -25,6 +25,11 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {DeliveryAddressForm} from '../components/molecules/delivery-address-form/delivery-address-form';
 import {CategorySquaredButton} from '../components/atoms/category-squared-button/category-squared-button';
 import {CategoryBar} from '../components/molecules/category-bar/category-bar';
+import {MatCard, MatCardContent, MatCardImage} from '@angular/material/card';
+import {QtySelector} from '../components/qty-selector/qty-selector';
+import {AddToCartButton} from '../components/atoms/add-to-cart-button/add-to-cart-button';
+import {Breakpoints} from '@core/constants/breakpoints';
+import {ProductCard} from '../components/molecules/product-card/product-card';
 
 @Component({
   selector: 'app-dev',
@@ -32,7 +37,7 @@ import {CategoryBar} from '../components/molecules/category-bar/category-bar';
     MatChipsModule,
     MatButton,
     MatIconModule, MatTabsModule,
-    CommonModule, FormsModule, Logo, LogoText, MatFabButton, MatFormField, MatInput, MatFormFieldModule, MatIconButton, MatButtonToggleGroup, MatButtonToggle, MatDatepicker, MatDatepickerToggle, MatDatepickerInput, MatTimepickerInput, MatTimepicker, MatTimepickerToggle, OffersSection, Divider, SigninButton, ReactiveFormsModule, LoginForm, MatSelectModule, PickStoreLocationForm, DeliveryAddressForm, CategorySquaredButton, CategoryBar
+    CommonModule, FormsModule, Logo, LogoText, MatFabButton, MatFormField, MatInput, MatFormFieldModule, MatIconButton, MatButtonToggleGroup, MatButtonToggle, MatDatepicker, MatDatepickerToggle, MatDatepickerInput, MatTimepickerInput, MatTimepicker, MatTimepickerToggle, OffersSection, Divider, SigninButton, ReactiveFormsModule, LoginForm, MatSelectModule, PickStoreLocationForm, DeliveryAddressForm, CategorySquaredButton, CategoryBar, MatCard, MatMiniFabButton, MatCardImage, MatCardContent, QtySelector, AddToCartButton, ProductCard
   ],
   template: `
 
@@ -41,6 +46,11 @@ import {CategoryBar} from '../components/molecules/category-bar/category-bar';
       <section class="mb-10">
         <h2 class="section-title">Components</h2>
         <div class="rows">
+
+          <span class="label">Product Card</span>
+
+          <app-product-card/>
+
           <span class="label">Category Bar</span>
 
           <app-category-bar/>
@@ -542,9 +552,18 @@ export default class Dev {
 
   value!: Date;
 
+  isMdDevice = signal(false);
+  quantity = signal(5);
 
+  constructor(bpo: BreakpointObserver) {
+    bpo
+      .observe(Breakpoints.md)
+      .pipe(takeUntilDestroyed())
+      .subscribe(result => this.isMdDevice.set(result.matches));
+  }
 
   activeTab = signal("email");
+
   toggleActiveTab() {
     if (this.activeTab() === 'phone') {
       this.activeTab.update(at => '');

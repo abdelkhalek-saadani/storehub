@@ -1,71 +1,108 @@
-import {Component, signal} from '@angular/core';
-import {MatButton, MatFabButton, MatIconButton, MatMiniFabButton} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {CommonModule} from '@angular/common';
-import {Logo} from '../components/atoms/logo/logo';
-import {LogoText} from '../components/atoms/logo-text/logo-text';
-import {MatInput} from '@angular/material/input';
-import {MatFormField} from '@angular/material/form-field';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatButtonToggle, MatButtonToggleGroup} from '@angular/material/button-toggle';
-import {MatDatepicker, MatDatepickerInput, MatDatepickerToggle} from '@angular/material/datepicker';
-import {MatTimepicker, MatTimepickerInput, MatTimepickerToggle} from '@angular/material/timepicker';
-import {OffersSection} from '../components/molecules/offers-section';
-import {MatChipsModule} from '@angular/material/chips';
-import {Divider} from '../components/atoms/divider/divider';
-import {SigninButton} from '../components/atoms/signin-button/signin-button';
-import {MatTabsModule} from '@angular/material/tabs';
-import {PhoneInput} from '../components/atoms/phone-input/phone-input';
-import {LoginForm} from '../components/molecules/login-form/login-form';
-import {MatSelectModule} from '@angular/material/select';
-import {PickStoreLocationForm} from '../components/molecules/pick-store-location-form/pick-store-location-form';
-import {BreakpointObserver} from '@angular/cdk/layout';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {DeliveryAddressForm} from '../components/molecules/delivery-address-form/delivery-address-form';
-import {CategorySquaredButton} from '../components/atoms/category-squared-button/category-squared-button';
-import {CategoryBar} from '../components/molecules/category-bar/category-bar';
-import {MatCard, MatCardContent, MatCardImage} from '@angular/material/card';
-import {QtySelector} from '../components/qty-selector/qty-selector';
-import {AddToCartButton} from '../components/atoms/add-to-cart-button/add-to-cart-button';
-import {Breakpoints} from '@core/constants/breakpoints';
-import {ProductCard} from '../components/molecules/product-card/product-card';
+import { Component, signal } from '@angular/core';
+import { MatButton, MatFabButton, MatIconButton, MatMiniFabButton } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Logo } from '../components/atoms/logo/logo';
+import { LogoText } from '../components/atoms/logo-text/logo-text';
+import { MatInput } from '@angular/material/input';
+import { MatFormField } from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-toggle';
+import {
+  MatDatepicker,
+  MatDatepickerInput,
+  MatDatepickerToggle,
+} from '@angular/material/datepicker';
+import {
+  MatTimepicker,
+  MatTimepickerInput,
+  MatTimepickerToggle,
+} from '@angular/material/timepicker';
+import { OffersSection } from '../components/molecules/offers-section';
+import { MatChipsModule } from '@angular/material/chips';
+import { Divider } from '../components/atoms/divider/divider';
+import { SigninButton } from '../components/atoms/signin-button/signin-button';
+import { MatTabsModule } from '@angular/material/tabs';
+import { PhoneInput } from '../components/atoms/phone-input/phone-input';
+import { LoginForm } from '../components/molecules/login-form/login-form';
+import { MatSelectModule } from '@angular/material/select';
+import { PickStoreLocationForm } from '../components/molecules/pick-store-location-form/pick-store-location-form';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DeliveryAddressForm } from '../components/molecules/delivery-address-form/delivery-address-form';
+import { CategorySquaredButton } from '../components/atoms/category-squared-button/category-squared-button';
+import { CategoryBar } from '../components/molecules/category-bar/category-bar';
+import { Breakpoints } from '@core/constants/breakpoints';
+import { ProductCard } from '../components/molecules/product-card/product-card';
+import { MatCardImage } from '@angular/material/card';
+import { CartItem } from '../components/molecules/cart-item/cart-item';
 
 @Component({
   selector: 'app-dev',
   imports: [
     MatChipsModule,
     MatButton,
-    MatIconModule, MatTabsModule,
-    CommonModule, FormsModule, Logo, LogoText, MatFabButton, MatFormField, MatInput, MatFormFieldModule, MatIconButton, MatButtonToggleGroup, MatButtonToggle, MatDatepicker, MatDatepickerToggle, MatDatepickerInput, MatTimepickerInput, MatTimepicker, MatTimepickerToggle, OffersSection, Divider, SigninButton, ReactiveFormsModule, LoginForm, MatSelectModule, PickStoreLocationForm, DeliveryAddressForm, CategorySquaredButton, CategoryBar, MatCard, MatMiniFabButton, MatCardImage, MatCardContent, QtySelector, AddToCartButton, ProductCard
+    MatIconModule,
+    MatTabsModule,
+    CommonModule,
+    FormsModule,
+    Logo,
+    LogoText,
+    MatFabButton,
+    MatFormField,
+    MatInput,
+    MatFormFieldModule,
+    MatIconButton,
+    MatButtonToggleGroup,
+    MatButtonToggle,
+    MatDatepicker,
+    MatDatepickerToggle,
+    MatDatepickerInput,
+    MatTimepickerInput,
+    MatTimepicker,
+    MatTimepickerToggle,
+    OffersSection,
+    Divider,
+    SigninButton,
+    ReactiveFormsModule,
+    LoginForm,
+    MatSelectModule,
+    PickStoreLocationForm,
+    DeliveryAddressForm,
+    CategorySquaredButton,
+    CategoryBar,
+    ProductCard,
+    CartItem,
   ],
   template: `
-
     <div class="catalog p-6 font-sans">
-
       <section class="mb-10">
         <h2 class="section-title">Components</h2>
         <div class="rows">
+          <span class="label">Cart Item</span>
+
+          <app-cart-item />
 
           <span class="label">Product Card</span>
 
-          <app-product-card/>
+          <app-product-card />
 
           <span class="label">Category Bar</span>
 
-          <app-category-bar/>
+          <app-category-bar />
 
           <span class="label">Edit Delivery Address</span>
 
-          <app-delivery-address-form/>
+          <app-delivery-address-form />
 
           <span class="label">Pick Store Location</span>
 
-          <app-pick-store-location-form/>
+          <app-pick-store-location-form />
 
           <span class="label">The Login Form</span>
 
-          <app-login-form/>
+          <app-login-form />
           <span class="label">Chips + category-chip class</span>
           <mat-chip-set class="category-chip" aria-label="Fish selection">
             <mat-chip>
@@ -80,8 +117,7 @@ import {ProductCard} from '../components/molecules/product-card/product-card';
             <mat-chip disabled>Four fish</mat-chip>
           </mat-chip-set>
           <span class="label">OffersSection</span>
-          <app-offers-section/>
-
+          <app-offers-section />
         </div>
       </section>
       <!-- ── INPUTS ── -->
@@ -95,22 +131,24 @@ import {ProductCard} from '../components/molecules/product-card/product-card';
               <div class="flex gap-1 max-w-xs">
                 <mat-form-field>
                   <mat-label>Delivery Date</mat-label>
-                  <input matInput [matDatepicker]="datepicker" [(ngModel)]="value">
-                  <mat-datepicker #datepicker/>
-                  <mat-datepicker-toggle [for]="datepicker" matSuffix/>
+                  <input matInput [matDatepicker]="datepicker" [(ngModel)]="value" />
+                  <mat-datepicker #datepicker />
+                  <mat-datepicker-toggle [for]="datepicker" matSuffix />
                 </mat-form-field>
 
                 <mat-form-field>
                   <mat-label>Time Slot</mat-label>
-                  <input matInput
-                         [matTimepicker]="timepicker"
-                         [(ngModel)]="value"
-                         [ngModelOptions]="{updateOn: 'blur'}">
-                  <mat-timepicker #timepicker/>
-                  <mat-timepicker-toggle [for]="timepicker" matSuffix/>
+                  <input
+                    matInput
+                    [matTimepicker]="timepicker"
+                    [(ngModel)]="value"
+                    [ngModelOptions]="{ updateOn: 'blur' }"
+                  />
+                  <mat-timepicker #timepicker />
+                  <mat-timepicker-toggle [for]="timepicker" matSuffix />
                 </mat-form-field>
               </div>
-              <br>
+              <br />
               <p>Value: {{ value }}</p>
             </div>
           </div>
@@ -120,7 +158,7 @@ import {ProductCard} from '../components/molecules/product-card/product-card';
             <div class="preview">
               <mat-form-field>
                 <mat-label>Input</mat-label>
-                <input matInput>
+                <input matInput />
               </mat-form-field>
             </div>
           </div>
@@ -130,7 +168,7 @@ import {ProductCard} from '../components/molecules/product-card/product-card';
             <div class="preview">
               <mat-form-field class="rounded">
                 <mat-label>Enter Coupon</mat-label>
-                <input matInput>
+                <input matInput />
               </mat-form-field>
             </div>
           </div>
@@ -140,7 +178,7 @@ import {ProductCard} from '../components/molecules/product-card/product-card';
             <div class="preview">
               <mat-form-field appearance="outline" class="search">
                 <mat-label>Search By</mat-label>
-                <input matInput placeholder="Placeholder">
+                <input matInput placeholder="Placeholder" />
                 <mat-icon class="ms-2" matPrefix>search</mat-icon>
               </mat-form-field>
             </div>
@@ -170,7 +208,7 @@ import {ProductCard} from '../components/molecules/product-card/product-card';
 
       <section class="mb-10">
         <h2 class="section-title">Divider</h2>
-        <app-divider/>
+        <app-divider />
       </section>
       <!-- ── LOGOS ── -->
       <section class="mb-10">
@@ -180,14 +218,14 @@ import {ProductCard} from '../components/molecules/product-card/product-card';
             <span class="label">app-logo</span>
             <span class="variant">icon only</span>
             <div class="preview">
-              <app-logo/>
+              <app-logo />
             </div>
           </div>
           <div class="row">
             <span class="label">app-logo-text</span>
             <span class="variant">logo + wordmark</span>
             <div class="preview">
-              <app-logo-text/>
+              <app-logo-text />
             </div>
           </div>
         </div>
@@ -198,7 +236,7 @@ import {ProductCard} from '../components/molecules/product-card/product-card';
         <h2 class="section-title">Buttons — matButton="filled"</h2>
         <div class="rows">
           <span class="label">Category Squared Button</span>
-          <app-category-squared-button/>
+          <app-category-squared-button />
 
           <div class="row">
             <span class="label">matButton + text</span>
@@ -246,16 +284,15 @@ import {ProductCard} from '../components/molecules/product-card/product-card';
       <section class="mb-10">
         <h2 class="section-title">Buttons — matButton="filled"</h2>
         <div class="rows">
-
           <div class="row">
             <span class="label">filled + btn-pill + w-full</span>
             <span class="variant">checkout / wide</span>
             <div class="preview">
               <button matButton="filled" class="w-full btn-pill space-between">
-                  <span style="display:flex; align-items:center; gap:8px;">
-                    <mat-icon>payment</mat-icon>
-                    Checkout
-                  </span>
+                <span style="display:flex; align-items:center; gap:8px;">
+                  <mat-icon>payment</mat-icon>
+                  Checkout
+                </span>
                 <span>$120.00</span>
               </button>
             </div>
@@ -307,7 +344,7 @@ import {ProductCard} from '../components/molecules/product-card/product-card';
             <span class="label">filled + btn-sign</span>
             <span class="variant">OAuth / Google</span>
             <div class="preview">
-              <app-signin-button type="google"/>
+              <app-signin-button type="google" />
             </div>
           </div>
 
@@ -315,7 +352,7 @@ import {ProductCard} from '../components/molecules/product-card/product-card';
             <span class="label">filled + btn-sign</span>
             <span class="variant">OAuth / Meta</span>
             <div class="preview">
-              <app-signin-button type="meta"/>
+              <app-signin-button type="meta" />
             </div>
           </div>
 
@@ -406,7 +443,6 @@ import {ProductCard} from '../components/molecules/product-card/product-card';
               </button>
             </div>
           </div>
-
         </div>
       </section>
 
@@ -414,7 +450,6 @@ import {ProductCard} from '../components/molecules/product-card/product-card';
       <section class="mb-10">
         <h2 class="section-title">Buttons — matButton="outlined"</h2>
         <div class="rows">
-
           <div class="row">
             <span class="label">outlined + btn-sm</span>
             <span class="variant">sm / location</span>
@@ -455,7 +490,6 @@ import {ProductCard} from '../components/molecules/product-card/product-card';
               <button matButton="outlined">Outlined button</button>
             </div>
           </div>
-
         </div>
       </section>
 
@@ -484,9 +518,12 @@ import {ProductCard} from '../components/molecules/product-card/product-card';
             <span class="label">matFab extended</span>
             <span class="variant">toggle / active</span>
             <div class="preview">
-              <button matFab extended
-                      [class.active]="activeTab() === 'phone'"
-                      (click)="toggleActiveTab()">
+              <button
+                matFab
+                extended
+                [class.active]="activeTab() === 'phone'"
+                (click)="toggleActiveTab()"
+              >
                 <mat-icon>phone</mat-icon>
                 Phone
               </button>
@@ -494,9 +531,7 @@ import {ProductCard} from '../components/molecules/product-card/product-card';
           </div>
         </div>
       </section>
-
     </div>
-
   `,
   styles: `
     .section-title {
@@ -546,10 +581,10 @@ import {ProductCard} from '../components/molecules/product-card/product-card';
       align-items: center;
       gap: 8px;
       flex-wrap: wrap;
-    }`,
+    }
+  `,
 })
 export default class Dev {
-
   value!: Date;
 
   isMdDevice = signal(false);
@@ -559,18 +594,16 @@ export default class Dev {
     bpo
       .observe(Breakpoints.md)
       .pipe(takeUntilDestroyed())
-      .subscribe(result => this.isMdDevice.set(result.matches));
+      .subscribe((result) => this.isMdDevice.set(result.matches));
   }
 
-  activeTab = signal("email");
+  activeTab = signal('email');
 
   toggleActiveTab() {
     if (this.activeTab() === 'phone') {
-      this.activeTab.update(at => '');
+      this.activeTab.update((at) => '');
       return;
     }
-    this.activeTab.update(at => 'phone');
-
+    this.activeTab.update((at) => 'phone');
   }
 }
-

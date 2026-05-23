@@ -77,12 +77,12 @@ html {
   );
 
   @include mat.button-toggle-overrides(
-        (
-          text-color: #E2E2E2,
-          divider-color: #E2E2E2,
-          selected-state-background-color: var(--color-primary-blur),
-          selected-state-text-color: var(--color-primary)
-        )
+      (
+        text-color: #E2E2E2,
+        divider-color: #E2E2E2,
+        selected-state-background-color: var(--color-primary-blur),
+        selected-state-text-color: var(--color-primary)
+      )
   );
 
   @include mat.form-field-overrides((
@@ -155,20 +155,20 @@ body {
 
 button[matButton='text'].danger {
   @include mat.button-overrides(
-        (
-          text-label-text-color: #AB2538,
-          text-label-text-size: 14px
-        )
+      (
+        text-label-text-color: #AB2538,
+        text-label-text-size: 14px
+      )
   )
 }
 
-mat-form-field.rounded{
+mat-form-field.rounded {
   @include mat.form-field-overrides((
     outlined-container-shape: 24px,
   ))
 }
 
-mat-form-field.search{
+mat-form-field.search {
   @include mat.form-field-overrides((
     outlined-container-shape: 12px,
     container-height: 48px,
@@ -424,4 +424,19 @@ mat-sidenav {
   gap: 1rem;
 }
 
+//Styles for the buttons inside the side cart
+button[matIconButton].sidecart-button {
+  @include mat.icon-button-overrides((
+    state-layer-size: 32px,
+    icon-color: var(--color-primary),
+  ));
+}
+
+button[matButton='text'].sidecart-button {
+  @include mat.button-overrides((
+    text-label-text-size: 12px,
+    text-label-text-weight: var(--font-weight-semibold),
+    text-container-height: 20px
+  ))
+}
 

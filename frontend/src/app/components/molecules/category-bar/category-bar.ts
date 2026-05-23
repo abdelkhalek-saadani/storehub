@@ -9,8 +9,7 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
   imports: [
     CategorySquaredButton,
     MatChip,
-    MatChipAvatar,
-    MatChipSet
+    MatChipAvatar
   ],
   template: `
     <div class="flex flex-col items-stretch p-4 md:flex-row md:justify-center md:p-3">

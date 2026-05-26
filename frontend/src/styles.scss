@@ -11,6 +11,7 @@
 @theme {
   --color-primary: rgba(72, 158, 255, 1);
   --color-primary-blur: rgba(72, 158, 255, 0.1);
+  --color-mat-sys-outline: var(--mat-sys-outline);
 }
 
 html {
@@ -440,3 +441,9 @@ button[matButton='text'].sidecart-button {
   ))
 }
 
+// Added this to be able to resize the input width
+// As of intl-tel-input/angular version 28.0.7 the input is nested in a div that has
+// .iti class
+intl-tel-input .iti {
+  width: 100%;
+}

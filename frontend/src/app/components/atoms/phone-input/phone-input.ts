@@ -1,26 +1,34 @@
 import { Component } from '@angular/core';
-import IntlTelInput from "@intl-tel-input/angular";
-import "intl-tel-input/styles";
+import IntlTelInput from '@intl-tel-input/angular';
+import 'intl-tel-input/styles';
 
 @Component({
   selector: 'app-phone-input',
   imports: [IntlTelInput],
   template: `
     <intl-tel-input
-      [inputAttributes]="{  'class':'h-[52px] ' +
-                                    'rounded-lg ' +
-                                     'text-base ' +
-                                      'border ' +
-                                       'border-gray-300 ' +
-                                        'focus:border-blue-500 ' +
-                                         'focus:border-2 ' +
-                                          'focus:outline-none '}"
-      class="mt-6 w-full block flex items-center justify-center"
+      [inputAttributes]="{
+        class:
+          'h-[52px] ' +
+          'rounded-lg ' +
+          'text-base ' +
+          'border ' +
+          'border-mat-sys-outline ' +
+          'focus:border-blue-500 ' +
+          'focus:border-2 ' +
+          'focus:outline-none',
+      }"
+      class="w-full block flex items-center justify-center"
       initialCountry="tn"
-      [loadUtils]="loadUtils"></intl-tel-input>
+      [loadUtils]="loadUtils"
+    ></intl-tel-input>
   `,
-  styles: ``,
+  styles: `
+    intl-tel-input .iti {
+      width: 100%;
+    }
+  `,
 })
 export class PhoneInput {
-  loadUtils = () => import("intl-tel-input/utils");
+  loadUtils = () => import('intl-tel-input/utils');
 }

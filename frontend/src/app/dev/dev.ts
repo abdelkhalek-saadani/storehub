@@ -37,6 +37,8 @@ import { Breakpoints } from '@core/constants/breakpoints';
 import { ProductCard } from '../components/molecules/product-card/product-card';
 import { MatCardImage } from '@angular/material/card';
 import { CartItem } from '../components/molecules/cart-item/cart-item';
+import { CheckoutForm } from '../components/molecules/checkout-form/checkout-form';
+import { ReviewOrder } from '../component/molecules/review-order/review-order';
 
 @Component({
   selector: 'app-dev',
@@ -74,12 +76,21 @@ import { CartItem } from '../components/molecules/cart-item/cart-item';
     CategoryBar,
     ProductCard,
     CartItem,
+    CheckoutForm,
+    ReviewOrder,
   ],
   template: `
     <div class="catalog p-6 font-sans">
       <section class="mb-10">
         <h2 class="section-title">Components</h2>
         <div class="rows">
+          <span class="label">Order Expansion Panel</span>
+          <app-review-order />
+
+          <span class="label">Checkout Form</span>
+
+          <app-checkout-form />
+
           <span class="label">Cart Item</span>
 
           <app-cart-item />

@@ -362,8 +362,17 @@ button[matIconButton] {
       )
   );
 
-  &.bg-primary {
+  // Added these styles because there is no material token to override the background color of an icon button (Material v20)
+  &.add {
     background-color: var(--color-primary);
+  }
+
+  &.remove {
+    background-color: var(--color-primary);
+  }
+
+  &.delete {
+    background-color: #CFCACA;
   }
 }
 

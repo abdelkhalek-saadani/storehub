@@ -13,7 +13,7 @@ import { MatProgressBar } from '@angular/material/progress-bar';
           <mat-progress-bar mode="determinate" value="50"></mat-progress-bar>
           <span class="font-medium text-sm">Free Delivery</span>
         </div>
-        <div class="flex flex-col gap-4 mb-4 border-b border-[#F8F7F8]">
+        <div class="flex flex-col gap-4 pb-4 border-b border-[#F8F7F8]">
           <div class="font-medium text-lg">Order Summary</div>
           <div>
             <div class="flex flex-row justify-between">

@@ -40,6 +40,7 @@ import { CartItem } from '../components/molecules/cart-item/cart-item';
 import { CheckoutForm } from '../components/molecules/checkout-form/checkout-form';
 import { ReviewOrder } from '../component/molecules/review-order/review-order';
 import { CheckoutDetails } from '../components/molecules/checkout-details/checkout-details';
+import { WishlistProductCard } from '../components/molecules/wishlist-product-card/wishlist-product-card';
 
 @Component({
   selector: 'app-dev',
@@ -80,12 +81,16 @@ import { CheckoutDetails } from '../components/molecules/checkout-details/checko
     CheckoutForm,
     ReviewOrder,
     CheckoutDetails,
+    WishlistProductCard,
   ],
   template: `
     <div class="catalog p-6 font-sans">
       <section class="mb-10">
         <h2 class="section-title">Components</h2>
         <div class="rows">
+          <span class="label">Wishlist Product Card</span>
+          <app-wishlist-product-card />
+
           <span class="label">Checkout Details</span>
           <app-checkout-details />
 

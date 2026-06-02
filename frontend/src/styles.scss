@@ -31,6 +31,13 @@ html {
         density: 0,
       )
   );
+  @include mat.progress-bar-overrides(
+        (
+          active-indicator-color: var(--color-primary),
+          track-color: #FAF8F9,
+          track-shape: 99 9px
+        )
+  );
   @include mat.expansion-overrides(
         (
           container-background-color: #F6FAFF,
@@ -57,6 +64,7 @@ html {
         text-container-shape: 6px,
         tonal-container-shape: 6px,
         text-horizontal-padding: 12px,
+        text-with-icon-horizontal-padding: 0,
         tonal-horizontal-padding: 12px,
         text-container-height: 36px,
         tonal-container-height: 36px,
@@ -453,3 +461,5 @@ button[matButton='text'].sidecart-button {
 intl-tel-input .iti {
   width: 100%;
 }
+
+

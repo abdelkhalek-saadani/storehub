@@ -39,6 +39,7 @@ import { MatCardImage } from '@angular/material/card';
 import { CartItem } from '../components/molecules/cart-item/cart-item';
 import { CheckoutForm } from '../components/molecules/checkout-form/checkout-form';
 import { ReviewOrder } from '../component/molecules/review-order/review-order';
+import { CheckoutDetails } from '../components/molecules/checkout-details/checkout-details';
 
 @Component({
   selector: 'app-dev',
@@ -78,12 +79,16 @@ import { ReviewOrder } from '../component/molecules/review-order/review-order';
     CartItem,
     CheckoutForm,
     ReviewOrder,
+    CheckoutDetails,
   ],
   template: `
     <div class="catalog p-6 font-sans">
       <section class="mb-10">
         <h2 class="section-title">Components</h2>
         <div class="rows">
+          <span class="label">Checkout Details</span>
+          <app-checkout-details />
+
           <span class="label">Order Expansion Panel</span>
           <app-review-order />
 
@@ -300,7 +305,7 @@ import { ReviewOrder } from '../component/molecules/review-order/review-order';
             <span class="variant">checkout / wide</span>
             <div class="preview">
               <button matButton="filled" class="w-full btn-pill space-between">
-                <span style="display:flex; align-items:center; gap:8px;">
+                <span class="flex items-center gap-2">
                   <mat-icon>payment</mat-icon>
                   Checkout
                 </span>

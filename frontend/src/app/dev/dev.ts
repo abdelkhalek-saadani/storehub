@@ -42,6 +42,7 @@ import { ReviewOrder } from '../component/molecules/review-order/review-order';
 import { CheckoutDetails } from '../components/molecules/checkout-details/checkout-details';
 import { WishlistProductCard } from '../components/molecules/wishlist-product-card/wishlist-product-card';
 import { OrderConfirmation } from '../components/molecules/order-confirmation/order-confirmation';
+import { OrderTracking } from '../components/molecules/order-tracking/order-tracking';
 
 @Component({
   selector: 'app-dev',
@@ -84,12 +85,16 @@ import { OrderConfirmation } from '../components/molecules/order-confirmation/or
     CheckoutDetails,
     WishlistProductCard,
     OrderConfirmation,
+    OrderTracking,
   ],
   template: `
     <div class="catalog p-6 font-sans">
       <section class="mb-10">
         <h2 class="section-title">Components</h2>
         <div class="rows">
+          <span class="label">Order Tracking</span>
+          <app-order-tracking />
+
           <span class="label">Order Confirmation Component</span>
 
           <app-order-confirmation state="success" />

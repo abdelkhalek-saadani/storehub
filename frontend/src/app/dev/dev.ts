@@ -44,6 +44,7 @@ import { WishlistProductCard } from '../components/molecules/wishlist-product-ca
 import { OrderConfirmation } from '../components/molecules/order-confirmation/order-confirmation';
 import { OrderTracking } from '../components/molecules/order-tracking/order-tracking';
 import { Gallery } from '../components/molecules/gallery/gallery';
+import { NavigationTestSchematicComponent } from '../components/navigation-test-schematic/navigation-test-schematic.component';
 
 @Component({
   selector: 'app-dev',
@@ -88,6 +89,7 @@ import { Gallery } from '../components/molecules/gallery/gallery';
     OrderConfirmation,
     OrderTracking,
     Gallery,
+    NavigationTestSchematicComponent,
   ],
   template: `
     <div class="catalog p-6 font-sans">

@@ -187,8 +187,10 @@ mat-form-field.search {
   @include mat.form-field-overrides((
     outlined-container-shape: 12px,
     container-height: 48px,
+    container-vertical-padding:0px,
     outlined-label-text-weight: var(--font-weight-regular),
     outlined-label-text-size: 14px,
+    container-text-line-height: 14px,
     leading-icon-color: var(--color-primary),
   ))
 }
@@ -374,6 +376,18 @@ button[matIconButton] {
   &.delete {
     background-color: #CFCACA;
   }
+
+  &.background-primary {
+    background-color: var(--color-primary);
+  }
+}
+
+button[matIconButton].menu {
+  @include mat.icon-button-overrides(
+      (
+        icon-color: #707070,
+      )
+  );
 }
 
 button[matIconButton].danger {

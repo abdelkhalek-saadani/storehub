@@ -1,52 +1,67 @@
-import {Routes} from '@angular/router';
+import { Routes } from '@angular/router';
 import Layout from './layout/layout/layout';
 
 export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'dev'
+    redirectTo: 'dev',
   },
   {
     path: 'dev',
     pathMatch: 'full',
-    loadComponent: () => import('./dev/dev')
+    loadComponent: () => import('./dev/dev'),
+  },
+  {
+    path: 'login',
+    pathMatch: 'full',
+    loadComponent: () => import('./pages/login/login'),
   },
 
   {
     path: '',
     loadComponent: () => import('./layout/layout/layout'),
     children: [
+      {
+        path: 'products',
+        loadComponent: () => import('./pages/product-explorer/product-explorer'),
+      },
+    ],
+  },
 
+  {
+    path: 'legacy',
+    loadComponent: () => import('./layout/layout/layout'),
+    children: [
       {
         path: 'products',
         pathMatch: 'full',
-        redirectTo: 'products/all'
+        redirectTo: 'products/all',
       },
       {
         path: 'products/:category',
-        loadComponent: () => import('./pages/products-grid/products-grid')
+        loadComponent: () => import('./pages/products-grid/products-grid'),
       },
       {
         path: 'wishlist',
-        loadComponent: () => import('./pages/my-wishlist/my-wishlist')
+        loadComponent: () => import('./pages/my-wishlist/my-wishlist'),
       },
       {
         path: 'cart',
-        loadComponent: () => import('./pages/cart/cart')
+        loadComponent: () => import('./pages/cart/cart'),
       },
       {
         path: 'checkout',
-        loadComponent: () => import('./pages/checkout/checkout')
+        loadComponent: () => import('./pages/checkout/checkout'),
       },
       {
         path: 'order-success',
-        loadComponent: () => import('./pages/order-success/order-success')
+        loadComponent: () => import('./pages/order-success/order-success'),
       },
       {
         path: 'product/:productId',
-        loadComponent: () => import('./pages/product-details/product-details')
-      }
-    ]
-  }
+        loadComponent: () => import('./pages/product-details/product-details'),
+      },
+    ],
+  },
 ];

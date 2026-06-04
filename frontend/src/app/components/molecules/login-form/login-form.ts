@@ -29,8 +29,8 @@ import { MatSuffix } from '@angular/material/form-field';
   ],
   template: `
     <div class="flex flex-col max-w-[418px] gap-4">
-      <div class="p-6">
-        <mat-tab-group dynamicHeight [selectedIndex]="1">
+      <div class="p-6 bg-white rounded-2xl border border-[#F8F7F8]">
+        <mat-tab-group dynamicHeight [selectedIndex]="0">
           <mat-tab label="Email">
             <form>
               <mat-form-field class="mt-6">
@@ -49,7 +49,7 @@ import { MatSuffix } from '@angular/material/form-field';
                   <mat-icon [fontIcon]="isVisible() ? 'visibility_off' : 'visibility'"></mat-icon>
                 </button>
               </mat-form-field>
-              <button matButton="filled" class="w-full mt-8">
+              <button matButton="filled" class="w-full mt-8" disabled>
                 Continue
                 <mat-icon iconPositionEnd>arrow_forward</mat-icon>
               </button>

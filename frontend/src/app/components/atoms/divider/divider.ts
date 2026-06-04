@@ -5,13 +5,11 @@ import { Component } from '@angular/core';
   imports: [],
   template: `
     <div class="flex items-center gap-2">
-      <hr class="flex-1 border-border">
-      <span class="text-sm text-muted">OR</span>
-      <hr class="flex-1 border-border">
+      <hr class="flex-1 text-white" />
+      <span class="text-sm text-muted text-white">OR</span>
+      <hr class="flex-1 text-white" />
     </div>
   `,
   styles: ``,
 })
-export class Divider {
-
-}
+export class Divider {}

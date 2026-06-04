@@ -1,7 +1,7 @@
 // src/app/features/offers/offers-slider/offers-slider.component.ts
 import { Component, input, AfterViewInit, ElementRef, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Offer } from '../../shared/models/Offer';
+import { Offer } from '@shared/models/Offer';
 import Swiper from 'swiper';
 import { Pagination, A11y } from 'swiper/modules';
 
@@ -27,8 +27,8 @@ import { Pagination, A11y } from 'swiper/modules';
                   loading="lazy"
                 />
                 <span class="absolute bottom-4 left-4 text-white text-base font-medium">
-                    {{ offer.label }}
-                  </span>
+                  {{ offer.label }}
+                </span>
               </a>
             </div>
           }

@@ -1,51 +1,28 @@
-import {Component, computed, inject, input} from '@angular/core';
-import {BackButton} from '../../components/back-button/back-button';
-import {ProductStore} from '../../product-store';
-import {ProductInfo} from '../../components/product-info/product-info';
-import {ViewReviews} from '../../components/view-reviews/view-reviews';
-import {Product} from '../../models/Product';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-product-details',
-  imports: [
-    BackButton,
-    ProductInfo,
-    ViewReviews
-  ],
+  imports: [],
+  host: {
+    class: 'min-h-screen flex flex-col px-4 bg-[#F8F8F8]',
+  },
   template: `
-    <div class="mx-auto max-w-[1200px] py-6">
-      <app-back-button
-        class="block mb-6"
-        [navigateTo]="'/products/' + store.category()"
-        label="Back to Products"
-      />
-      <div class="flex gap-8 mb-8">
-        <img class="w-[500px] h-[550px] object-cover rounded-lg"
-             [style.view-transition-name]="'product-image-2-' + product()!.id"
-             [src]="product()!.imageUrl"
-             [alt]="product()!.name">
-        <div class="flex-1">
-          <app-product-info [product]="product()!"/>
+    <div class="flex flex-col">
+      <div class="flex justify-between items-center">
+        <div>back arrow</div>
+        <div>add to wishlist</div>
+      </div>
+      <div class="flex flex-col">
+        <div>Gallery</div>
+        <div>
+          <div>Title</div>
+          <div>Description</div>
+          <div>Actions</div>
         </div>
       </div>
-      <app-view-reviews [productId]="productId()" [reviews]="reviews()"/>
+      <div>reviews</div>
     </div>
   `,
   styles: ``,
 })
-export default class ProductDetails {
-  productId = input.required<string>();
-  store = inject(ProductStore);
-  product = computed(
-    () => this.store.products().find((p) => p.id == this.productId()));
-
-  reviews = computed(
-    () => this.product()!.reviews.toSorted((a, b) => Date.parse(b.date) - Date.parse(a.date))
-  )
-
-  constructor() {
-    this.store.setProductSeoTags(this.product);
-  }
-
-
-}
+export default class ProductDetails {}

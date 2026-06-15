@@ -26,6 +26,10 @@ export const routes: Routes = [
         path: 'products',
         loadComponent: () => import('./pages/product-explorer/product-explorer'),
       },
+      {
+        path: 'product/:productId',
+        loadComponent: () => import('./pages/product-details/product-details'),
+      },
     ],
   },
 
@@ -60,7 +64,7 @@ export const routes: Routes = [
       },
       {
         path: 'product/:productId',
-        loadComponent: () => import('./pages/product-details/product-details'),
+        loadComponent: () => import('./pages/legacy/product-details/product-details'),
       },
     ],
   },

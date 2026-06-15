@@ -6,7 +6,10 @@
   "compilerOptions": {
     "paths": {
       "@core/*": [
-        "./src/app/core/*"
+      "./src/app/core/*"
+      ],
+      "@components/*": [
+        "./src/app/components/*"
       ],
       "@shared/*": [
         "./src/app/shared/*"

@@ -3,18 +3,20 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { OffersSection } from '../../components/molecules/offers-section';
 import { CategoryBar } from '../../components/molecules/category-bar/category-bar';
+import { BestSellerSection } from './best-seller-section/best-seller-section';
+import { ProductsSection } from './products-section/products-section';
 
 @Component({
   selector: 'app-product-explorer',
-  imports: [OffersSection, CategoryBar],
+  imports: [OffersSection, CategoryBar, BestSellerSection, ProductsSection],
   host: {
-    class: 'min-h-screen flex flex-col px-4',
+    class: 'min-h-screen flex flex-col px-4 bg-[#F8F8F8]',
   },
   template: `
     <app-offers-section />
     <app-category-bar />
-    <div>Best Seller Section</div>
-    <div>Product Section</div>
+    <app-best-seller-section />
+    <app-products-section />
   `,
 })
 export default class ProductExplorerPage {

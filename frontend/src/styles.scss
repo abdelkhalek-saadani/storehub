@@ -357,6 +357,16 @@ button[matButton='outlined'].danger {
   );
 }
 
+button[matIconButton].scroll-arrow {
+  @include mat.icon-button-overrides(
+      (
+        icon-color: #292D32,
+      )
+  );
+  background-color: #F8F7F8;
+  border: #F0EEF0 solid 1px;
+}
+
 button[matIconButton] {
   @include mat.icon-button-overrides(
       (

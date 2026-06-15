@@ -1,22 +1,21 @@
-import {Component, signal} from '@angular/core';
-import {CategorySquaredButton} from '../../atoms/category-squared-button/category-squared-button';
-import {MatChip, MatChipAvatar, MatChipSet} from '@angular/material/chips';
-import {BreakpointObserver} from '@angular/cdk/layout';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import { Component, signal } from '@angular/core';
+import { CategorySquaredButton } from '../../atoms/category-squared-button/category-squared-button';
+import { MatChip, MatChipAvatar, MatChipSet } from '@angular/material/chips';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-category-bar',
-  imports: [
-    CategorySquaredButton,
-    MatChip,
-    MatChipAvatar
-  ],
+  imports: [CategorySquaredButton, MatChip, MatChipAvatar],
   template: `
-    <div class="flex flex-col items-stretch p-4 md:flex-row md:justify-center md:p-3">
+    <div
+      class="flex flex-col items-stretch p-4 md:flex-row md:justify-center md:p-3
+        md:p-3 md:rounded-lg md:border md:border-[#F0EEF0] md:bg-white md:my-6"
+    >
       <div class="flex gap-2 justify-around md:gap-3 w-full">
-        @for (i of [].constructor(5); track $index) {
+        @for (i of [].constructor(4); track $index) {
           @if (isSquaredButton()) {
-            <app-category-squared-button/>
+            <app-category-squared-button />
           } @else {
             <mat-chip class="category-chip">
               <img
@@ -27,13 +26,11 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
             </mat-chip>
           }
         }
-
       </div>
       <div class="flex gap-2 justify-around md:gap-3 w-full">
-
-        @for (i of [].constructor(5); track $index) {
+        @for (i of [].constructor(4); track $index) {
           @if (isSquaredButton()) {
-            <app-category-squared-button/>
+            <app-category-squared-button />
           } @else {
             <mat-chip class="category-chip">
               <img
@@ -44,7 +41,6 @@ import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
             </mat-chip>
           }
         }
-
       </div>
     </div>
   `,
@@ -57,6 +53,6 @@ export class CategoryBar {
     bpo
       .observe('(max-width: 1040px)')
       .pipe(takeUntilDestroyed())
-      .subscribe(result => this.isSquaredButton.set(result.matches));
+      .subscribe((result) => this.isSquaredButton.set(result.matches));
   }
 }

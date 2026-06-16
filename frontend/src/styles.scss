@@ -177,6 +177,17 @@ button[matButton='text'].danger {
   )
 }
 
+mat-expansion-panel.nav-list {
+  @include mat.expansion-overrides(
+      (
+        container-elevation-shadow: none,
+        container-background-color: none,
+        header-collapsed-state-height: 40px,
+        header-expanded-state-height: 40px,
+      )
+  );
+}
+
 mat-form-field.rounded {
   @include mat.form-field-overrides((
     outlined-container-shape: 24px,

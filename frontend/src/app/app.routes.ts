@@ -23,6 +23,14 @@ export const routes: Routes = [
     loadComponent: () => import('./layout/layout/layout'),
     children: [
       {
+        path: 'payment-success',
+        loadComponent: () => import('./pages/payment-success/payment-success'),
+      },
+      {
+        path: 'payment-failure',
+        loadComponent: () => import('./pages/payment-failed/payment-failed'),
+      },
+      {
         path: 'products',
         loadComponent: () => import('./pages/products/products'),
       },

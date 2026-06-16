@@ -61,7 +61,7 @@ import { MatDialogClose } from '@angular/material/dialog';
               <span class="font-semibold text-lg">Filters</span>
               <div class="flex flex-col gap-3">
                 <div class="flex flex-col">
-                  <span class="p-3 pb-2 font-normal text-[#71717A] text-[16px]"
+                  <span class="p-3 pb-2 font-normal text-[#71717A] text-base"
                     >Filter products by category</span
                   >
                   <mat-checkbox>Cat1</mat-checkbox>
@@ -69,7 +69,7 @@ import { MatDialogClose } from '@angular/material/dialog';
                   <mat-divider></mat-divider>
                 </div>
                 <div class="flex flex-col">
-                  <span class="p-3 pb-2 font-normal text-[#71717A] text-[16px]"
+                  <span class="p-3 pb-2 font-normal text-[#71717A] text-base"
                     >Filter products by category</span
                   >
                   <mat-checkbox>Cat1</mat-checkbox>
@@ -104,8 +104,6 @@ export default class Layout implements AfterViewInit {
   ngAfterViewInit() {
     this.sidenavService.setSidenav(this.sidenav);
     // To remove the flash when rendering
-    // this.sidenav.close();
-    // Added below and removed above just for testing
-    this.sidenav.open();
+    this.sidenav.close();
   }
 }

@@ -89,7 +89,6 @@ import { NavigationTestSchematicComponent } from '../components/navigation-test-
     OrderConfirmation,
     OrderTracking,
     Gallery,
-    NavigationTestSchematicComponent,
   ],
   template: `
     <div class="catalog p-6 font-sans">

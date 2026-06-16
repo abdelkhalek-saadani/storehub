@@ -204,6 +204,13 @@ mat-chip.category-chip {
   ))
 }
 
+button[matButton='filled'].btn-filter {
+  @include mat.button-overrides((
+    filled-container-color: #DDDDDDDD,
+    filled-label-text-color: black
+  ))
+}
+
 // Move this to the component scss file when creating components
 button[matButton='filled'].btn-lg {
   @include mat.button-overrides(
@@ -378,8 +385,14 @@ button[matIconButton].back-button {
   border: #F0EEF0 solid 1px;
 }
 
-
-button[matIconButton].scroll-arrow {
+button[matIconButton].btn-close {
+  @include mat.icon-button-overrides(
+      (
+        icon-color: #292D32,
+      )
+  )
+}
+button[matIconButton]:is(.scroll-arrow, .btn-filter) {
   @include mat.icon-button-overrides(
       (
         icon-color: #292D32,
@@ -490,8 +503,15 @@ mat-sidenav {
 //Responsive grid
 .responsive-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 1rem;
+}
+
+//Medium Screen Responsive grid
+.md-responsive-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 1.5rem;
 }
 
 //Styles for the buttons inside the side cart

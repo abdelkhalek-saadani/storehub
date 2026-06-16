@@ -1,16 +1,14 @@
 import { Component, inject, signal } from '@angular/core';
 import { MatToolbar } from '@angular/material/toolbar';
-import { MatIcon, MatIconModule } from '@angular/material/icon';
+import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatIconButton } from '@angular/material/button';
-import { HeaderActions } from '../header-actions/header-actions';
 import { ProductStore } from '../../product-store';
 import { SidenavService } from '../../services/Sidenav';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
-import { MatInput, MatLabel } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { SearchBar } from './search-bar/search-bar';
-import { LogoText } from '../../components/atoms/logo-text/logo-text';
+import { LogoText } from '@components/atoms/logo-text/logo-text';
 import { LocationButton } from './location-button/location-button';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatDivider } from '@angular/material/divider';
@@ -18,14 +16,9 @@ import { MatDivider } from '@angular/material/divider';
 @Component({
   selector: 'app-header',
   imports: [
-    MatToolbar,
     MatIcon,
     MatIconButton,
-    HeaderActions,
     MatButton,
-    MatFormField,
-    MatInput,
-    MatLabel,
     MatFormFieldModule,
     SearchBar,
     LogoText,

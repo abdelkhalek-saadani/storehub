@@ -9,7 +9,7 @@ import { ScrollArrows } from '../scroll-arrows/scroll-arrows';
 
 @Component({
   selector: 'app-best-seller-section',
-  imports: [ProductCard, MatButton, MatIcon, NgClass, MatIconButton, ScrollArrows],
+  imports: [ProductCard, MatButton, MatIcon, NgClass, ScrollArrows],
   template: `
     <div
       class="flex flex-col gap-4 md:gap-6 md:p-6 md:rounded-lg md:border md:border-[#F0EEF0] md:bg-white"

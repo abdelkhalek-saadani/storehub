@@ -19,13 +19,4 @@ import { ProductsSection } from './products-section/products-section';
     <app-products-section />
   `,
 })
-export default class ProductExplorerPage {
-  isMobile = signal(false);
-
-  constructor(bpo: BreakpointObserver) {
-    bpo
-      .observe([Breakpoints.XSmall, Breakpoints.Small])
-      .pipe(takeUntilDestroyed())
-      .subscribe((res) => this.isMobile.set(res.matches));
-  }
-}
+export default class ProductExplorerPage {}

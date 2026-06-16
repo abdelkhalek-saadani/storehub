@@ -1,13 +1,11 @@
-import {Component, input} from '@angular/core';
-import {MatIcon} from '@angular/material/icon';
+import { Component, input } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-star-rating',
-  imports: [
-    MatIcon
-  ],
+  imports: [MatIcon],
   template: `
-    <div class="flex items-center">
+    <div class="flex flex-col md:flex-row md:items-center">
       <div class="flex items-center mr-2">
         @for (s of stars; track $index) {
           <mat-icon
@@ -18,18 +16,17 @@ import {MatIcon} from '@angular/material/icon';
             star
           </mat-icon>
         }
-        <ng-content/>
       </div>
+      <ng-content />
     </div>
   `,
   styles: ``,
 })
 export class StarRating {
   rate = input<number>();
-  stars : boolean[] = [];
+  stars: boolean[] = [];
 
-  ngOnInit (){
-    this.stars = [1,2,3,4,5].map((i) => this.rate()! >= i);
+  ngOnInit() {
+    this.stars = [1, 2, 3, 4, 5].map((i) => this.rate()! >= i);
   }
-
 }

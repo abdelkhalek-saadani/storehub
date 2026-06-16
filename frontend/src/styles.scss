@@ -346,6 +346,17 @@ button[matButton='outlined'].btn-sm {
   )
 }
 
+button[matButton='outlined'].btn-cancel {
+  @include mat.button-overrides(
+      (
+        outlined-container-shape: 12px,
+        outlined-container-height: 44px,
+        outlined-label-text-weight: var(--font-weight-semibold),
+        outlined-horizontal-padding: 24px
+      )
+  )
+}
+
 
 button[matButton='outlined'].danger {
   @include mat.button-overrides(
@@ -356,6 +367,17 @@ button[matButton='outlined'].danger {
       )
   );
 }
+
+button[matIconButton].back-button {
+  @include mat.icon-button-overrides(
+      (
+        icon-color: #0D0C0D,
+      )
+  );
+  background-color: white;
+  border: #F0EEF0 solid 1px;
+}
+
 
 button[matIconButton].scroll-arrow {
   @include mat.icon-button-overrides(

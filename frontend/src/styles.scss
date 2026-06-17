@@ -345,7 +345,7 @@ button[matButton='filled'].danger {
   border: 1px solid #E43950 !important;
   @include mat.button-overrides(
       (
-        filled-container-height: 38px,
+        filled-container-height: 48px,
         filled-container-shape: 32px,
         filled-label-text-weight: var(--font-weight-regular),
         filled-container-color: #FEF2F3,

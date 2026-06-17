@@ -23,6 +23,10 @@ export const routes: Routes = [
     loadComponent: () => import('./layout/layout/layout'),
     children: [
       {
+        path: 'track-order',
+        loadComponent: () => import('./pages/track-order/track-order'),
+      },
+      {
         path: 'payment-success',
         loadComponent: () => import('./pages/payment-success/payment-success'),
       },

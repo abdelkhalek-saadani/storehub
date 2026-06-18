@@ -23,6 +23,10 @@ export const routes: Routes = [
     loadComponent: () => import('./layout/layout/layout'),
     children: [
       {
+        path: 'wishlist',
+        loadComponent: () => import('./pages/wishlist/wishlist'),
+      },
+      {
         path: 'checkout',
         loadComponent: () => import('./pages/checkout/checkout'),
       },
@@ -68,7 +72,7 @@ export const routes: Routes = [
       },
       {
         path: 'wishlist',
-        loadComponent: () => import('./pages/my-wishlist/my-wishlist'),
+        loadComponent: () => import('./pages/legacy/my-wishlist/my-wishlist'),
       },
       {
         path: 'cart',

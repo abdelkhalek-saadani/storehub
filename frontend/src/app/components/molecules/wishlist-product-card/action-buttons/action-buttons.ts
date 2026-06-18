@@ -8,7 +8,7 @@ import { MatIcon } from '@angular/material/icon';
   template: `
     @if (type() == 'desktop') {
       <div class="flex gap-6 items-center">
-        <button matButton="filled" class="btn-md">
+        <button matButton="filled" class="btn-md whitespace-nowrap">
           <mat-icon> shopping_cart</mat-icon>
           Add To Cart
         </button>

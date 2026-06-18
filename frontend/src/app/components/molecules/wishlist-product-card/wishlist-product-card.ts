@@ -13,11 +13,13 @@ import { ActionButtons } from './action-buttons/action-buttons';
   template: `
     <div class="py-4 flex gap-6 items-center justify-between">
       <div class="flex gap-4 items-center">
-        <div class="rounded-2xl aspect-square overflow-hidden h-21 md:h-51">
+        <div class="w-1/4 rounded-2xl aspect-square overflow-hidden ">
           <img src="product-img-placeholder.jpg" alt="Natural Milk" />
         </div>
-        <div class="flex flex-col gap-2">
-          <span class="font-medium text-sm md:text-2xl text-black-900">Sweet Green Seedless</span>
+        <div class="w-2/4 flex flex-col gap-2">
+          <span class="font-medium text-sm md:text-2xl text-black-900"
+            >Sweet Green Seedless Sweet Green Seedle Sweet Green Seedle</span
+          >
           <span class="font-medium text-xs md:text-sm text-[#555454]">Description</span>
           <div class="flex gap-2">
             <span class="text-lg md:text-2xl font-semibold text-primary">99.99TND</span>
@@ -28,9 +30,9 @@ import { ActionButtons } from './action-buttons/action-buttons';
         </div>
       </div>
       @if (isMdDevice()) {
-        <app-action-buttons type="desktop" />
+        <app-action-buttons type="desktop" class="w-1/4" />
       } @else {
-        <app-action-buttons type="mobile" />
+        <app-action-buttons type="mobile" class="w-1/4" />
       }
     </div>
   `,

@@ -394,6 +394,11 @@ button[matIconButton].back-button {
   );
   background-color: white;
   border: #F0EEF0 solid 1px;
+
+  &.no-border {
+    border: none
+  }
+
 }
 
 button[matIconButton].btn-close {

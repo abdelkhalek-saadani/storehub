@@ -1,80 +1,105 @@
-import {Component, computed, inject} from '@angular/core';
-import {BackButton} from '../../components/back-button/back-button';
-import {MatButton} from '@angular/material/button';
-import {ShippingForm} from '../../components/shipping-form/shipping-form';
-import {PaymentForm} from '../../components/payment-form/payment-form';
-import {SummarizeOrder} from '../../components/summarize-order/summarize-order';
-import {ProductState, ProductStore} from '../../product-store';
-import {CartItem} from '../../models/CartItem';
-import {DecimalPipe} from '@angular/common';
-import {number} from 'zod';
-import {MatTooltip} from '@angular/material/tooltip';
-import {Router} from '@angular/router';
-
+import { Component, signal } from '@angular/core';
+import {
+  MatDatepicker,
+  MatDatepickerInput,
+  MatDatepickerToggle,
+} from '@angular/material/datepicker';
+import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
+import { MatInput, MatSuffix } from '@angular/material/input';
+import {
+  MatTimepicker,
+  MatTimepickerInput,
+  MatTimepickerToggle,
+} from '@angular/material/timepicker';
+import { FormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
+import { MatIcon } from '@angular/material/icon';
+import { ReviewOrder } from '@components/molecules/review-order/review-order';
+import { SummarizeOrder } from '@components/summarize-order/summarize-order';
+import { CheckoutDetails } from '@components/molecules/checkout-details/checkout-details';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { CheckoutForm } from '@components/molecules/checkout-form/checkout-form';
 
 @Component({
   selector: 'app-checkout',
   imports: [
-    BackButton,
-    MatButton,
-    ShippingForm,
-    PaymentForm,
-    SummarizeOrder,
-    DecimalPipe,
-    MatTooltip
+    MatDatepicker,
+    MatLabel,
+    MatDatepickerToggle,
+    MatInput,
+    MatDatepickerInput,
+    MatTimepickerInput,
+    FormsModule,
+    MatTimepicker,
+    MatTimepickerToggle,
+    MatSuffix,
+    MatFormFieldModule,
+    DatePipe,
+    MatIcon,
+    ReviewOrder,
+    CheckoutDetails,
+    CheckoutForm,
   ],
+  host: {
+    class:
+      'min-h-screen flex flex-col md:flex-row gap-6 md:gap-12 px-6 md:pt-10 md:px-20 bg-[#FEFCFE]',
+  },
   template: `
-    <div class="mx-auto max-w-[1200px] py-6">
-      <app-back-button navigateTo="/cart" class="block mb-4" label="Back to Cart"/>
-      <h1 class="text-3xl font-extrabold mb-4">Checkout</h1>
-      <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        <div class="lg:col-span-3 flex flex-col gap-6">
-          <app-shipping-form/>
-          <app-payment-form/>
+    <div
+      class="md:w-2/3 flex flex-col gap-6 md:p-6 md:gap-4 md:bg-white md:border md:border-[#F0EEF0] md:rounded-xl"
+    >
+      <div class="flex justify-between items-center mt-3">
+        <div class="flex gap-2 items-center text-lg md:text-[22px] font-semibold">
+          <div class="text-3xl text-primary leading-8">
+            <mat-icon [inline]="true">shopping_cart_checkout</mat-icon>
+          </div>
+          <span class="">Checkout</span>
         </div>
-        <div class="lg:col-span-2">
-          <app-summarize-order>
-
-            <!-- Order Lines -->
-            <ng-container orderLines>
-              <div class="space-y-2 border-b pb-4">
-                @for (item of cartItems; track item.product.id) {
-                  <div class="text-sm flex justify-between">
-                    <span>{{ item.product.name }} x {{ item.qty }}</span>
-                    <span>\${{ item.product.price * item.qty | number : '1.2-2' }}</span>
-                  </div>
-                }
-              </div>
-            </ng-container>
-
-            <button matButton="filled" class="w-full mt-6 py-3"
-                    [disabled]="!isLoggedIn() || store.isLoading()"
-                    [disabledInteractive]="!isLoggedIn() || store.isLoading()"
-                    [matTooltip]="!isLoggedIn()? 'You need to be logged in before placing an order!': ''"
-                    (click)="placeOrder()">
-              @if (store.isLoading()) {
-                Processing the order...
-              } @else {
-                Place Order
-              }
-            </button>
-
-          </app-summarize-order>
-        </div>
+        @if (value) {
+          <div class="flex gap-1 items-center text-primary text-base">
+            <mat-icon [inline]="true"> date_range</mat-icon>
+            <span>{{ value | date: 'MMM d, h a' }}</span>
+          </div>
+        }
       </div>
+      <div class="flex gap-2 justify-center items-center">
+        <mat-form-field>
+          <mat-label>Delivery Date</mat-label>
+          <input matInput [matDatepicker]="datepicker" [(ngModel)]="value" />
+          <mat-datepicker #datepicker />
+          <mat-datepicker-toggle [for]="datepicker" matSuffix />
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Time Slot</mat-label>
+          <input
+            matInput
+            [matTimepicker]="timepicker"
+            [(ngModel)]="value"
+            [ngModelOptions]="{ updateOn: 'blur' }"
+          />
+          <mat-timepicker #timepicker />
+          <mat-timepicker-toggle [for]="timepicker" matSuffix />
+        </mat-form-field>
+      </div>
+
+      @if (!isMobile()) {
+        <app-checkout-form />
+      }
+      <app-review-order />
     </div>
+    <app-checkout-details class="md:w-1/3" />
   `,
-  styles: ``,
 })
-export default class Checkout {
-  store = inject(ProductStore);
-  cartItems: CartItem[] = this.store.cartItems();
-  isLoggedIn = computed(() => !!this.store.user());
-  protected readonly number = number;
-  router = inject(Router);
-  async placeOrder()
-  {
-    await this.store.placeOrder();
-    this.router.navigate(['/order-success']);
+export default class CheckoutPage {
+  value!: Date;
+  isMobile = signal(false);
+
+  constructor(bpo: BreakpointObserver) {
+    bpo
+      .observe('(max-width: 768px)')
+      .pipe(takeUntilDestroyed())
+      .subscribe((res) => this.isMobile.set(res.matches));
   }
 }

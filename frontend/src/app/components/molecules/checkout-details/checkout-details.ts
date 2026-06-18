@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressBar } from '@angular/material/progress-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { CouponDialog } from '@components/molecules/coupon-dialog/coupon-dialog';
 
 @Component({
   selector: 'app-checkout-details',
@@ -35,7 +37,7 @@ import { MatProgressBar } from '@angular/material/progress-bar';
         </div>
         <div class="py-4 flex border-b border-t border-[#F8F7F8] justify-between items-center">
           <div class="font-medium text-base text-black-900">Coupon</div>
-          <button matButton="text">
+          <button matButton="text" (click)="addCoupon()">
             <mat-icon>add</mat-icon>
             Add Coupon
           </button>
@@ -60,4 +62,10 @@ import { MatProgressBar } from '@angular/material/progress-bar';
   `,
   styles: ``,
 })
-export class CheckoutDetails {}
+export class CheckoutDetails {
+  dialog = inject(MatDialog);
+
+  addCoupon() {
+    this.dialog.open(CouponDialog);
+  }
+}

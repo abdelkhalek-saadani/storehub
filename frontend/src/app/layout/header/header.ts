@@ -12,6 +12,8 @@ import { LogoText } from '@components/atoms/logo-text/logo-text';
 import { LocationButton } from './location-button/location-button';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatDivider } from '@angular/material/divider';
+import { RouterLink } from '@angular/router';
+import { CartSidenav } from '../../services/cart-sidenav';
 
 @Component({
   selector: 'app-header',
@@ -27,6 +29,7 @@ import { MatDivider } from '@angular/material/divider';
     MatDivider,
     MatMenuTrigger,
     MatMenuItem,
+    RouterLink,
   ],
   template: `
     @if (isMobile()) {
@@ -37,7 +40,7 @@ import { MatDivider } from '@angular/material/divider';
           </button>
 
           <app-location-button />
-          <button matIconButton class="background-primary">
+          <button matIconButton class="background-primary" (click)="cartSidenavService.toggle()">
             <mat-icon>shopping_cart</mat-icon>
           </button>
         </div>
@@ -61,11 +64,11 @@ import { MatDivider } from '@angular/material/divider';
           <app-search-bar />
 
           <div class="flex gap-4 items-center">
-            <button matButton="filled" class="btn-pill-sm">
+            <button matButton="filled" class="btn-pill-sm" routerLink="/wishlist">
               <mat-icon>favorite</mat-icon>
               3 Products
             </button>
-            <button matButton="filled" class="btn-pill-sm">
+            <button matButton="filled" class="btn-pill-sm" (click)="cartSidenavService.toggle()">
               <mat-icon>shopping_cart</mat-icon>
               <span>15 TND</span>
               <span class="text-white bg-primary rounded-full p-1 text-sm ms-1">12</span>
@@ -100,6 +103,7 @@ import { MatDivider } from '@angular/material/divider';
 export class Header {
   store = inject(ProductStore);
   sidenavService = inject(SidenavService);
+  cartSidenavService = inject(CartSidenav);
 
   isMobile = signal(false);
 

@@ -3,14 +3,12 @@ import { OrderTracking } from '@components/molecules/order-tracking/order-tracki
 import { ReviewOrder } from '@components/molecules/review-order/review-order';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { CopyText } from '@components/atoms/copy-text/copy-text';
 import { PaymentSummary } from './payment-summary/payment-summary';
 import { LocationSummary } from './location-summary/location-summary';
 import { OrderSummary } from './order-summary/order-summary';
 import { InvoiceDownload } from './invoice-download/invoice-download';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { sign } from 'node:crypto';
 
 @Component({
   selector: 'app-track-order',
@@ -19,12 +17,11 @@ import { sign } from 'node:crypto';
     ReviewOrder,
     MatButton,
     MatIcon,
-    MatIconButton,
-    CopyText,
     PaymentSummary,
     LocationSummary,
     OrderSummary,
     InvoiceDownload,
+    MatIconButton,
   ],
   host: {
     class: 'min-h-screen flex flex-col px-4 pb-10 bg-[#FEFCFE] ',

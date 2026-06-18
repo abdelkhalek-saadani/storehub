@@ -6,7 +6,7 @@ import { MatIcon } from '@angular/material/icon';
   selector: 'app-cart-item',
   imports: [MatButton, MatIcon, MatIconButton],
   template: `
-    <div class="flex flex-col pb-4 gap-3 border-b border-[#F8F7F8]">
+    <div class="flex flex-col pb-4 gap-3">
       <div class="flex flex-row gap-5 items-center">
         <div class="rounded-2xl h-26 aspect-square overflow-hidden">
           <img src="product-img-placeholder.jpg" alt="Natural Milk" />

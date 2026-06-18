@@ -24,7 +24,7 @@ import { Breakpoints } from '@core/constants/breakpoints';
     MatFormFieldModule,
   ],
   template: `
-    <div class="gap-6 p-6 bg-white rounded-b-xl flex flex-col max-w-2xl">
+    <div class="items-center gap-6 bg-white rounded-b-xl flex flex-col max-w-2xl">
       <div class="w-full max-w-[630px] max-h-[420px]">
         <img src="map-placeholder.jpg" class="cover" alt="Map Placeholder" />
       </div>

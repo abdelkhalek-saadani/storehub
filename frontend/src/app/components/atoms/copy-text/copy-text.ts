@@ -1,5 +1,4 @@
 import { Component, inject, input, signal } from '@angular/core';
-import { MatIconButton } from '@angular/material/button';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { Clipboard } from '@angular/cdk/clipboard';
@@ -7,7 +6,7 @@ import { Clipboard } from '@angular/cdk/clipboard';
 @Component({
   selector: 'app-copy-text',
 
-  imports: [MatIconButton, MatIcon, MatTooltip, MatIconModule],
+  imports: [MatIcon, MatTooltip, MatIconModule],
   template: `
     <div
       class="flex items-center gap-1 cursor-pointer text-primary text-[12px]"

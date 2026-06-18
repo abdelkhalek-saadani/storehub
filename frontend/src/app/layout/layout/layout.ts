@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, inject, input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, inject, input, signal, ViewChild } from '@angular/core';
 import { MatDivider, MatListItem, MatNavList } from '@angular/material/list';
 import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
 import { TitleCasePipe } from '@angular/common';
@@ -12,8 +12,14 @@ import {
   MatExpansionPanelTitle,
 } from '@angular/material/expansion';
 import { MatCheckbox } from '@angular/material/checkbox';
-import { MatButton } from '@angular/material/button';
+import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatDialogClose } from '@angular/material/dialog';
+import { CartSidenav } from '../../services/cart-sidenav';
+import { CartItem } from '@components/molecules/cart-item/cart-item';
+import { MatIcon } from '@angular/material/icon';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Cart } from '@components/cart/cart';
 
 @Component({
   selector: 'app-sidenav-container',
@@ -33,6 +39,10 @@ import { MatDialogClose } from '@angular/material/dialog';
     MatCheckbox,
     MatButton,
     MatDialogClose,
+    CartItem,
+    MatIconButton,
+    MatIcon,
+    Cart,
   ],
   template: `
     <app-header class="relative z-10" />
@@ -81,6 +91,11 @@ import { MatDialogClose } from '@angular/material/dialog';
             </div>
           </div>
         </mat-sidenav>
+
+        <mat-sidenav #cartSidenav position="end" class="min-w-[375px] md:min-w-[600px]">
+          <app-cart />
+        </mat-sidenav>
+
         <mat-sidenav-content>
           <router-outlet />
         </mat-sidenav-content>
@@ -92,18 +107,31 @@ import { MatDialogClose } from '@angular/material/dialog';
 export default class Layout implements AfterViewInit {
   store = inject(ProductStore);
   sidenavService = inject(SidenavService);
+  cartSidenavService = inject(CartSidenav);
+
   @ViewChild('sidenav') sidenav!: MatSidenav;
+  @ViewChild('cartSidenav') cartSidenav!: MatSidenav;
+
   categories = [
     { label: 'Dairy', subcategories: ['Milk', 'Cheese', 'Butter'] },
     { label: 'Fresh', subcategories: ['Fruits', 'Vegetables'] },
     { label: 'Frozen', subcategories: ['Ice Cream', 'Frozen Meals'] },
   ];
 
-  constructor() {}
+  isMobile = signal(false);
+
+  constructor(bpo: BreakpointObserver) {
+    bpo
+      .observe('(max-width: 768px)')
+      .pipe(takeUntilDestroyed())
+      .subscribe((res) => this.isMobile.set(res.matches));
+  }
 
   ngAfterViewInit() {
     this.sidenavService.setSidenav(this.sidenav);
+    this.cartSidenavService.setSidenav(this.cartSidenav);
     // To remove the flash when rendering
     this.sidenav.close();
+    this.cartSidenav.open();
   }
 }

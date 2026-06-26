@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/retain"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "transformers": ["response-template"],
+    "bodyFileName": "templates/slot/retain-template.hbs"
+  }
+}

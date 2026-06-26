@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: Order
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/order_db
+    username: postgres
+    password: postgres
+  flyway:
+    url: jdbc:postgresql://localhost:5432/order_db
+    locations: classpath:db/postgres/migration
+
+external:
+  product:
+    api:
+      base-url: http://localhost:3000
+  slot:
+    api:
+      base-url: http://localhost:3030
+  pricing:
+    api:
+      base-url: http://localhost:3060

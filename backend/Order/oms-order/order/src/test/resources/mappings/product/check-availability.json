@@ -1,0 +1,14 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/check-availability"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "transformers": ["response-template"],
+    "bodyFileName": "templates/product/check-availability-template.hbs"
+  }
+}

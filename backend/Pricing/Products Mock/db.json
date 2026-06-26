@@ -1,0 +1,12 @@
+{
+  "products": [
+    { "id": "53af7942-0b98-4b0e-a585-3274aca7614a", "name": "a title", "unitPrice": 200 },
+    { "id": "63d363df-2db5-430d-a142-0dfe600283d6", "title": "another title", "unitPrice": 100 },
+    { "id": "bca25930-ffd4-44c0-b730-6dd487c4ef2c", "title": "a title1", "unitPrice": 100 }
+  ],
+  "discounts": [
+    { "id": "PERCENTAGE", "productId": "53af7942-0b98-4b0e-a585-3274aca7614a", "attributes": {"percentage":30} },
+    { "id": "QUANTITY", "productId": "63d363df-2db5-430d-a142-0dfe600283d6", "attributes": {"percentage":30, "minimumQuantity":10} },
+    { "id": "PERCENTAGE", "productId": "bca25930-ffd4-44c0-b730-6dd487c4ef2c", "attributes": {"percentage":15} }    
+  ]
+}

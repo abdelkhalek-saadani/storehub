@@ -1,0 +1,17 @@
+[
+  {
+    "id": "PERCENTAGE",
+    "productId": "53af7942-0b98-4b0e-a585-3274aca7614a",
+    "attributes": {"percentage":30}
+  },
+  {
+    "id": "QUANTITY",
+    "productId": "63d363df-2db5-430d-a142-0dfe600283d6",
+    "attributes": {"percentage":30, "minimumQuantity":10}
+  },
+  {
+    "id": "PERCENTAGE",
+    "productId": "bca25930-ffd4-44c0-b730-6dd487c4ef2c",
+    "attributes": {"percentage":15}
+  }
+]

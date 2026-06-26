@@ -1,0 +1,21 @@
+{{!-- {{this array contains the store ids for which the endpoint will return true}} --}}
+{{#assign 'availableCities'}}
+    [
+    "city1",
+    "city2",
+    "city3"
+    ]
+{{/assign}}
+{{#assign 'cityName'}}{{jsonPath request.body '$.delivery.address.city'}}{{/assign}}
+
+{{#assign 'isAvailable'}}true{{/assign}}
+
+ {{#unless (contains availableCities cityName)}}
+    {{#assign 'isAvailable'}}false{{/assign}}
+{{/unless}}
+
+
+
+{ "available": {{isAvailable}} }
+
+

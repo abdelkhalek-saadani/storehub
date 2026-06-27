@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.order;
+package com.abdelkhalek.storehub.order.security;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +32,7 @@ public class SecurityConfig {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable) // stateless JWT API, no cookies
                 .authorizeExchange(exchange -> exchange
+                        .pathMatchers("/api/auth/**").permitAll()
                         .pathMatchers("/internal/**").hasRole("SERVICE") // service-to-service
                         .pathMatchers("/api/orders/**").hasRole("CUSTOMER")
                         .anyExchange().authenticated()

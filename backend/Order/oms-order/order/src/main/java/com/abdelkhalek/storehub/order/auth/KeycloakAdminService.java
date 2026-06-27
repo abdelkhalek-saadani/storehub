@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.order;
+package com.abdelkhalek.storehub.order.auth;
 
 import com.abdelkhalek.storehub.order.security.StorehubProperties;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +26,41 @@ public class KeycloakAdminService {
         this.props = props;
     }
 
+
+    public Mono<Void> addRealmRole(String keycloakUserId, String roleName) {
+        return webClient.get()
+                .uri("/admin/realms/{realm}/roles/{roleName}", props.realm(), roleName)
+                .retrieve()
+                .bodyToMono(Map.class)
+                .flatMap(roleRepresentation -> webClient.post()
+                        .uri("/admin/realms/{realm}/users/{userId}/role-mappings/realm", props.realm(), keycloakUserId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(List.of(roleRepresentation))
+                        .retrieve()
+                        .toBodilessEntity()
+                        .then()
+                );
+    }
+
+    public Mono<Void> removeRealmRole(String keycloakUserId, String roleName) {
+        return webClient.get()
+                .uri("/admin/realms/{realm}/roles/{roleName}", props.realm(), roleName)
+                .retrieve()
+                .bodyToMono(Map.class)
+                .flatMap(roleRepresentation -> webClient.method(org.springframework.http.HttpMethod.DELETE)
+                        .uri("/admin/realms/{realm}/users/{userId}/role-mappings/realm", props.realm(), keycloakUserId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(List.of(roleRepresentation))
+                        .retrieve()
+                        .toBodilessEntity()
+                        .then()
+                )
+                .onErrorResume(e -> {
+                    System.err.println("Failed to remove role " + roleName + " from user " + keycloakUserId + ": " + e.getMessage());
+                    return Mono.empty();
+                });
+    }
+
     /**
      * Creates the Keycloak user (identity fields only) and assigns the
      * default 'customer' realm role. Returns the new Keycloak user ID.
@@ -43,22 +78,7 @@ public class KeycloakAdminService {
                     }
                     return response.createException().flatMap(Mono::error);
                 })
-                .flatMap(userId -> assignRealmRole(userId, "CUSTOMER").thenReturn(userId));
-    }
-
-    private Mono<Void> assignRealmRole(String userId, String roleName) {
-        return webClient.get()
-                .uri("/admin/realms/{realm}/roles/{roleName}", props.realm(), roleName)
-                .retrieve()
-                .bodyToMono(Map.class)
-                .flatMap(roleRepresentation -> webClient.post()
-                        .uri("/admin/realms/{realm}/users/{userId}/role-mappings/realm", props.realm(), userId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue(List.of(roleRepresentation))
-                        .retrieve()
-                        .toBodilessEntity()
-                        .then()
-                );
+                .flatMap(userId -> addRealmRole(userId, "CUSTOMER").thenReturn(userId));
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.order;
+package com.abdelkhalek.storehub.order.auth;
 
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;

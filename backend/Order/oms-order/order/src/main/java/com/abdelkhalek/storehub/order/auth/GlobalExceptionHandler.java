@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.order;
+package com.abdelkhalek.storehub.order.auth;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

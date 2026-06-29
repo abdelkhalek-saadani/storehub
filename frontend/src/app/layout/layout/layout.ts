@@ -39,9 +39,6 @@ import { Cart } from '@components/cart/cart';
     MatCheckbox,
     MatButton,
     MatDialogClose,
-    CartItem,
-    MatIconButton,
-    MatIcon,
     Cart,
   ],
   template: `
@@ -132,6 +129,6 @@ export default class Layout implements AfterViewInit {
     this.cartSidenavService.setSidenav(this.cartSidenav);
     // To remove the flash when rendering
     this.sidenav.close();
-    this.cartSidenav.open();
+    this.cartSidenav.close();
   }
 }

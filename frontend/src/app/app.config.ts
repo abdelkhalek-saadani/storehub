@@ -12,12 +12,52 @@ import { provideHotToastConfig } from '@ngxpert/hot-toast';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
 import { DomSanitizer, provideClientHydration, withEventReplay } from '@angular/platform-browser';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { MatIconRegistry } from '@angular/material/icon';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import {
+  AutoRefreshTokenService,
+  createInterceptorCondition,
+  INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
+  IncludeBearerTokenCondition,
+  includeBearerTokenInterceptor,
+  provideKeycloak,
+  UserActivityService,
+  withAutoRefreshToken,
+} from 'keycloak-angular';
+import { environment } from '../../environment';
+
+function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+const apiBearerCondition = createInterceptorCondition<IncludeBearerTokenCondition>({
+  urlPattern: new RegExp('^' + escapeRegex(environment.apiUrl) + '(/.*)?$', 'i'),
+  bearerPrefix: 'Bearer',
+});
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    { provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG, useValue: [apiBearerCondition] },
+    provideKeycloak({
+      config: {
+        url: environment.keycloak.url,
+        realm: environment.keycloak.realm,
+        clientId: environment.keycloak.clientId,
+      },
+      initOptions: {
+        onLoad: 'check-sso',
+        silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
+      },
+      features: [
+        withAutoRefreshToken({
+          onInactivityTimeout: 'logout',
+          sessionTimeout: 600000, // =10 min
+        }),
+      ],
+      providers: [AutoRefreshTokenService, UserActivityService],
+    }),
+    provideHttpClient(withInterceptors([includeBearerTokenInterceptor])),
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes, withComponentInputBinding(), withViewTransitions()),
@@ -31,7 +71,6 @@ export const appConfig: ApplicationConfig = {
       },
     },
     { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { disableClose: false } },
-    provideHttpClient(),
     provideAppInitializer(() => {
       const registry = inject(MatIconRegistry);
       const sanitizer = inject(DomSanitizer);

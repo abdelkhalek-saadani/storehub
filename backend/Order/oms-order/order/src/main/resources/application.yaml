@@ -1,6 +1,7 @@
 spring:
   application:
     name: Order
+    cors.allowed-origins: ${FRONTEND_URL}
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/order_db
     username: postgres
@@ -39,6 +40,8 @@ storehub:
   catalog-base-url: ${CATALOG_BASE_URL}
   kc-base-url: ${KC_BASE_URL}
   realm: storehub
+
+
 
 external:
   product:

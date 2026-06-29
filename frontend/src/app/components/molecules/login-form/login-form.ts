@@ -5,7 +5,6 @@ import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatInput, MatLabel } from '@angular/material/input';
 import { MatTab, MatTabGroup } from '@angular/material/tabs';
 import { PhoneInput } from '../../atoms/phone-input/phone-input';
-import { SigninButton } from '../../atoms/signin-button/signin-button';
 import { MatFormField } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatSuffix } from '@angular/material/form-field';
@@ -25,7 +24,6 @@ import { MatSuffix } from '@angular/material/form-field';
     MatTab,
     MatTabGroup,
     PhoneInput,
-    SigninButton,
   ],
   template: `
     <div class="flex flex-col max-w-[418px] gap-4">
@@ -69,8 +67,14 @@ import { MatSuffix } from '@angular/material/form-field';
       </div>
       <app-divider />
       <div class="flex flex-col gap-4">
-        <app-signin-button type="google" />
-        <app-signin-button type="meta" />
+        <button matButton="filled" class="btn-sign w-full">
+          <span class="text-black"> Sign in with Google</span>
+          <mat-icon svgIcon="google" />
+        </button>
+        <button matButton="filled" class="btn-sign w-full">
+          <span class="text-black"> Sign in with meta</span>
+          <mat-icon svgIcon="meta" />
+        </button>
       </div>
     </div>
   `,

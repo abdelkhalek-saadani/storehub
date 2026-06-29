@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { MatButton, MatFabButton, MatIconButton, MatMiniFabButton } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -22,7 +22,6 @@ import {
 import { OffersSection } from '../components/molecules/offers-section';
 import { MatChipsModule } from '@angular/material/chips';
 import { Divider } from '../components/atoms/divider/divider';
-import { SigninButton } from '../components/atoms/signin-button/signin-button';
 import { MatTabsModule } from '@angular/material/tabs';
 import { PhoneInput } from '../components/atoms/phone-input/phone-input';
 import { LoginForm } from '../components/molecules/login-form/login-form';
@@ -44,8 +43,7 @@ import { WishlistProductCard } from '../components/molecules/wishlist-product-ca
 import { OrderConfirmation } from '../components/molecules/order-confirmation/order-confirmation';
 import { OrderTracking } from '../components/molecules/order-tracking/order-tracking';
 import { Gallery } from '../components/molecules/gallery/gallery';
-import { NavigationTestSchematicComponent } from '../components/navigation-test-schematic/navigation-test-schematic.component';
-
+import Keycloak from 'keycloak-js';
 @Component({
   selector: 'app-dev',
   imports: [
@@ -72,7 +70,6 @@ import { NavigationTestSchematicComponent } from '../components/navigation-test-
     MatTimepickerToggle,
     OffersSection,
     Divider,
-    SigninButton,
     ReactiveFormsModule,
     LoginForm,
     MatSelectModule,
@@ -92,6 +89,9 @@ import { NavigationTestSchematicComponent } from '../components/navigation-test-
   ],
   template: `
     <div class="catalog p-6 font-sans">
+      <section class="mb-10">
+        <button matButton="filled" (click)="keycloak.logout()">Logout</button>
+      </section>
       <section class="mb-10">
         <h2 class="section-title">Components</h2>
         <div class="rows">
@@ -383,7 +383,10 @@ import { NavigationTestSchematicComponent } from '../components/navigation-test-
             <span class="label">filled + btn-sign</span>
             <span class="variant">OAuth / Google</span>
             <div class="preview">
-              <app-signin-button type="google" />
+              <button matButton="filled" class="btn-sign w-full">
+                <span class="text-black"> Sign in with meta</span>
+                <mat-icon svgIcon="meta" />
+              </button>
             </div>
           </div>
 
@@ -391,7 +394,10 @@ import { NavigationTestSchematicComponent } from '../components/navigation-test-
             <span class="label">filled + btn-sign</span>
             <span class="variant">OAuth / Meta</span>
             <div class="preview">
-              <app-signin-button type="meta" />
+              <button matButton="filled" class="btn-sign w-full">
+                <span class="text-black"> Sign in with meta</span>
+                <mat-icon svgIcon="meta" />
+              </button>
             </div>
           </div>
 
@@ -626,6 +632,7 @@ import { NavigationTestSchematicComponent } from '../components/navigation-test-
 export default class Dev {
   value!: Date;
 
+  keycloak = inject(Keycloak);
   isMdDevice = signal(false);
   quantity = signal(5);
 

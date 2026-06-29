@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import Layout from './layout/layout/layout';
+import { authGuard } from './auth.guard';
+import { guestOnlyGuard } from './guest-only.guard';
 
 export const routes: Routes = [
   {
@@ -11,6 +13,20 @@ export const routes: Routes = [
     path: 'dev',
     pathMatch: 'full',
     loadComponent: () => import('./dev/dev'),
+  },
+  {
+    path: 'forbidden',
+    loadComponent: () => import('./pages/forbidden/forbidden').then((m) => m.Forbidden),
+  },
+  {
+    path: 'welcome',
+    canActivate: [guestOnlyGuard],
+    loadComponent: () => import('./pages/welcome/welcome').then((m) => m.Welcome),
+  },
+  {
+    path: 'signup',
+    canActivate: [guestOnlyGuard],
+    loadComponent: () => import('./pages/signup/signup').then((m) => m.Signup),
   },
   {
     path: 'login',
@@ -28,6 +44,7 @@ export const routes: Routes = [
       },
       {
         path: 'checkout',
+        canActivate: [authGuard],
         loadComponent: () => import('./pages/checkout/checkout'),
       },
       {

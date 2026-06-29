@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatIconButton } from '@angular/material/button';
@@ -12,8 +12,10 @@ import { LogoText } from '@components/atoms/logo-text/logo-text';
 import { LocationButton } from './location-button/location-button';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatDivider } from '@angular/material/divider';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CartSidenav } from '../../services/cart-sidenav';
+import Keycloak from 'keycloak-js';
+import { KEYCLOAK_EVENT_SIGNAL } from 'keycloak-angular';
 
 @Component({
   selector: 'app-header',
@@ -74,25 +76,31 @@ import { CartSidenav } from '../../services/cart-sidenav';
               <span class="text-white bg-primary rounded-full p-1 text-sm ms-1">12</span>
             </button>
 
-            <button matIconButton [matMenuTriggerFor]="profileMenu">
-              <img src="avatar.png" class="w-8 h-8 rounded-full object-cover" />
-            </button>
+            @if (isAuthenticated()) {
+              <button matIconButton [matMenuTriggerFor]="profileMenu">
+                <img src="avatar.png" class="w-8 h-8 rounded-full object-cover" />
+              </button>
 
-            <mat-menu #profileMenu="matMenu">
-              <button mat-menu-item>
-                <mat-icon>person</mat-icon>
-                Profile
+              <mat-menu #profileMenu="matMenu">
+                <button mat-menu-item>
+                  <mat-icon>person</mat-icon>
+                  Profile
+                </button>
+                <button mat-menu-item>
+                  <mat-icon>settings</mat-icon>
+                  Settings
+                </button>
+                <mat-divider />
+                <button mat-menu-item class="text-red-500" (click)="keycloak.logout()">
+                  <mat-icon class="text-red-500">logout</mat-icon>
+                  Logout
+                </button>
+              </mat-menu>
+            } @else {
+              <button matButton="filled" class="btn-md" (click)="router.navigateByUrl('/welcome')">
+                Login/Register
               </button>
-              <button mat-menu-item>
-                <mat-icon>settings</mat-icon>
-                Settings
-              </button>
-              <mat-divider />
-              <button mat-menu-item class="text-red-500">
-                <mat-icon class="text-red-500">logout</mat-icon>
-                Logout
-              </button>
-            </mat-menu>
+            }
           </div>
         </div>
       </div>
@@ -104,6 +112,14 @@ export class Header {
   store = inject(ProductStore);
   sidenavService = inject(SidenavService);
   cartSidenavService = inject(CartSidenav);
+  readonly keycloak = inject(Keycloak);
+  private readonly keycloakSignal = inject(KEYCLOAK_EVENT_SIGNAL);
+  router = inject(Router);
+
+  isAuthenticated = computed(() => {
+    this.keycloakSignal(); // triggers recompute on any keycloak event
+    return this.keycloak.authenticated ?? false;
+  });
 
   isMobile = signal(false);
 

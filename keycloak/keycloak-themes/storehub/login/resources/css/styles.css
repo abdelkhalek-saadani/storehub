@@ -1,0 +1,61 @@
+#kc-header-wrapper {
+  background-image: url("../img/logo-text-white.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  color: transparent;
+  height: 60px;
+  margin-bottom: 4rem;
+}
+
+/* Login Button */
+#kc-login {
+  background-color: rgba(72, 158, 255, 1);
+  border-radius: 12px;
+  height: 44px
+}
+
+body {
+  background-color: rgba(72, 158, 255, 1);
+}
+
+/* Login Container*/
+.pf-v5-c-login__main {
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 1rem;
+  border: 1px solid #F8F7F8;
+}
+
+.pf-v5-c-form__label {
+  color: black
+}
+
+/* Title inside the container*/
+#kc-page-title {
+  color: black
+}
+
+.pf-v5-c-form-control {
+  background-color: #ffffff;
+}
+
+/* username input */
+#username {
+  color: black
+}
+
+/* password input*/
+#password {
+  color: black
+}
+
+/* eye button container */
+.pf-v5-c-input-group__item {
+  border: none
+}
+
+/* eye button, added this remove the default left border that acts as separation*/
+.pf-v5-c-button.pf-m-control {
+  background: transparent !important
+}

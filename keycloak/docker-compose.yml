@@ -1,0 +1,15 @@
+services:
+    storehub-auth-server:
+        image: quay.io/keycloak/keycloak:26.1.1
+        ports:
+            - "8081:8080"
+        restart: always
+        command:
+            - start-dev
+            - --import-realm
+        volumes:
+            - ./realm-data/:/opt/keycloak/data/import
+            - ./keycloak-themes/storehub:/opt/keycloak/themes/storehub
+        environment:
+            KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:-admin}
+            KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}

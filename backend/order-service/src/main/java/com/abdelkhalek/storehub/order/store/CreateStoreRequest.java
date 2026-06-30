@@ -12,4 +12,6 @@ public class CreateStoreRequest {
 
     private String description;
 
+    private String address;
+
 }

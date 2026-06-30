@@ -25,38 +25,13 @@ import {
   UserActivityService,
   withAutoRefreshToken,
 } from 'keycloak-angular';
-import { environment } from '../../environment';
-
-function escapeRegex(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-const apiBearerCondition = createInterceptorCondition<IncludeBearerTokenCondition>({
-  urlPattern: new RegExp('^' + escapeRegex(environment.apiUrl) + '(/.*)?$', 'i'),
-  bearerPrefix: 'Bearer',
-});
+import { keycloakProvider } from '@core/auth/keycloak-config';
+import { bearerInterceptorProvider } from './config/http/bearer-interceptor-config';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    { provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG, useValue: [apiBearerCondition] },
-    provideKeycloak({
-      config: {
-        url: environment.keycloak.url,
-        realm: environment.keycloak.realm,
-        clientId: environment.keycloak.clientId,
-      },
-      initOptions: {
-        onLoad: 'check-sso',
-        silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
-      },
-      features: [
-        withAutoRefreshToken({
-          onInactivityTimeout: 'logout',
-          sessionTimeout: 600000, // =10 min
-        }),
-      ],
-      providers: [AutoRefreshTokenService, UserActivityService],
-    }),
+    bearerInterceptorProvider,
+    keycloakProvider,
     provideHttpClient(withInterceptors([includeBearerTokenInterceptor])),
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),

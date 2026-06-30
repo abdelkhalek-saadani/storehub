@@ -56,6 +56,7 @@ public class StoreController {
         Store store = new Store();
         store.setName(req.getName());
         store.setDescription(req.getDescription());
+        store.setAddress(req.getAddress());
 
         return storeRepository.save(store)
                 .flatMap(savedStore ->

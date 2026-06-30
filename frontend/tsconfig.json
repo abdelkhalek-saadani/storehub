@@ -13,6 +13,9 @@
       ],
       "@shared/*": [
         "./src/app/shared/*"
+      ],
+      "@environments/*": [
+        "./src/environments/*"
       ]
     },
     "strict": true,

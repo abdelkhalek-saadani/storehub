@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { LogoText } from '../../components/atoms/logo-text/logo-text';
-import { LoginForm } from '../../components/molecules/login-form/login-form';
+import { LogoText } from '@components/atoms/logo-text/logo-text';
+import { LoginForm } from '@components/molecules/login-form/login-form';
 
 @Component({
   selector: 'app-login',

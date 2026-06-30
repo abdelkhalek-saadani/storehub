@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import Layout from './layout/layout/layout';
-import { authGuard } from './auth.guard';
-import { guestOnlyGuard } from './guest-only.guard';
+import { authGuard } from '@core/auth/auth-guard';
+import { guestOnlyGuard } from '@core/auth/guest-only.guard';
 
 export const routes: Routes = [
   {
@@ -16,22 +16,26 @@ export const routes: Routes = [
   },
   {
     path: 'forbidden',
-    loadComponent: () => import('./pages/forbidden/forbidden').then((m) => m.Forbidden),
+    loadComponent: () => import('./auth/forbidden/forbidden').then((m) => m.Forbidden),
   },
   {
     path: 'welcome',
     canActivate: [guestOnlyGuard],
-    loadComponent: () => import('./pages/welcome/welcome').then((m) => m.Welcome),
+    loadComponent: () => import('./auth/welcome/welcome').then((m) => m.Welcome),
   },
   {
     path: 'signup',
     canActivate: [guestOnlyGuard],
-    loadComponent: () => import('./pages/signup/signup').then((m) => m.Signup),
+    loadComponent: () => import('./auth/signup/signup').then((m) => m.Signup),
+  },
+  {
+    path: 'post-login',
+    loadComponent: () => import('./auth/post-login/post-login').then((m) => m.PostLogin),
   },
   {
     path: 'login',
     pathMatch: 'full',
-    loadComponent: () => import('./pages/login/login'),
+    loadComponent: () => import('./pages/legacy/login/login'),
   },
 
   {

@@ -18,6 +18,7 @@ public class Store {
 
     private String name;
     private String description;
+    private String address;
 
     @Column("created_at")
     private Instant createdAt;

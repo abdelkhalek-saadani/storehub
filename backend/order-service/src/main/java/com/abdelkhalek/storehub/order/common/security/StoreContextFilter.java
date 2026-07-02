@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.order.security;
+package com.abdelkhalek.storehub.order.common.security;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;

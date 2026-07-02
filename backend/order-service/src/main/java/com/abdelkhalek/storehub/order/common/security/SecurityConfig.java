@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.order.security;
+package com.abdelkhalek.storehub.order.common.security;
 
 import com.abdelkhalek.storehub.order.store.MembershipRole;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +41,7 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable) // stateless JWT API, no cookies
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers("/api/auth/**").permitAll()
+                        .pathMatchers("/cart/quote/**").permitAll()
                         .pathMatchers("/internal/**").hasRole("SERVICE") // service-to-service
                         .pathMatchers("/api/orders/**").hasRole("CUSTOMER")
                         .pathMatchers("/api/stores/*/employees/**").hasRole(MembershipRole.STORE_OWNER.name())

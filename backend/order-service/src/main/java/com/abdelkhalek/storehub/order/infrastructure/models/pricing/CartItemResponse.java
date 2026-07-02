@@ -1,9 +1,10 @@
 package com.abdelkhalek.storehub.order.infrastructure.models.pricing;
 
-import com.abdelkhalek.storehub.order.domain.models.Money;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Data
 @RequiredArgsConstructor
@@ -12,8 +13,8 @@ public class CartItemResponse {
 
     private String productId;
     private int quantity;
-    private Money subtotal;
-    private Money unitPrice;
-    private Money originalUnitPrice;
+    private BigDecimal subtotal;
+    private BigDecimal unitPrice;
+    private BigDecimal originalUnitPrice;
 
 }

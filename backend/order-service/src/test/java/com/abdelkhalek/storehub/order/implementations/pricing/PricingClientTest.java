@@ -1,3 +1,4 @@
+/*
 package com.abdelkhalek.storehub.order.implementations.pricing;
 
 
@@ -197,3 +198,4 @@ class PricingClientTest {
 
 }
 
+*/

@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.order.auth;
+package com.abdelkhalek.storehub.order.user;
 
 
 

@@ -1,7 +1,6 @@
 package com.abdelkhalek.storehub.order;
 
 import com.abdelkhalek.storehub.order.domain.OrderService;
-import com.abdelkhalek.storehub.order.domain.models.Store;
 import com.abdelkhalek.storehub.order.domain.models.*;
 import com.abdelkhalek.storehub.order.infrastructure.implementations.OrderReactiveRepository;
 import com.abdelkhalek.storehub.order.infrastructure.models.order.OrderEntity;
@@ -13,8 +12,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
-import java.math.BigDecimal;
-import java.util.List;
 import java.util.UUID;
 
 @OpenAPIDefinition(
@@ -39,19 +36,19 @@ public class OrderApplication {
 		OrderReactiveRepository orderReactiveRepository = ctx.getBean(OrderReactiveRepository.class);
 		// Arrange
 		Cart cart = new Cart();
-		CartItem item1 = new CartItem(
+		/*CartItem item1 = new CartItem(
 				UUID.randomUUID(),
 				5,
-				new Money(BigDecimal.valueOf(50)),
-				new Money(BigDecimal.TEN),
-				new Money(BigDecimal.TEN));
+				BigDecimal.valueOf(50),
+				BigDecimal.TEN,
+				BigDecimal.TEN);
 		CartItem item2 = new CartItem(
 				UUID.randomUUID(),
 				10,
 				new Money(BigDecimal.valueOf(20)),
 				new Money(BigDecimal.TWO),
 				new Money(BigDecimal.TWO));
-		cart.setItems(List.of(item1, item2));
+		cart.setItems(List.of(item1, item2));*/
 
 		Delivery delivery = new Delivery();
 		Address address = new Address();

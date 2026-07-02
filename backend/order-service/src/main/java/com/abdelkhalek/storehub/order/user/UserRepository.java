@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.order.auth;
+package com.abdelkhalek.storehub.order.user;
 
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
@@ -10,6 +10,8 @@ import java.util.UUID;
 public interface UserRepository extends ReactiveCrudRepository<User, UUID> {
     Mono<Boolean> existsByEmail(String email);
     Mono<User> findByKeycloakId(String keycloakId);
+    Mono<UUID> findIdByKeycloakId(String keycloakId);
 
     Mono<User> findByEmail(String email);
+
 }

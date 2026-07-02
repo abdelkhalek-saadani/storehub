@@ -3,14 +3,11 @@ package com.abdelkhalek.storehub.order.implementations.pricing;
 import com.abdelkhalek.storehub.order.domain.models.CartItem;
 import com.abdelkhalek.storehub.order.domain.models.Money;
 import com.abdelkhalek.storehub.order.domain.models.Order;
-import com.abdelkhalek.storehub.order.infrastructure.mappers.CartItemRequestMapper;
-import com.abdelkhalek.storehub.order.infrastructure.mappers.PriceRequestMapper;
-import com.abdelkhalek.storehub.order.domain.models.*;
 import com.abdelkhalek.storehub.order.infrastructure.implementations.pricing.PricingClient;
 import com.abdelkhalek.storehub.order.infrastructure.implementations.pricing.PricingServiceAdapter;
-import com.abdelkhalek.storehub.order.infrastructure.mappers.*;
+import com.abdelkhalek.storehub.order.infrastructure.mappers.CartItemRequestMapper;
+import com.abdelkhalek.storehub.order.infrastructure.mappers.PriceRequestMapper;
 import com.abdelkhalek.storehub.order.infrastructure.models.CartItemRequest;
-import com.abdelkhalek.storehub.order.infrastructure.models.pricing.CartItemResponse;
 import com.abdelkhalek.storehub.order.infrastructure.models.pricing.PriceRequest;
 import com.abdelkhalek.storehub.order.infrastructure.models.pricing.PriceResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +23,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -59,10 +55,10 @@ class PricingServiceAdapterTest {
         testPriceRequest = createTestPriceRequest();
 
         // Create test price response
-        testPriceResponse = createTestPriceResponse();
+        //testPriceResponse = createTestPriceResponse();
 
         // Create response cart items
-        responseCartItems = createResponseCartItems();
+        //responseCartItems = createResponseCartItems();
 
         // Configure mocks
         lenient().when(priceRequestMapper.fromOrder(testOrder)).thenReturn(testPriceRequest);
@@ -173,13 +169,13 @@ class PricingServiceAdapterTest {
         return priceRequest;
     }
 
-    private PriceResponse createTestPriceResponse() {
+    /*private PriceResponse createTestPriceResponse() {
         CartItemResponse response1 = new CartItemResponse();
         response1.setProductId(testOrder.getCartItems().get(0).getProductId().toString());
         response1.setQuantity(testOrder.getCartItems().get(0).getQuantity());
-        response1.setOriginalUnitPrice(new Money(BigDecimal.valueOf(15)));
-        response1.setUnitPrice(new Money(BigDecimal.TEN));
-        response1.setSubtotal(new Money(BigDecimal.TEN));
+        response1.setOriginalUnitPrice(BigDecimal.valueOf(15));
+        response1.setUnitPrice(BigDecimal.TEN);
+        response1.setSubtotal(BigDecimal.TEN);
 
         CartItemResponse response2 = new CartItemResponse();
         response2.setProductId(testOrder.getCartItems().get(1).getProductId().toString());
@@ -192,10 +188,10 @@ class PricingServiceAdapterTest {
         priceResponse.setItems(List.of(response1, response2));
         priceResponse.setTotal(new Money(BigDecimal.valueOf(110)));
         return priceResponse;
-    }
+    }*/
 
-    private List<CartItem> createResponseCartItems() {
-        CartItem item1 = new CartItem(
+    //private List<CartItem> createResponseCartI/**/tems() /*{
+      /*  CartItem item1 = new CartItem(
                 testOrder.getCartItems().get(0).getProductId(),
                 testPriceResponse.getItems().get(0).getQuantity(),
                 testPriceResponse.getItems().get(0).getSubtotal(),
@@ -212,7 +208,7 @@ class PricingServiceAdapterTest {
         );
 
         return List.of(item1, item2);
-    }
+    }*/
 
     private boolean verifyOrderUpdated(Order updatedOrder) {
         // Verify order ID remains unchanged

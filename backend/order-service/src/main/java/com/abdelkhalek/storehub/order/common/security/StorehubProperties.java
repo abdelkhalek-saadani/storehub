@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.order.security;
+package com.abdelkhalek.storehub.order.common.security;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

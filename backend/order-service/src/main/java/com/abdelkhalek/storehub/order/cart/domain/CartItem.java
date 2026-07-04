@@ -1,7 +1,7 @@
 package com.abdelkhalek.storehub.order.cart.domain;
 
 import com.abdelkhalek.storehub.order.cart.entities.CartEntity;
-import com.abdelkhalek.storehub.order.cart.services.AppliedOffer;
+import com.abdelkhalek.storehub.order.cart.services.price.AppliedOffer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,5 +1,7 @@
 package com.abdelkhalek.storehub.catalog.pricing.domain.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,28 +13,13 @@ import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
+@Builder(toBuilder = true)
+@AllArgsConstructor
 public class Cart {
     private UUID storeId;
     private String cartId;
     private List<Item> items = new ArrayList<>();
     private BigDecimal totalDiscount = BigDecimal.ZERO;
-
-
-
-
-
-
-
-
-    public String toString() {
-        calculateTotalDiscount();
-        return "The total discount " + totalDiscount + ",\nitems = " + items + "and the total discount = " + totalDiscount + "\n" +
-                "   The original total is " + getOriginalTotal() + " and total after discount is " + getFinalTotal();
-    }
-
-    public void addItem(Item item) {
-        this.items.add(item);
-    }
 
     public BigDecimal getOriginalTotal() {
         return items.stream()
@@ -51,14 +38,10 @@ public class Cart {
     }
 
     public Cart copy() {
-        Cart copy = new Cart();
-        copy.setCartId(this.cartId);
-        copy.setTotalDiscount(this.totalDiscount); // BigDecimal is immutable, safe to share reference
-        copy.setItems(
-                this.items.stream()
+        return this.toBuilder()
+                .items(this.items.stream()
                         .map(Item::copy)
-                        .collect(Collectors.toCollection(ArrayList::new)) // keep it mutable like the original
-        );
-        return copy;
+                        .collect(Collectors.toCollection(ArrayList::new)))
+                .build();
     }
 }

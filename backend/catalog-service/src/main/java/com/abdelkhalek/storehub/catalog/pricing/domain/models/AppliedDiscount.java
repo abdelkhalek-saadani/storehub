@@ -10,12 +10,12 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AppliedDiscount {
-    // Later, I may use this field to return details about the discounts applied along with the total (event)
     private String description;
     private BigDecimal amountPerUnit;
 
     public String toString() {
-        return "description = " + description + ", this discount substracts " + amountPerUnit + " from each product's   unit price";
+        return "description = " + description + ", this discount subtracts "
+                + amountPerUnit + " from each product's   unit price";
     }
 
 }

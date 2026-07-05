@@ -1,10 +1,11 @@
-package com.abdelkhalek.storehub.catalog.pricing;
+package com.abdelkhalek.storehub.catalog.pricing.service;
 
 import com.abdelkhalek.storehub.catalog.dtos.*;
+import com.abdelkhalek.storehub.catalog.pricing.entity.ProductEntity;
+import com.abdelkhalek.storehub.catalog.pricing.repository.ProductRepository;
 import com.abdelkhalek.storehub.catalog.pricing.domain.factories.DiscountStrategyFactory;
 import com.abdelkhalek.storehub.catalog.pricing.domain.models.*;
 import com.abdelkhalek.storehub.catalog.pricing.domain.strategies.DiscountStrategy;
-import com.abdelkhalek.storehub.catalog.pricing.service.DiscountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

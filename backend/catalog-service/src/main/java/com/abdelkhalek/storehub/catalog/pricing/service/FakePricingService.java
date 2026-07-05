@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.catalog.pricing;
+package com.abdelkhalek.storehub.catalog.pricing.service;
 
 
 import com.abdelkhalek.storehub.catalog.dtos.PriceItemResponse;

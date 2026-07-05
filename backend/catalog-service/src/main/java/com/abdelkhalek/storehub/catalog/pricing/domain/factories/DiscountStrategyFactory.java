@@ -1,8 +1,10 @@
 package com.abdelkhalek.storehub.catalog.pricing.domain.factories;
 
 
-import com.abdelkhalek.storehub.catalog.pricing.DiscountWithProductIds;
-import com.abdelkhalek.storehub.catalog.pricing.domain.models.Discount;
+import com.abdelkhalek.storehub.catalog.pricing.domain.models.discountrule.BuyXGetY;
+import com.abdelkhalek.storehub.catalog.pricing.domain.models.DiscountWithProductIds;
+import com.abdelkhalek.storehub.catalog.pricing.domain.models.discountrule.PercentageOff;
+import com.abdelkhalek.storehub.catalog.pricing.domain.models.discountrule.Quantity;
 import com.abdelkhalek.storehub.catalog.pricing.domain.strategies.BuyXGetYDiscount;
 import com.abdelkhalek.storehub.catalog.pricing.domain.strategies.DiscountStrategy;
 import com.abdelkhalek.storehub.catalog.pricing.domain.strategies.PercentageDiscount;
@@ -27,16 +29,16 @@ public class DiscountStrategyFactory {
             return cachedStrategy;
         }
         DiscountStrategy newStrategy;
-        switch (discount.getId()) {
-            case "PERCENTAGE":
+        switch (discount.getRule()) {
+            case PercentageOff ignored:
                 newStrategy = new PercentageDiscount(discount);
                 strategyCache.put(key, newStrategy);
                 return newStrategy;
-            case "QUANTITY":
+            case Quantity ignored:
                 newStrategy = new QuantityDiscount(discount);
                 strategyCache.put(key, newStrategy);
                 return newStrategy;
-            case "BUYXGETYDISCOUNT":
+            case BuyXGetY ignored:
                 newStrategy = new BuyXGetYDiscount(discount);
                 strategyCache.put(key, newStrategy);
                 return newStrategy;

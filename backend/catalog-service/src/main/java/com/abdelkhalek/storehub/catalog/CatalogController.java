@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.xml.catalog.Catalog;
-
 
 @RequiredArgsConstructor
 @RestController("/internal")
@@ -19,7 +17,6 @@ public class CatalogController {
 
     @PostMapping("prices")
     public ResponseEntity<PricesResponse> price(@RequestBody PricesRequest request) {
-        // Step 1: receive the prices req
         return ResponseEntity.ok(pricesService.getPrices(request));
     }
 

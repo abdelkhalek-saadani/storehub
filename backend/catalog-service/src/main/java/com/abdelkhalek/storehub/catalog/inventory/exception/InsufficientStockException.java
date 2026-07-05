@@ -6,6 +6,6 @@ public class InsufficientStockException extends RuntimeException {
 
     public InsufficientStockException(UUID productId, int requested, int available) {
         super("Insufficient stock for product " + productId
-                + ": trying to subtract " + requested + "(requested), from " + available + "(available)");
+                + ": requested " + requested + "> available " + available );
     }
 }

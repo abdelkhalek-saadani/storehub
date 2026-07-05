@@ -1,10 +1,6 @@
-package com.abdelkhalek.storehub.catalog.pricing;
+package com.abdelkhalek.storehub.catalog.pricing.domain.models.discountrule;
 
 
-import com.abdelkhalek.storehub.catalog.pricing.domain.models.BuyXGetY;
-import com.abdelkhalek.storehub.catalog.pricing.domain.models.FixedAmountOff;
-import com.abdelkhalek.storehub.catalog.pricing.domain.models.PercentageOff;
-import com.abdelkhalek.storehub.catalog.pricing.domain.models.Quantity;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 

@@ -1,6 +1,4 @@
-package com.abdelkhalek.storehub.catalog.pricing.domain.models;
-
-import com.abdelkhalek.storehub.catalog.pricing.DiscountRule;
+package com.abdelkhalek.storehub.catalog.pricing.domain.models.discountrule;
 
 import java.math.BigDecimal;
 

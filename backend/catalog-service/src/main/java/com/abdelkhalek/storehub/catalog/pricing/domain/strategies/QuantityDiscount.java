@@ -1,54 +1,57 @@
 package com.abdelkhalek.storehub.catalog.pricing.domain.strategies;
 
-import com.abdelkhalek.storehub.order.pricing.domain.models.AppliedDiscount;
-import com.abdelkhalek.storehub.order.pricing.domain.models.Cart;
-import com.abdelkhalek.storehub.order.pricing.domain.models.Discount;
+import com.abdelkhalek.storehub.catalog.pricing.domain.models.DiscountWithProductIds;
+import com.abdelkhalek.storehub.catalog.pricing.domain.models.discountrule.Quantity;
+import com.abdelkhalek.storehub.catalog.pricing.domain.models.AppliedDiscount;
+import com.abdelkhalek.storehub.catalog.pricing.domain.models.Cart;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Data
 public class QuantityDiscount implements DiscountStrategy {
     private int minimumQuantity;
     private BigDecimal percentage;
-    private String productId;
+    private List<UUID> productIds;
     private String id;
 
     public QuantityDiscount( String id,int minimumQuantity,
-                             BigDecimal percentage, String productId) {
+                             BigDecimal percentage, List<UUID> productIds) {
 
         this.minimumQuantity = minimumQuantity;
         this.percentage = percentage;
-        this.productId = productId;
+        this.productIds = productIds;
         this.id = id;
     }
 
-    public QuantityDiscount(Discount discount) {
-        this(
-                discount.getId(),
-                Integer.parseInt(discount.getAttributes().get("minimumQuantity")),
-                BigDecimal.valueOf(Integer.parseInt(discount.getAttributes().get("percentage"))),
-                discount.getProductId()
-                );
+    public QuantityDiscount(DiscountWithProductIds discount) {
+        this.id = discount.getType().name().toLowerCase();
+        Quantity quantityDiscount = (Quantity) discount.getRule();
+        this.minimumQuantity = quantityDiscount.minimumQuantity();
+        this.percentage = quantityDiscount.percentage();
+        this.productIds = discount.getProductIds();
     }
 
-    public void update(Discount discount) {
-        id = discount.getId();
-        percentage = BigDecimal.valueOf(Integer.parseInt(discount.getAttributes().get("percentage")));
-        minimumQuantity = Integer.parseInt(discount.getAttributes().get("minimumQuantity"));
-        productId = discount.getProductId();
+    public void update(DiscountWithProductIds discount) {
+        id = discount.getType().name().toLowerCase();
+        Quantity quantityDiscount = (Quantity) discount.getRule();
+        percentage = quantityDiscount.percentage();
+        minimumQuantity = quantityDiscount.minimumQuantity();
+        productIds = discount.getProductIds();
     }
 
     @Override
     public void apply(Cart cart) {
 
-        log.info("Now we will apply quantity discount for {} ", productId);
+        log.info("Now we will apply quantity discount for {} ", productIds);
         cart.getItems().forEach(item -> {
-            boolean applies = (productId == null || productId.equals(item.getProductId())) &&
+            boolean applies = (productIds == null || productIds.contains(item.getProductId())) &&
                     item.getQuantity() >= minimumQuantity;
 
             if (applies) {

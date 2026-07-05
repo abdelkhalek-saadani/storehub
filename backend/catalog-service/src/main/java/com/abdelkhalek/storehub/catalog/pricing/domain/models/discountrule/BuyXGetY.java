@@ -1,5 +1,3 @@
-package com.abdelkhalek.storehub.catalog.pricing.domain.models;
-
-import com.abdelkhalek.storehub.catalog.pricing.DiscountRule;
+package com.abdelkhalek.storehub.catalog.pricing.domain.models.discountrule;
 
 public record BuyXGetY(int requiredQty, int freeQty) implements DiscountRule {}

@@ -1,6 +1,5 @@
-package com.abdelkhalek.storehub.catalog.pricing;
+package com.abdelkhalek.storehub.catalog.pricing.entity;
 
-import com.abdelkhalek.storehub.catalog.pricing.DiscountEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

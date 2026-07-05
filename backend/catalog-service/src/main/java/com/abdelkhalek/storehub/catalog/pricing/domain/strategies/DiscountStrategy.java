@@ -1,7 +1,7 @@
 package com.abdelkhalek.storehub.catalog.pricing.domain.strategies;
 
 
-import com.abdelkhalek.storehub.catalog.pricing.DiscountWithProductIds;
+import com.abdelkhalek.storehub.catalog.pricing.domain.models.DiscountWithProductIds;
 import com.abdelkhalek.storehub.catalog.pricing.domain.models.Cart;
 
 public interface DiscountStrategy {

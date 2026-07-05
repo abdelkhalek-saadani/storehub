@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.catalog.pricing;
+package com.abdelkhalek.storehub.catalog.pricing.domain.models;
 
 public enum DiscountType {
     PERCENTAGE_OFF,

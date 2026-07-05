@@ -1,5 +1,6 @@
 package com.abdelkhalek.storehub.catalog.pricing;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 
@@ -7,7 +8,9 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
+// Used to construct concrete discount strategies, it holds data related to the discount rule
 @Data
+@AllArgsConstructor
 public class DiscountWithProductIds{
     UUID id;
     UUID storeId;

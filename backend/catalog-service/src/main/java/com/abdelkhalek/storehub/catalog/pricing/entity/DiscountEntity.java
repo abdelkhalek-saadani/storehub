@@ -1,5 +1,6 @@
 package com.abdelkhalek.storehub.catalog.pricing;
 
+import com.abdelkhalek.storehub.catalog.pricing.domain.models.discountrule.DiscountRule;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

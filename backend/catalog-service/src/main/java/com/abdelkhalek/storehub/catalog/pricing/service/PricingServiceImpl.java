@@ -12,10 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -93,6 +91,7 @@ public class PricingServiceImpl implements PricingService {
                             (item.getFinalUnitPrice().subtract(item.getOriginalUnitPrice()))
                                     .multiply(BigDecimal.valueOf(item.getQuantity()));
                     priceItemResponse.setDiscountAmount(appliedDiscountAmount);
+                    // TODO: Add applied offer id and type
                     item.getAppliedDiscounts().stream().findAny()
                             .ifPresent(appliedDiscount -> priceItemResponse
                                     .setAppliedOffer(new AppliedOffer(null,

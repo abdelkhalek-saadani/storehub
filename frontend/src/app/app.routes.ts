@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import Layout from './layout/layout/layout';
 import { authGuard } from '@core/auth/auth-guard';
 import { guestOnlyGuard } from '@core/auth/guest-only.guard';
+import { storeResolver } from './products/store-resolver';
 
 export const routes: Routes = [
   {
@@ -64,12 +65,18 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/payment-failed/payment-failed'),
       },
       {
-        path: 'products',
-        loadComponent: () => import('./pages/products/products'),
+        path: 'store/:storeId',
+        resolve: { storeId: storeResolver },
+        children: [
+          {
+            path: 'products',
+            loadComponent: () => import('./products/products/products'),
+          },
+        ],
       },
       {
         path: 'products-explorer',
-        loadComponent: () => import('./pages/product-explorer/product-explorer'),
+        loadComponent: () => import('./products/product-explorer/product-explorer'),
       },
       {
         path: 'product/:productId',
@@ -86,10 +93,6 @@ export const routes: Routes = [
         path: 'products',
         pathMatch: 'full',
         redirectTo: 'products/all',
-      },
-      {
-        path: 'products/:category',
-        loadComponent: () => import('./pages/products-grid/products-grid'),
       },
       {
         path: 'wishlist',

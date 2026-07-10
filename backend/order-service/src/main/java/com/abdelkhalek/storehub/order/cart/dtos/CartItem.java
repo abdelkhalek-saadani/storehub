@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
 
-public record GuestCartItem(
+public record CartItem(
         @NotNull UUID productId,
-        @Min(1) int quantity
+        @Min(0) int quantity
 ) {}

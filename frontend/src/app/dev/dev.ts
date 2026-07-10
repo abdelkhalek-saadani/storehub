@@ -33,7 +33,6 @@ import { DeliveryAddressForm } from '../components/molecules/delivery-address-fo
 import { CategorySquaredButton } from '../components/atoms/category-squared-button/category-squared-button';
 import { CategoryBar } from '../components/molecules/category-bar/category-bar';
 import { Breakpoints } from '@core/constants/breakpoints';
-import { ProductCard } from '../components/molecules/product-card/product-card';
 import { MatCardImage } from '@angular/material/card';
 import { CartItem } from '../components/molecules/cart-item/cart-item';
 import { CheckoutForm } from '../components/molecules/checkout-form/checkout-form';
@@ -44,6 +43,7 @@ import { OrderConfirmation } from '../components/molecules/order-confirmation/or
 import { OrderTracking } from '../components/molecules/order-tracking/order-tracking';
 import { Gallery } from '../components/molecules/gallery/gallery';
 import Keycloak from 'keycloak-js';
+import { ProductCard } from '../products/product-card/product-card';
 @Component({
   selector: 'app-dev',
   imports: [
@@ -77,7 +77,6 @@ import Keycloak from 'keycloak-js';
     DeliveryAddressForm,
     CategorySquaredButton,
     CategoryBar,
-    ProductCard,
     CartItem,
     CheckoutForm,
     ReviewOrder,
@@ -125,7 +124,7 @@ import Keycloak from 'keycloak-js';
 
           <span class="label">Product Card</span>
 
-          <app-product-card />
+          <!--          <app-product-card />-->
 
           <span class="label">Category Bar</span>
 

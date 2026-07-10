@@ -5,4 +5,5 @@ export const environment = {
     clientId: 'angular-public-client',
   },
   apiUrl: 'http://localhost:8080',
+  catalogApiUrl: 'http://localhost:8082',
 };

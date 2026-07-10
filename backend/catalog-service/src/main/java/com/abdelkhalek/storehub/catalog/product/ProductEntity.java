@@ -1,11 +1,14 @@
-package com.abdelkhalek.storehub.catalog.inventory;
+package com.abdelkhalek.storehub.catalog.product;
 
+import com.abdelkhalek.storehub.catalog.pricing.entity.DiscountEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -13,7 +16,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Product {
+public class ProductEntity {
 
     @Id
     @GeneratedValue
@@ -31,4 +34,7 @@ public class Product {
     // this column exists so reads (e.g. /catalog/prices) don't need a join.
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal unitPrice;
+
+    @ManyToMany(mappedBy = "products")
+    private Set<DiscountEntity> discounts = new HashSet<>();
 }

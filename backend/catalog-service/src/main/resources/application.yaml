@@ -1,3 +1,50 @@
 spring:
   application:
     name: catalog
+    cors.allowed-origins: ${FRONTEND_URL}
+  datasource:
+    url: jdbc:postgresql://localhost:5432/catalog_db
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KC_BASE_URL}/realms/storehub
+          jwk-set-uri: ${KC_BASE_URL}/realms/storehub/protocol/openid-connect/certs
+
+      client:
+        registration:
+          internal-service:
+            provider: storehub-keycloak
+            client-id: order-internal
+            client-secret: ${ORDER_INTERNAL_SECRET}
+            authorization-grant-type: client_credentials
+        provider:
+          storehub-keycloak:
+            token-uri: ${KC_BASE_URL}/realms/storehub/protocol/openid-connect/token
+
+logging:
+  level:
+    com.abdelkhalek.storehub: DEBUG
+    org:
+      springframework:
+        web:
+          servlet:
+            mvc:
+              method:
+                annotation:
+                  ExceptionHandlerExceptionResolver: ERROR
+
+storehub:
+  internal-client-registration: internal-service
+  admin-client-registration: keycloak-admin
+  catalog-base-url: ${CATALOG_BASE_URL}
+  kc-base-url: ${KC_BASE_URL}
+  realm: storehub
+
+server:
+  port: 8082

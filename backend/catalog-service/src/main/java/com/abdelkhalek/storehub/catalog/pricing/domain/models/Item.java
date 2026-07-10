@@ -30,6 +30,11 @@ public class Item {
         this.finalUnitPrice = originalUnitPrice; // Initially the same as original
     }
 
+    public void setUnitPrice(BigDecimal unitPrice) {
+        this.finalUnitPrice = unitPrice;
+        this.originalUnitPrice = unitPrice;
+    }
+
     public BigDecimal getSubtotal() {
         return finalUnitPrice.multiply(BigDecimal.valueOf(quantity));
     }

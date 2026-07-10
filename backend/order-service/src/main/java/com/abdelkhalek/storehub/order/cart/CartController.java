@@ -1,9 +1,8 @@
 package com.abdelkhalek.storehub.order.cart;
 
-import com.abdelkhalek.storehub.order.cart.dtos.AddItemRequest;
 import com.abdelkhalek.storehub.order.cart.dtos.CartResponse;
 import com.abdelkhalek.storehub.order.cart.dtos.GetCartRequest;
-import com.abdelkhalek.storehub.order.cart.dtos.GuestCartRequest;
+import com.abdelkhalek.storehub.order.cart.dtos.UpdateCartRequest;
 import com.abdelkhalek.storehub.order.cart.services.cart.CartService;
 import com.abdelkhalek.storehub.order.cart.services.price.PricesResponse;
 import com.abdelkhalek.storehub.order.user.UserService;
@@ -15,7 +14,7 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @RestController
-@RequestMapping("/cart")
+@RequestMapping("cart")
 @RequiredArgsConstructor
 public class CartController {
 
@@ -28,18 +27,22 @@ public class CartController {
                 .flatMap( (userId) -> cartService.getCart(userId, request));
     }
 
-    @PostMapping("/items")
-    public Mono<CartResponse> upsertItem(@RequestBody @Valid AddItemRequest request) {
-        log.debug("Add item request: {}", request);
+
+    @PostMapping("items")
+    public Mono<CartResponse> upsertItems(@RequestBody @Valid UpdateCartRequest request) {
         return userService.getCurrentUserId()
-                .flatMap((userId) -> cartService.upsertItem(userId, request));
+                .flatMap((userId) -> cartService.upsertItems(userId, request));
     }
 
 
 
 
-    @PostMapping("/quote")
-    public Mono<PricesResponse> quote(@RequestBody @Valid GuestCartRequest request) {
+
+
+
+
+    @PostMapping("quote")
+    public Mono<PricesResponse> quote(@RequestBody @Valid UpdateCartRequest request) {
         // no auth required, guest endpoint, stateless
         return cartService.quote(request);
     }

@@ -3,8 +3,8 @@ package com.abdelkhalek.storehub.order.cart;
 import com.abdelkhalek.storehub.order.cart.domain.Cart;
 import com.abdelkhalek.storehub.order.cart.domain.CartItem;
 import com.abdelkhalek.storehub.order.cart.dtos.CartItemResponse;
+import com.abdelkhalek.storehub.order.cart.dtos.UpdateCartRequest;
 import com.abdelkhalek.storehub.order.cart.dtos.CartResponse;
-import com.abdelkhalek.storehub.order.cart.dtos.GuestCartRequest;
 import com.abdelkhalek.storehub.order.cart.entities.CartEntity;
 import com.abdelkhalek.storehub.order.cart.entities.CartItemEntity;
 import com.abdelkhalek.storehub.order.cart.services.price.AppliedOffer;
@@ -19,7 +19,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface CartMapper {
 
-    PricesRequest fromGuestCartRequestToPricesRequest(GuestCartRequest guestCartRequest);
+    PricesRequest fromGuestCartRequestToPricesRequest(UpdateCartRequest guestCartRequest);
 
     List<CartItem> fromPriceItemsResponse(List<PriceItemResponse> priceItemsResponse);
 

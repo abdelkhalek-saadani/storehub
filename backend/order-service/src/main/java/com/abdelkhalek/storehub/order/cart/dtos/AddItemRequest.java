@@ -8,5 +8,5 @@ import java.util.UUID;
 public record AddItemRequest(
         @NotNull UUID productId,
         @NotNull UUID storeId,
-        @Min(1) int quantity
+        @Min(0) int quantity
 ) {}

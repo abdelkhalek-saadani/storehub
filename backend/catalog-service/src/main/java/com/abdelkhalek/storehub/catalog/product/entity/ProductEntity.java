@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.catalog.product;
+package com.abdelkhalek.storehub.catalog.product.entity;
 
 import com.abdelkhalek.storehub.catalog.pricing.entity.DiscountEntity;
 import jakarta.persistence.*;
@@ -35,6 +35,11 @@ public class ProductEntity {
     @Column(nullable = false, precision = 12, scale = 2)
     private BigDecimal unitPrice;
 
+
     @ManyToMany(mappedBy = "products")
     private Set<DiscountEntity> discounts = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sub_category_id", nullable = true)
+    private SubCategory subCategory;
 }

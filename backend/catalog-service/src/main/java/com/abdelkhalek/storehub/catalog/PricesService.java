@@ -1,12 +1,16 @@
 package com.abdelkhalek.storehub.catalog;
 
+import com.abdelkhalek.storehub.catalog.dtos.PriceItemRequest;
 import com.abdelkhalek.storehub.catalog.dtos.PricesRequest;
 import com.abdelkhalek.storehub.catalog.dtos.PricesResponse;
 import com.abdelkhalek.storehub.catalog.inventory.StockEntity;
 import com.abdelkhalek.storehub.catalog.inventory.exception.InsufficientStockException;
 import com.abdelkhalek.storehub.catalog.inventory.repository.StockRepository;
+import com.abdelkhalek.storehub.catalog.pricing.exceptions.StockNotFoundException;
 import com.abdelkhalek.storehub.catalog.pricing.service.PricingService;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class PricesService {
@@ -23,16 +27,25 @@ public class PricesService {
         // Check products availability (there is sufficient qty or not, this will look for
         // the product stock)
         request.getItems().forEach(item -> {
-            StockEntity stockEntity =
-                    stockRepository.findByStoreIdAndProductId(request.getStoreId(),
-                            item.getProductId()).orElseThrow();
-            if (stockEntity.getQuantityAvailable() > item.getQuantity()) {
-                throw new InsufficientStockException(item.getProductId(), item.getQuantity(), stockEntity.getQuantityAvailable());
-            }
+            validateStock(request.getStoreId(), item);
         });
         // Use the pricing package to perform the totals calculation
 
         return pricingService.calculateTotal(request);
     }
 
+
+    private void validateStock(UUID storeId, PriceItemRequest item) {
+        StockEntity stockEntity = stockRepository
+                .findByStoreIdAndProductId(storeId, item.getProductId())
+                .orElseThrow(() -> new StockNotFoundException(item.getProductId()));
+
+        if (stockEntity.getQuantityAvailable() < item.getQuantity()) {
+            throw new InsufficientStockException(
+                    item.getProductId(),
+                    item.getQuantity(),
+                    stockEntity.getQuantityAvailable()
+            );
+        }
+    }
 }

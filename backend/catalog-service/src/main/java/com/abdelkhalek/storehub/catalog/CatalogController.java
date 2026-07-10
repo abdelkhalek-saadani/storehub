@@ -2,22 +2,20 @@ package com.abdelkhalek.storehub.catalog;
 
 import com.abdelkhalek.storehub.catalog.dtos.PricesRequest;
 import com.abdelkhalek.storehub.catalog.dtos.PricesResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RequiredArgsConstructor
-@RestController("/internal")
+@RestController
+@RequestMapping()
 public class CatalogController {
 
-    private final PricesService pricesService;
-
-    @PostMapping("prices")
-    public ResponseEntity<PricesResponse> price(@RequestBody PricesRequest request) {
-        return ResponseEntity.ok(pricesService.getPrices(request));
+    @GetMapping()
+    public ResponseEntity<String> hello() {
+        return ResponseEntity.ok("Salemu Alaykom");
     }
 
 

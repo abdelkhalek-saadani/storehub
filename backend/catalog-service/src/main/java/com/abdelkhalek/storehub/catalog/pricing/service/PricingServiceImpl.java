@@ -1,13 +1,14 @@
 package com.abdelkhalek.storehub.catalog.pricing.service;
 
 import com.abdelkhalek.storehub.catalog.dtos.*;
-import com.abdelkhalek.storehub.catalog.pricing.entity.ProductEntity;
-import com.abdelkhalek.storehub.catalog.pricing.repository.ProductRepository;
+import com.abdelkhalek.storehub.catalog.product.entity.ProductEntity;
+import com.abdelkhalek.storehub.catalog.product.repository.ProductRepository;
 import com.abdelkhalek.storehub.catalog.pricing.domain.factories.DiscountStrategyFactory;
 import com.abdelkhalek.storehub.catalog.pricing.domain.models.*;
 import com.abdelkhalek.storehub.catalog.pricing.domain.strategies.DiscountStrategy;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 
@@ -19,6 +20,7 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Primary
 public class PricingServiceImpl implements PricingService {
 
     private final ProductRepository productRepository;
@@ -50,9 +52,11 @@ public class PricingServiceImpl implements PricingService {
             Item item = new Item();
             item.setProductId(productEntity.getId());
             item.setQuantity(qty);
-            item.setOriginalUnitPrice(productEntity.getUnitPrice());
+            item.setUnitPrice(productEntity.getUnitPrice());
             return item;
         })).toList();
+
+        log.debug("Items with their unit price are {}", items);
 
         // Discount strategies operate on a Cart (some may need cross-item logic,
         // e.g. bundle discounts), this Cart is purely an internal scratch object,
@@ -65,6 +69,8 @@ public class PricingServiceImpl implements PricingService {
             log.debug("Applying {}", discountStrategy);
             discountStrategy.apply(scratchCart);
         }
+
+        log.debug("cart items after discount: {}", scratchCart.getItems());
 
         BigDecimal originalTotal = scratchCart.getOriginalTotal();
         BigDecimal finalTotal = scratchCart.getFinalTotal();

@@ -1,4 +1,16 @@
 package com.abdelkhalek.storehub.catalog.product.dto;
 
-public class DiscountSummary {
-}
+
+import com.abdelkhalek.storehub.catalog.pricing.domain.models.DiscountType;
+import com.abdelkhalek.storehub.catalog.pricing.domain.models.discountrule.DiscountRule;
+
+import java.time.Instant;
+import java.util.UUID;
+
+public record DiscountSummary(
+        UUID id,
+        DiscountType type,
+        DiscountRule rule,
+        Instant startsAt,
+        Instant endsAt
+) {}

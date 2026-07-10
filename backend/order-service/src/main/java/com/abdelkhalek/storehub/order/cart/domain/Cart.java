@@ -28,6 +28,24 @@ public class Cart {
     LocalDateTime updatedAt;
 
 
+    public Cart upsert(List<CartItem> items) {
+        List<UUID> productIds = items.stream().map(CartItem::getProductId).toList();
+        List<CartItem> updatedItems = this.items.stream()
+                .filter(it -> !productIds.contains(it.getProductId()))
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        items.forEach(item -> {
+            if (item.getQuantity() > 0) {
+                updatedItems.add(item);
+            }
+        });
+
+        return new Cart(id, userId, storeId, originalTotal, finalTotal, totalDiscount,
+                updatedItems, createdAt,
+                LocalDateTime.now());
+
+    }
+
     public Cart upsert(CartItem item) {
         List<CartItem> updatedItems = this.items.stream()
                 .filter(it -> !it.getProductId().equals(item.getProductId()))

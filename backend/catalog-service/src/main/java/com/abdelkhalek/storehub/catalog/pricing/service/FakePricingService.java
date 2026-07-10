@@ -15,7 +15,6 @@ import java.util.List;
 /**
  * Dummy PricingService for manual testing
  */
-@Primary
 @Service
 public class FakePricingService implements PricingService {
 

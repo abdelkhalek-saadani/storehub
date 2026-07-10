@@ -1,5 +1,8 @@
 package com.abdelkhalek.storehub.catalog.product;
 
+import com.abdelkhalek.storehub.catalog.product.entity.ProductEntity;
+import com.abdelkhalek.storehub.catalog.product.entity.SubCategory;
+import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
@@ -19,6 +22,11 @@ public class ProductSpecifications {
 
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
+
+            if (categories != null && !categories.isEmpty()) {
+                Join<ProductEntity, SubCategory> subCategoryJoin = root.join("subCategory");
+                predicates.add(subCategoryJoin.get("name").in(categories));
+            }
 
             predicates.add(cb.equal(root.get("storeId"), storeId));
 

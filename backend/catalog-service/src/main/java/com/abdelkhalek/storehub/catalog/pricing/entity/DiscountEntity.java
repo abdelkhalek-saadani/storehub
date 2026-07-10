@@ -2,6 +2,7 @@ package com.abdelkhalek.storehub.catalog.pricing.entity;
 
 import com.abdelkhalek.storehub.catalog.pricing.domain.models.DiscountType;
 import com.abdelkhalek.storehub.catalog.pricing.domain.models.discountrule.DiscountRule;
+import com.abdelkhalek.storehub.catalog.product.entity.ProductEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

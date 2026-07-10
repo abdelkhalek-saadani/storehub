@@ -9,5 +9,6 @@ public record ProductResponse(
         String name,
         String description,
         BigDecimal unitPrice,
-        DiscountSummary activeDiscount // null if none active
+        DiscountSummary activeDiscount, // null if none active
+        String categoryName
 ) {}

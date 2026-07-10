@@ -2,6 +2,7 @@ package com.abdelkhalek.storehub.order.cart.services.price;
 
 import com.abdelkhalek.storehub.order.cart.exception.CatalogServiceException;
 import com.abdelkhalek.storehub.order.cart.exception.CatalogServiceUnavailableException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -15,19 +16,17 @@ import java.time.Duration;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class PricesService {
 
     private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(5);
 
-    private final WebClient webClient;
+    private final WebClient catalogWebClient;
 
-    public PricesService(WebClient catalogWebClient) {
-        this.webClient = catalogWebClient;
-    }
 
     public Mono<PricesResponse> fetchPrices(PricesRequest request) {
-        return webClient.post()
-                .uri("/prices")
+        return catalogWebClient.post()
+                .uri("internal/prices")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(request)
                 .retrieve()

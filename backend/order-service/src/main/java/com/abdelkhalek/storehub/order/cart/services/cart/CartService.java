@@ -1,11 +1,12 @@
 package com.abdelkhalek.storehub.order.cart.services.cart;
 
 import com.abdelkhalek.storehub.order.cart.CartMapper;
+import com.abdelkhalek.storehub.order.cart.domain.Cart;
 import com.abdelkhalek.storehub.order.cart.domain.CartItem;
 import com.abdelkhalek.storehub.order.cart.dtos.AddItemRequest;
+import com.abdelkhalek.storehub.order.cart.dtos.UpdateCartRequest;
 import com.abdelkhalek.storehub.order.cart.dtos.CartResponse;
 import com.abdelkhalek.storehub.order.cart.dtos.GetCartRequest;
-import com.abdelkhalek.storehub.order.cart.dtos.GuestCartRequest;
 import com.abdelkhalek.storehub.order.cart.entities.CartEntity;
 import com.abdelkhalek.storehub.order.cart.services.price.PriceItemResponse;
 import com.abdelkhalek.storehub.order.cart.services.price.PricesRequest;
@@ -35,42 +36,29 @@ public class CartService {
                 .map(cartMapper::fromEntityToResponse);
     }
 
+    public Mono<CartResponse> upsertItems(UUID userId, UpdateCartRequest request) {
+        return getOrCreateCart(userId, request.storeId())
+                .map(cartMapper::fromEntityToDomain)
+                .map(cart -> {
+                    List<CartItem> items =
+                            request.items().stream().map((item) -> new CartItem(item.productId(),
+                                    item.quantity())).toList();
+                    return cart.upsert(items);
+                })
+                .flatMap(this::repriceAndSave)
+                .map(cartMapper::fromEntityToResponse);
+    }
+
     public Mono<CartResponse> upsertItem(UUID userId, AddItemRequest request) {
         return getOrCreateCart(userId, request.storeId())
                 .map(cartMapper::fromEntityToDomain)
                 .map(cart -> cart.upsert(new CartItem(request.productId(), request.quantity())))
-                .flatMap(cart -> {
-                    PricesRequest pricesRequest = cartMapper.toPricesRequest(cart);
-                    Mono<PricesResponse> pricesResponseMono = pricesService.fetchPrices(pricesRequest);
-
-                    return pricesResponseMono.map((pricesResponse -> {
-                        log.info("Prices Response: {}", pricesResponse);
-                        for (PriceItemResponse pr : pricesResponse.getItems()) {
-                            log.info("Price Item: {}", pr);
-                        }
-                        List<CartItem> items =
-                                cartMapper.fromPriceItemsResponse(pricesResponse.getItems());
-                        cart.setItems(items);
-                        cart.setFinalTotal(pricesResponse.getFinalTotal());
-                        cart.setTotalDiscount(pricesResponse.getTotalDiscount());
-                        cart.setOriginalTotal(pricesResponse.getOriginalTotal());
-                        log.info("cart domain: {}", cart);
-                        return cart;
-                    }));
-                })
-                .map(cart -> {
-                    CartEntity cartEntity = cartMapper.toEntity(cart);
-                    cartEntity.setStoreId(request.storeId());
-                    cartEntity.setUserId(userId);
-                    log.info("cart entity: {}", cartEntity);
-                    return cartEntity;
-                })
-                .flatMap(cartRepository::save)
+                .flatMap(this::repriceAndSave)
                 .map(cartMapper::fromEntityToResponse);
     }
 
 
-    public Mono<PricesResponse> quote(GuestCartRequest request) {
+    public Mono<PricesResponse> quote(UpdateCartRequest request) {
         if (request.items().isEmpty()) {
             return Mono.just(PricesResponse.empty());
         }
@@ -78,6 +66,46 @@ public class CartService {
     }
 
     // --- internal helpers ---
+
+    /**
+     * Apply discounts, update unit prices and save the cart
+     * @param cart cart with items
+     * @return the saved cart entity
+     */
+    private Mono<CartEntity> repriceAndSave(Cart cart) {
+        return reprice(cart)
+                .map(cartMapper::toEntity)
+                .doOnNext(cartEntity -> log.debug("cart entity: {}", cartEntity))
+                .flatMap(cartRepository::save);
+    }
+
+    /**
+     * Populate cart items with their prices and their final totals
+     * with discounts applied
+     * It request the items unit prices and discounts from the catalog-service
+     * @param cart cart with items (productId, and quantity)
+     * @return the passed cart with prices populated and discounts applied
+     */
+    private Mono<Cart> reprice(Cart cart) {
+        PricesRequest pricesRequest = cartMapper.toPricesRequest(cart);
+        Mono<PricesResponse> pricesResponseMono = pricesService.fetchPrices(pricesRequest);
+
+        return pricesResponseMono.map((pricesResponse -> {
+            log.debug("Prices Response: {}", pricesResponse);
+            for (PriceItemResponse pr : pricesResponse.getItems()) {
+                log.debug("Price Item: {}", pr);
+            }
+            List<CartItem> items =
+                    cartMapper.fromPriceItemsResponse(pricesResponse.getItems());
+            cart.setItems(items);
+            cart.setFinalTotal(pricesResponse.getFinalTotal());
+            cart.setTotalDiscount(pricesResponse.getTotalDiscount());
+            cart.setOriginalTotal(pricesResponse.getOriginalTotal());
+            log.debug("cart domain: {}", cart);
+            return cart;
+        }));
+    }
+
 
     private Mono<CartEntity> getOrCreateCart(UUID userId, UUID storeId) {
         return cartRepository.findByUserIdAndStoreId(userId, storeId)
@@ -88,6 +116,7 @@ public class CartService {
         CartEntity cart = new CartEntity();
         cart.setUserId(userId);
         cart.setStoreId(storeId);
+        cart.setItems(List.of());
         return cartRepository.save(cart);
     }
 

@@ -1,5 +1,8 @@
 package com.abdelkhalek.storehub.catalog.dtos;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.List;
@@ -7,6 +10,10 @@ import java.util.UUID;
 
 @Data
 public class PricesRequest {
+
+    @NotNull
     UUID storeId;
-    List<PriceItemRequest> items;
+
+    @NotEmpty
+    List<@Valid PriceItemRequest> items;
 }

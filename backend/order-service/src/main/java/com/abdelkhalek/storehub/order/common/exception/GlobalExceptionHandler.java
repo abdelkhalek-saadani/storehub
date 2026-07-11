@@ -1,6 +1,8 @@
 package com.abdelkhalek.storehub.order.common.exception;
 
 import com.abdelkhalek.storehub.order.cart.exception.CartItemNotFoundException;
+import com.abdelkhalek.storehub.order.cart.exception.CatalogServiceException;
+import com.abdelkhalek.storehub.order.cart.exception.ProductNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +20,17 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(WebExchangeBindException.class)
-    public ResponseEntity<Map<String, String>> handleValidation(WebExchangeBindException ex) {
-        Map<String, String> errors = ex.getBindingResult().getFieldErrors().stream()
-                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage, (a, b) -> a));
-        return ResponseEntity.badRequest().body(errors);
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public Mono<ResponseEntity<Map<String, String>>> handleResponseStatus(ProductNotFoundException ex) {
+        return Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("message", ex.getMessage())));
+    }
+
+    @ExceptionHandler(CatalogServiceException.class)
+    public Mono<ResponseEntity<Map<String, String>>> handleResponseStatus(CatalogServiceException ex) {
+        return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(Map.of("message", ex.getMessage())));
     }
 
 
@@ -31,6 +39,13 @@ public class GlobalExceptionHandler {
         log.warn("Handled ResponseStatusException: {}", ex.getReason(), ex);
         return Mono.just(ResponseEntity.status(ex.getStatusCode())
                 .body(Map.of("message", ex.getReason() != null ? ex.getReason() : "Request failed")));
+    }
+
+    @ExceptionHandler(WebExchangeBindException.class)
+    public ResponseEntity<Map<String, String>> handleValidation(WebExchangeBindException ex) {
+        Map<String, String> errors = ex.getBindingResult().getFieldErrors().stream()
+                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage, (a, b) -> a));
+        return ResponseEntity.badRequest().body(errors);
     }
 
     @ExceptionHandler(Exception.class)

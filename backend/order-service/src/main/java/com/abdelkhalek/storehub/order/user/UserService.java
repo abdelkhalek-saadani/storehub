@@ -25,4 +25,25 @@ public class UserService {
                 .flatMap(userRepository::findIdByKeycloakId)
                 .switchIfEmpty(Mono.error(new IllegalStateException("No user found for current keycloak id")));
     }
+
+    public Mono<User> getCurrentUser() {
+        return ReactiveSecurityContextHolder.getContext()
+                .map(SecurityContext::getAuthentication)
+                .cast(JwtAuthenticationToken.class)
+                .map(auth -> auth.getToken().getSubject())
+                .flatMap(userRepository::findByKeycloakId)
+                .switchIfEmpty(Mono.error(new IllegalStateException("No user found for current keycloak id")));
+
+    }
+
+    public Mono<LastStoreResponse> getLastStore() {
+        return ReactiveSecurityContextHolder.getContext()
+                .map(SecurityContext::getAuthentication)
+                .cast(JwtAuthenticationToken.class)
+                .map(auth -> auth.getToken().getSubject())
+                .flatMap(userRepository::findPreferredStoreIdByKeycloakId)
+                .map(LastStoreResponse::new)
+                .switchIfEmpty(Mono.error(new IllegalStateException("No user found for current keycloak id")));
+
+    }
 }

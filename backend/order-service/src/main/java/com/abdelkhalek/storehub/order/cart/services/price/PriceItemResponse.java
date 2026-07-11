@@ -12,6 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class PriceItemResponse {
     UUID productId;
+    String productName;
     int quantity;
     BigDecimal unitPrice;
     BigDecimal originalLineTotal;

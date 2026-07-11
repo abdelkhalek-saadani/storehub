@@ -32,7 +32,8 @@ public class User {
     @Column("phone_number")
     private String phoneNumber;
 
-
+    @Column("preferred_store_id")
+    private UUID preferredStoreId;
 
 
     }

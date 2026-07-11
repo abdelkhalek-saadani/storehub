@@ -1,6 +1,7 @@
 package com.abdelkhalek.storehub.catalog.pricing.service;
 
 import com.abdelkhalek.storehub.catalog.dtos.*;
+import com.abdelkhalek.storehub.catalog.pricing.PriceItemMapper;
 import com.abdelkhalek.storehub.catalog.product.entity.ProductEntity;
 import com.abdelkhalek.storehub.catalog.product.repository.ProductRepository;
 import com.abdelkhalek.storehub.catalog.pricing.domain.factories.DiscountStrategyFactory;
@@ -25,6 +26,7 @@ public class PricingServiceImpl implements PricingService {
 
     private final ProductRepository productRepository;
     private final DiscountService discountService;
+    private final PriceItemMapper priceItemMapper;
 
     public PricesResponse calculateTotal(PricesRequest request) {
 
@@ -51,6 +53,7 @@ public class PricingServiceImpl implements PricingService {
             int qty = priceItemOptional.get().getQuantity();
             Item item = new Item();
             item.setProductId(productEntity.getId());
+            item.setProductName(productEntity.getName());
             item.setQuantity(qty);
             item.setUnitPrice(productEntity.getUnitPrice());
             return item;
@@ -84,27 +87,7 @@ public class PricingServiceImpl implements PricingService {
         response.setOriginalTotal(originalTotal);
         response.setTotalDiscount(totalDiscount);
 
-        List<PriceItemResponse> priceItems = items.stream().map(
-                (item -> {
-                    PriceItemResponse priceItemResponse = new PriceItemResponse();
-                    priceItemResponse.setProductId(item.getProductId());
-                    priceItemResponse.setQuantity(item.getQuantity());
-                    priceItemResponse.setUnitPrice(item.getOriginalUnitPrice());
-                    priceItemResponse.setOriginalLineTotal(item.getOriginalUnitPrice()
-                            .multiply(BigDecimal.valueOf(item.getQuantity())));
-                    priceItemResponse.setFinalLineTotal(item.getFinalUnitPrice()
-                            .multiply(BigDecimal.valueOf(item.getQuantity())));
-                    BigDecimal appliedDiscountAmount =
-                            (item.getFinalUnitPrice().subtract(item.getOriginalUnitPrice()))
-                                    .multiply(BigDecimal.valueOf(item.getQuantity()));
-                    priceItemResponse.setDiscountAmount(appliedDiscountAmount);
-                    // TODO: Add applied offer id and type
-                    item.getAppliedDiscounts().stream().findAny()
-                            .ifPresent(appliedDiscount -> priceItemResponse
-                                    .setAppliedOffer(new AppliedOffer(null,
-                                            appliedDiscount.getDescription(), null)));
-                    return priceItemResponse;
-                })).toList();
+        List<PriceItemResponse> priceItems = priceItemMapper.toResponses(items);
 
         response.setItems(priceItems);
 

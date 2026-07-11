@@ -4,9 +4,8 @@ import com.abdelkhalek.storehub.order.cart.CartMapper;
 import com.abdelkhalek.storehub.order.cart.domain.Cart;
 import com.abdelkhalek.storehub.order.cart.domain.CartItem;
 import com.abdelkhalek.storehub.order.cart.dtos.AddItemRequest;
-import com.abdelkhalek.storehub.order.cart.dtos.UpdateCartRequest;
 import com.abdelkhalek.storehub.order.cart.dtos.CartResponse;
-import com.abdelkhalek.storehub.order.cart.dtos.GetCartRequest;
+import com.abdelkhalek.storehub.order.cart.dtos.UpdateCartRequest;
 import com.abdelkhalek.storehub.order.cart.entities.CartEntity;
 import com.abdelkhalek.storehub.order.cart.services.price.PriceItemResponse;
 import com.abdelkhalek.storehub.order.cart.services.price.PricesRequest;
@@ -17,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,9 +30,9 @@ public class CartService {
     private final PricesService pricesService;
 
 
-    public Mono<CartResponse> getCart(UUID userId, GetCartRequest request) {
-        return cartRepository.findByUserIdAndStoreId(userId, request.storeId())
-                .switchIfEmpty(createEmptyCart(userId, request.storeId()))
+    public Mono<CartResponse> getCart(UUID userId, UUID storeId) {
+        return cartRepository.findByUserIdAndStoreId(userId, storeId)
+                .switchIfEmpty(createEmptyCart(userId, storeId))
                 .map(cartMapper::fromEntityToResponse);
     }
 
@@ -48,6 +48,7 @@ public class CartService {
                 .flatMap(this::repriceAndSave)
                 .map(cartMapper::fromEntityToResponse);
     }
+
 
     public Mono<CartResponse> upsertItem(UUID userId, AddItemRequest request) {
         return getOrCreateCart(userId, request.storeId())
@@ -69,6 +70,7 @@ public class CartService {
 
     /**
      * Apply discounts, update unit prices and save the cart
+     *
      * @param cart cart with items
      * @return the saved cart entity
      */
@@ -83,6 +85,7 @@ public class CartService {
      * Populate cart items with their prices and their final totals
      * with discounts applied
      * It request the items unit prices and discounts from the catalog-service
+     *
      * @param cart cart with items (productId, and quantity)
      * @return the passed cart with prices populated and discounts applied
      */
@@ -97,6 +100,7 @@ public class CartService {
             }
             List<CartItem> items =
                     cartMapper.fromPriceItemsResponse(pricesResponse.getItems());
+
             cart.setItems(items);
             cart.setFinalTotal(pricesResponse.getFinalTotal());
             cart.setTotalDiscount(pricesResponse.getTotalDiscount());
@@ -121,4 +125,19 @@ public class CartService {
     }
 
 
+    public Mono<CartResponse> clearCart(UUID userId, UUID storeId) {
+        return getOrCreateCart(userId, storeId)
+                .map(this::clearCart)
+                .doOnNext(cartEntity -> log.debug("cart entity after clearing: {}", cartEntity))
+                .flatMap(cartRepository::save)
+                .map(cartMapper::fromEntityToResponse);
+    }
+
+    private CartEntity clearCart(CartEntity cart) {
+        cart.setItems(List.of());
+        cart.setOriginalTotal(BigDecimal.ZERO);
+        cart.setFinalTotal(BigDecimal.ZERO);
+        cart.setTotalDiscount(BigDecimal.ZERO);
+        return cart;
+    }
 }

@@ -19,9 +19,16 @@ import java.util.UUID;
 @With
 @Table(name = "cart_item")
 public class CartItemEntity {
+    // productName, unitPrice, and totals are a cache from catalog-service,
+    // refreshed on every upsertItems() call (via reprice()).
+    // A plain getCart() does NOT refresh them, may show stale data
+    // until the cart is next mutated. Acceptable for cart UX; if a
+    // product is renamed/repriced, it corrects itself on next add/update.
 
     @Id
     UUID id;
+
+    String productName;
 
     UUID productId;
 

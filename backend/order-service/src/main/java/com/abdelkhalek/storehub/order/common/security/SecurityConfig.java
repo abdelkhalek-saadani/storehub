@@ -41,9 +41,10 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable) // stateless JWT API, no cookies
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers("/api/auth/**").permitAll()
-                        .pathMatchers("/cart/quote/**").permitAll()
+                        .pathMatchers("/api/cart/quote/**").permitAll()
                         .pathMatchers("/internal/**").hasRole("SERVICE") // service-to-service
                         .pathMatchers("/api/orders/**").hasRole("CUSTOMER")
+                        .pathMatchers("/api/cart/**").hasRole("CUSTOMER")
                         .pathMatchers("/api/stores/*/employees/**").hasRole(MembershipRole.STORE_OWNER.name())
                         .anyExchange().authenticated()
                 )

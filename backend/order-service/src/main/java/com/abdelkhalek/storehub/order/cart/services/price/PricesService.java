@@ -1,7 +1,9 @@
 package com.abdelkhalek.storehub.order.cart.services.price;
 
+import com.abdelkhalek.storehub.order.cart.dtos.CatalogErrorResponse;
 import com.abdelkhalek.storehub.order.cart.exception.CatalogServiceException;
 import com.abdelkhalek.storehub.order.cart.exception.CatalogServiceUnavailableException;
+import com.abdelkhalek.storehub.order.cart.exception.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -32,9 +34,9 @@ public class PricesService {
                 .retrieve()
                 .onStatus(
                         HttpStatus.BAD_REQUEST::equals,
-                        response -> response.bodyToMono(String.class)
-                                .flatMap(body -> Mono.error(
-                                        new CatalogServiceException("Invalid price request: " + body)
+                        response -> response.bodyToMono(CatalogErrorResponse.class)
+                                .flatMap(err -> Mono.error(
+                                        new CatalogServiceException(err.message())
                                 ))
                 )
                 .onStatus(
@@ -42,6 +44,13 @@ public class PricesService {
                         response -> Mono.error(
                                 new CatalogServiceUnavailableException("Catalog service returned a server error")
                         )
+                )
+                .onStatus(
+                        HttpStatus.NOT_FOUND::equals,
+                        response -> response.bodyToMono(CatalogErrorResponse.class)
+                                .flatMap(err -> Mono.error(
+                                        new ProductNotFoundException(err.message())
+                                ))
                 )
                 .bodyToMono(PricesResponse.class)
                 .timeout(
@@ -56,7 +65,7 @@ public class PricesService {
                                 "Could not reach catalog-service: " + ex.getMessage()
                         )
                 )
-                .doOnError(error -> log.error(
+                .doOnError(error -> log.warn(
                         "Failed to fetch prices from catalog-service: {}", error.getMessage()
                 ));
     }

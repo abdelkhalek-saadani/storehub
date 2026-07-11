@@ -28,6 +28,12 @@ public class Cart {
     LocalDateTime updatedAt;
 
 
+    public Cart clear() {
+        return new Cart(this.id, this.userId, this.storeId, BigDecimal.ZERO, BigDecimal.ZERO,
+                BigDecimal.ZERO, List.of(), createdAt,
+                LocalDateTime.now());
+    }
+
     public Cart upsert(List<CartItem> items) {
         List<UUID> productIds = items.stream().map(CartItem::getProductId).toList();
         List<CartItem> updatedItems = this.items.stream()

@@ -17,6 +17,7 @@ import java.util.UUID;
 public class Item {
     private UUID id;
     private UUID productId;
+    private String productName;
     private int quantity;
     private BigDecimal originalUnitPrice = BigDecimal.ZERO;
     private BigDecimal finalUnitPrice = BigDecimal.ZERO;

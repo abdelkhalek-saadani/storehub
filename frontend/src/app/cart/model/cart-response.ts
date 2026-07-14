@@ -12,6 +12,7 @@ export interface CartResponse {
 export interface CartItemResponse {
   itemId: UUID;
   productId: UUID;
+  productName: string;
   quantity: number;
   unitPrice: number;
   originalLineTotal: number;

@@ -3,55 +3,45 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '@environments/environment';
 import { StoreContext } from '../products/service/store-context';
-import { PagedResponse } from '../products/models/page-response';
-import { ProductQuery } from '../products/service/catalog-api';
-
-export interface CartQuery {
-  page: number;
-  size: number;
-  categories?: string[];
-  minPrice?: number;
-  maxPrice?: number;
-}
+import { UpdateCartItem } from './model/update-cart-request';
+import { CartResponse } from './model/cart-response';
 
 @Injectable({ providedIn: 'root' })
 export class CartApi {
   private http = inject(HttpClient);
   private cartUrl = `${environment.orderApiUrl}/api/cart`;
-  private categoriesUrl = `${environment.catalogApiUrl}/categories`;
   private storeContext = inject(StoreContext);
 
   private getStoreId(): string {
     const storeId = this.storeContext.storeId();
     if (!storeId) {
-      throw new Error('ProductService called before storeId is available');
+      throw new Error('CartApi called before storeId is available');
     }
     return storeId;
   }
 
-  getProducts(query: ProductQuery): Observable<PagedResponse<Product>> {
-    let params = new HttpParams()
-      .set('storeId', this.getStoreId())
-      .set('page', query.page)
-      .set('size', query.size);
+  getCart(): Observable<CartResponse> {
+    let params = new HttpParams().set('storeId', this.getStoreId());
 
-    if (query.categories?.length) {
-      params = params.set('categories', query.categories.join(','));
-    }
-    if (query.minPrice != null) {
-      params = params.set('minPrice', query.minPrice);
-    }
-    if (query.maxPrice != null) {
-      params = params.set('maxPrice', query.maxPrice);
-    }
-
-    const response = this.http.get<PagedResponse<Product>>(this.productsUrl, { params });
+    const response = this.http.get<CartResponse>(this.cartUrl, { params });
     console.log(response);
     return response;
   }
 
-  getCategories(): Observable<string[]> {
-    const params = new HttpParams().set('storeId', this.getStoreId());
-    return this.http.get<string[]>(this.categoriesUrl, { params });
+  upsertItems(items: UpdateCartItem[]): Observable<CartResponse> {
+    let requestBody = {
+      storeId: this.getStoreId(),
+      items: items,
+    };
+    const response = this.http.post<CartResponse>(`${this.cartUrl}/items`, requestBody);
+    console.log(response);
+    return response;
+  }
+
+  clearCart(): Observable<CartResponse> {
+    let params = new HttpParams().set('storeId', this.getStoreId());
+    const response = this.http.delete<CartResponse>(this.cartUrl, { params });
+    console.log(response);
+    return response;
   }
 }

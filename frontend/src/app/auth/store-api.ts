@@ -13,6 +13,6 @@ export class StoreApi {
   constructor(private http: HttpClient) {}
 
   createStore(data: CreateStorePayload) {
-    return this.http.post(`${environment.apiUrl}/api/stores`, data);
+    return this.http.post(`${environment.orderApiUrl}/api/stores`, data);
   }
 }

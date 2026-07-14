@@ -1,8 +1,7 @@
 export interface Offer {
   id: string;
-  label: string;
+  name: string;
   imageUrl: string;
-  alt: string;
-  routerLink: string;
-  featured?: boolean;
+  slug: string;
+  description: string;
 }

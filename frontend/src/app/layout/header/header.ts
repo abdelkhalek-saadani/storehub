@@ -16,6 +16,7 @@ import { Router, RouterLink } from '@angular/router';
 import { CartSidenav } from '../../services/cart-sidenav';
 import Keycloak from 'keycloak-js';
 import { KEYCLOAK_EVENT_SIGNAL } from 'keycloak-angular';
+import { CartStore } from '../../cart/cart-store';
 
 @Component({
   selector: 'app-header',
@@ -71,9 +72,15 @@ import { KEYCLOAK_EVENT_SIGNAL } from 'keycloak-angular';
               3 Products
             </button>
             <button matButton="filled" class="btn-pill-sm" (click)="cartSidenavService.toggle()">
-              <mat-icon>shopping_cart</mat-icon>
-              <span>15 TND</span>
-              <span class="text-white bg-primary rounded-full p-1 text-sm ms-1">12</span>
+              <div class="flex items-center gap-1">
+                <mat-icon>shopping_cart</mat-icon>
+                <span>{{ total() }} TND</span>
+                <div
+                  class="flex items-center justify-center rounded-full bg-primary w-[26px] aspect-square"
+                >
+                  <span class="text-white text-sm">{{ itemCount() }}</span>
+                </div>
+              </div>
             </button>
 
             @if (isAuthenticated()) {
@@ -110,11 +117,14 @@ import { KEYCLOAK_EVENT_SIGNAL } from 'keycloak-angular';
 })
 export class Header {
   store = inject(ProductStore);
+  cartStore = inject(CartStore);
   sidenavService = inject(SidenavService);
   cartSidenavService = inject(CartSidenav);
   readonly keycloak = inject(Keycloak);
   private readonly keycloakSignal = inject(KEYCLOAK_EVENT_SIGNAL);
   router = inject(Router);
+  total = this.cartStore.finalTotal;
+  itemCount = this.cartStore.itemCount;
 
   isAuthenticated = computed(() => {
     this.keycloakSignal(); // triggers recompute on any keycloak event

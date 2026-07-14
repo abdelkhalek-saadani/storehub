@@ -1,6 +1,7 @@
 package com.abdelkhalek.storehub.catalog.product;
 
 import com.abdelkhalek.storehub.catalog.product.entity.ProductEntity;
+import com.abdelkhalek.storehub.catalog.product.entity.SaleEvent;
 import com.abdelkhalek.storehub.catalog.product.entity.SubCategory;
 import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
@@ -18,10 +19,21 @@ public class ProductSpecifications {
             UUID storeId,
             BigDecimal minPrice,
             BigDecimal maxPrice,
-            List<String> categories) {
+            List<String> categories,
+            Boolean isBestSeller,
+            String saleEventSlug) {
 
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
+
+            if (saleEventSlug != null) {
+                Join<ProductEntity, SaleEvent> saleEventJoin = root.join("saleEvent");
+                predicates.add(cb.equal(saleEventJoin.get("slug"), saleEventSlug));
+            }
+
+            if (isBestSeller != null) {
+                predicates.add(cb.equal(root.get("isBestSeller"), isBestSeller));
+            }
 
             if (categories != null && !categories.isEmpty()) {
                 Join<ProductEntity, SubCategory> subCategoryJoin = root.join("subCategory");
@@ -37,7 +49,6 @@ public class ProductSpecifications {
             if (maxPrice != null) {
                 predicates.add(cb.lessThanOrEqualTo(root.get("unitPrice"), maxPrice));
             }
-
 
 
             return cb.and(predicates.toArray(new Predicate[0]));

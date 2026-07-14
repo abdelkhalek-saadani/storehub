@@ -15,7 +15,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
-@Order(2)
+@Order(3)
 @RequiredArgsConstructor
 public class ProductSeeder implements CommandLineRunner {
 

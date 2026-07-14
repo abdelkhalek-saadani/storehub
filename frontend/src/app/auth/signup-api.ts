@@ -21,6 +21,6 @@ export class SignupService {
   constructor(private http: HttpClient) {}
 
   signup(data: SignupPayload): Observable<SignupResponse> {
-    return this.http.post<SignupResponse>(`${environment.apiUrl}/api/auth/signup`, data);
+    return this.http.post<SignupResponse>(`${environment.orderApiUrl}/api/auth/signup`, data);
   }
 }

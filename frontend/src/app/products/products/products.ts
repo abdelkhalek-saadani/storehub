@@ -1,5 +1,5 @@
 import { Component, computed, inject, Signal, signal } from '@angular/core';
-import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { rxResource, takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { NgClass } from '@angular/common';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -57,25 +57,25 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
         <app-filter-chips />
 
-        @if (loading()) {
+        @if (pagedResult.isLoading()) {
           <div class="flex justify-center items-center py-12">
             <mat-progress-spinner mode="indeterminate" diameter="40" />
           </div>
-        } @else if (error()) {
+        } @else if (pagedResult.error()) {
           <div class="flex flex-col items-center gap-3 py-12">
             <span class="text-gray-500">Failed to load products. Please try again.</span>
             <button matButton="filled" (click)="retry()">Retry</button>
           </div>
         } @else {
           <div [ngClass]="isMobile() ? 'responsive-grid' : 'md-responsive-grid'">
-            @for (product of pagedResult()?.content ?? []; track product.id) {
+            @for (product of pagedResult.value().content; track product.id) {
               <app-product-card [product]="product" />
             }
           </div>
 
           <div class="flex items-center justify-center">
             <mat-paginator
-              [length]="pagedResult()?.totalElements ?? 0"
+              [length]="pagedResult.value().totalElements"
               [pageSize]="pageSize()"
               [pageIndex]="pageIndex()"
               aria-label="Select page"
@@ -91,7 +91,6 @@ export default class ProductsPage {
   private breakpointObserver = inject(BreakpointObserver);
   private filterState = inject(ProductFilterState);
   private productService = inject(ProductService);
-  private storeContext = inject(StoreContext);
 
   isMobile = signal(false);
   matDialog = inject(MatDialog);
@@ -109,52 +108,37 @@ export default class ProductsPage {
     this.matDialog.open(FilterDialog);
   }
 
-  retryTrigger = signal(0);
-
-  private query: Signal<ProductQuery | null> = computed(() => {
-    this.retryTrigger(); // subscribe so retry() forces recomputation
-    const storeId = this.storeContext.storeId();
-    const filters = this.filters();
-    return storeId
-      ? {
-          page: this.pageIndex(),
-          size: this.pageSize(),
-          categories: filters.categories,
-          minPrice: filters.minPrice ?? undefined,
-          maxPrice: filters.maxPrice ?? undefined,
-        }
-      : null;
+  pagedResult = rxResource<PagedResponse<Product>, ProductQuery>({
+    params: () => {
+      const filters = this.filters();
+      return {
+        page: this.pageIndex(),
+        size: this.pageSize(),
+        categories: filters.categories,
+        minPrice: filters.minPrice ?? undefined,
+        maxPrice: filters.maxPrice ?? undefined,
+        isBestSeller: filters.isBestSeller ?? undefined,
+        saleEvent: filters.saleEvent ?? undefined,
+      };
+    },
+    stream: ({ params }) => this.productService.getProducts(params),
+    defaultValue: {
+      content: [],
+      totalElements: 0,
+      totalPages: 0,
+      number: 0,
+      size: 0,
+    },
   });
 
   retry() {
-    this.error.set(null);
-    this.retryTrigger.update((v) => v + 1);
+    this.pagedResult.reload();
   }
-
-  pagedResult: Signal<PagedResponse<Product> | null> = toSignal(
-    toObservable(this.query).pipe(
-      tap(() => this.loading.set(true)),
-      switchMap((q) =>
-        q
-          ? this.productService.getProducts(q).pipe(
-              catchError((err) => {
-                this.error.set(err);
-                return of(null);
-              }),
-            )
-          : of(null),
-      ),
-      tap(() => this.loading.set(false)),
-    ),
-    { initialValue: null },
-  );
-
-  loading = signal(false);
-  error = signal<unknown>(null);
 
   private paginationState = inject(ProductPaginationState);
   pageIndex = this.paginationState.pageIndex;
   pageSize = this.paginationState.pageSize;
+
   catchPagingInfo(pageEvent: PageEvent) {
     this.paginationState.setPage(pageEvent.pageIndex, pageEvent.pageSize);
   }

@@ -1,10 +1,11 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CartItem } from '@components/molecules/cart-item/cart-item';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CartSidenav } from '../../services/cart-sidenav';
+import { CartStore } from '../cart-store';
 
 @Component({
   selector: 'app-cart',
@@ -17,7 +18,7 @@ import { CartSidenav } from '../../services/cart-sidenav';
           <div
             class="flex items-center justify-center rounded-full bg-primary w-[26px] aspect-square"
           >
-            <span class="text-[14px] font-medium text-white">4</span>
+            <span class="text-[14px] font-medium text-white">{{ store.itemCount() }}</span>
           </div>
         </div>
         <button matIconButton class="btn-close" (click)="cartSidenavService.close()">
@@ -26,12 +27,19 @@ import { CartSidenav } from '../../services/cart-sidenav';
       </div>
       <div class="flex flex-col p-4 gap-4">
         <div class="flex justify-between items-center">
-          <span class="text-[18px] font-semibold text-[#7B7B7B]">Items Ordered</span>
-          <span class="text-[18px] font-semibold">17.00TND</span>
+          <span class="text-[18px] font-semibold text-[#7B7B7B]">Items</span>
+          <div class="flex flex-row gap-3 items-center">
+            <span class="text-[18px] font-semibold">{{ store.finalTotal() }} TND</span>
+            @if (store.finalTotal() != store.originalTotal()) {
+              <div class="text-xl font-regular text-[#A2A2A2] line-through">
+                {{ store.originalTotal() }} TND
+              </div>
+            }
+          </div>
         </div>
         <div class="flex flex-col gap-2 divide-y divide-[#F8F7F8]">
-          @for (i of [].constructor(4); track $index) {
-            <app-cart-item />
+          @for (item of sortedItems(); track item.itemId) {
+            <app-cart-item [item]="item" />
           }
         </div>
       </div>
@@ -50,9 +58,20 @@ import { CartSidenav } from '../../services/cart-sidenav';
   `,
   styles: ``,
 })
-export class Cart {
+export class Cart implements OnInit {
   isMobile = signal(false);
   cartSidenavService = inject(CartSidenav);
+  protected store = inject(CartStore);
+
+  items = this.store.items;
+
+  sortedItems = computed(() =>
+    [...this.store.items()].sort((a, b) => a.productId.localeCompare(b.productId)),
+  );
+
+  ngOnInit(): void {
+    this.store.loadCart();
+  }
 
   constructor(bpo: BreakpointObserver) {
     bpo

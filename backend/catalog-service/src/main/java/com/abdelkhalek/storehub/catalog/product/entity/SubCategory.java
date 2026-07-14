@@ -26,4 +26,6 @@ public class SubCategory {
     @Column(nullable = false)
     private UUID storeId;
 
+    private String imageUrl;
+
 }

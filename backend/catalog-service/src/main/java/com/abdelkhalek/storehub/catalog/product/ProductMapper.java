@@ -25,6 +25,8 @@ public interface ProductMapper {
     @Mapping(target = "categoryName", expression = "java(entity.getSubCategory().getName())")
     ProductResponse toResponse(ProductEntity entity);
 
+    List<ProductResponse> toResponses(List<ProductEntity> entities);
+
     @Named("activeDiscount")
     default DiscountSummary findActiveDiscount(Set<DiscountEntity> discounts) {
         return discounts.stream()

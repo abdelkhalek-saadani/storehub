@@ -6,6 +6,7 @@ import { LogoText } from '@components/atoms/logo-text/logo-text';
 import { Divider } from '@components/atoms/divider/divider';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { StoreContext } from '../../products/service/store-context';
 
 @Component({
   selector: 'app-welcome',
@@ -45,7 +46,7 @@ export class Welcome {
   private readonly route = inject(ActivatedRoute);
 
   login(): void {
-    const redirectUrl = this.route.snapshot.queryParamMap.get('redirectUrl') ?? '/products';
+    const redirectUrl = this.route.snapshot.queryParamMap.get('redirectUrl') ?? '/dev';
     this.keycloak.login({
       redirectUri: window.location.origin + redirectUrl,
     });

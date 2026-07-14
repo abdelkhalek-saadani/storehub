@@ -6,7 +6,7 @@ import {
 import { environment } from '@environments/environment';
 
 const apiBearerCondition = createInterceptorCondition<IncludeBearerTokenCondition>({
-  urlPattern: new RegExp('^' + escapeRegex(environment.apiUrl) + '(/.*)?$', 'i'),
+  urlPattern: new RegExp('^' + escapeRegex(environment.orderApiUrl) + '(/.*)?$', 'i'),
   bearerPrefix: 'Bearer',
 });
 

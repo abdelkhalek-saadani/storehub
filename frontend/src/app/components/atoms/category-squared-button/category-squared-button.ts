@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
+import { CategoryResponse } from '../../../products/service/catalog-api';
 
 @Component({
   selector: 'app-category-squared-button',
@@ -8,15 +9,15 @@ import { Component } from '@angular/core';
       <div class="w-[26px] h-[26px] rounded-full overflow-hidden p-1 bg-[#F0EEF0]">
         <img
           class="cover rounded-full w-[18px] h-[18px]"
-          src="https://material.angular.dev/assets/img/examples/shiba1.jpg"
-          alt="Photo of a Shiba Inu"
+          [src]="category().imageUrl"
+          [alt]="'Photo of ' + category().name"
         />
       </div>
-      <span class="font-medium text-xs">Bread</span>
+      <span class="font-medium text-xs">{{ category().name }}</span>
     </div>
   `,
   styles: ``,
 })
 export class CategorySquaredButton {
-
+  category = input.required<CategoryResponse>();
 }

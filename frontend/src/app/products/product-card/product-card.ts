@@ -8,7 +8,7 @@ import { Product } from '../models/product';
   imports: [AddToCartButton, MatCard, MatCardContent, MatCardImage],
   host: { class: 'block min-w-40 md:min-w-60 max-w-40 md:max-w-60' },
   template: `
-    <mat-card class="relative rounded-2xl overflow-hidden">
+    <mat-card class="relative rounded-2xl overflow-hidden h-full">
       <app-add-to-cart-button class="!absolute top-3 right-3 z-10" [quantity]="0" />
 
       <img

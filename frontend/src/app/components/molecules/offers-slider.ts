@@ -1,4 +1,3 @@
-// src/app/features/offers/offers-slider/offers-slider.component.ts
 import { Component, input, AfterViewInit, ElementRef, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Offer } from '@shared/models/Offer';
@@ -17,17 +16,18 @@ import { Pagination, A11y } from 'swiper/modules';
             <div class="swiper-slide">
               <a
                 class="block w-full h-full no-underline"
-                [routerLink]="offer.routerLink"
-                [attr.aria-label]="offer.label"
+                routerLink="../products"
+                [queryParams]="{ saleEvent: offer.slug }"
+                [attr.aria-label]="offer.description"
               >
                 <img
                   class="object-cover h-full w-full"
                   [src]="offer.imageUrl"
-                  [alt]="offer.alt"
+                  [alt]="offer.description"
                   loading="lazy"
                 />
                 <span class="absolute bottom-4 left-4 text-white text-base font-medium">
-                  {{ offer.label }}
+                  {{ offer.name }}
                 </span>
               </a>
             </div>

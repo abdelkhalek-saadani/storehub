@@ -8,6 +8,7 @@ import com.abdelkhalek.storehub.catalog.product.entity.SubCategory;
 import com.abdelkhalek.storehub.catalog.product.repository.ParentCategoryRepository;
 import com.abdelkhalek.storehub.catalog.product.repository.SubCategoryRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +24,10 @@ public class CategoryService {
 
     public List<SubCategoryDTO> getSubCategories(UUID storeId) {
         return productMapper.toSubCategoryDTOs(subCategoryRepository.findByStoreId(storeId));
+    }
+    public List<SubCategoryDTO> getSubCategories(UUID storeId, Integer count) {
+        return productMapper.toSubCategoryDTOs(subCategoryRepository.findByStoreId(storeId,
+                PageRequest.of(0, count)));
     }
 
     public List<ParentCategoryDTO> getParentCategories(UUID storeId) {

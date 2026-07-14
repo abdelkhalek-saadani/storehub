@@ -2,6 +2,7 @@ package com.abdelkhalek.storehub.catalog.product.repository;
 
 
 import com.abdelkhalek.storehub.catalog.product.entity.ProductEntity;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -18,11 +19,19 @@ public interface ProductRepository extends JpaRepository<ProductEntity, UUID>,
 
     List<ProductEntity> findByStoreIdAndIdIn(UUID storeId, List<UUID> productIds);
 
+    List<ProductEntity> findByStoreId(UUID storeId, Pageable pageable);
+
+    List<ProductEntity> findByStoreIdAndSaleEventId(UUID storeId,
+                                                    UUID saleEventId, Pageable pageable);
+
+    List<ProductEntity> findByStoreIdAndIsBestSellerIsTrue(UUID storeId, Pageable pageable);
+
+
     @Query("""
-        select distinct p from ProductEntity p
-        left join fetch p.discounts d
-        where p.storeId = :storeId and p.id in :productIds
-        """)
+            select distinct p from ProductEntity p
+            left join fetch p.discounts d
+            where p.storeId = :storeId and p.id in :productIds
+            """)
     List<ProductEntity> findByStoreIdAndIdInWithDiscounts(
             @Param("storeId") UUID storeId,
             @Param("productIds") List<UUID> productIds);

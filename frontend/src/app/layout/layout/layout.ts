@@ -19,7 +19,7 @@ import { CartItem } from '@components/molecules/cart-item/cart-item';
 import { MatIcon } from '@angular/material/icon';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Cart } from '@components/cart/cart';
+import { Cart } from '../../cart/cart/cart';
 
 @Component({
   selector: 'app-sidenav-container',

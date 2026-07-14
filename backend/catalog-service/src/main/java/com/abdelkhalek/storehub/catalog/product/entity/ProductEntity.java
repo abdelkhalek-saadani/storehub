@@ -42,4 +42,12 @@ public class ProductEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sub_category_id", nullable = true)
     private SubCategory subCategory;
+
+    private Boolean isBestSeller;
+
+    @ManyToOne
+    @JoinColumn(name= "sale_event_id")
+    private SaleEvent saleEvent;
+
+
 }

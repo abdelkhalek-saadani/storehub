@@ -4,6 +4,6 @@ export const environment = {
     realm: 'storehub',
     clientId: 'angular-public-client',
   },
-  apiUrl: 'http://localhost:8080',
+  orderApiUrl: 'http://localhost:8080',
   catalogApiUrl: 'http://localhost:8082',
 };

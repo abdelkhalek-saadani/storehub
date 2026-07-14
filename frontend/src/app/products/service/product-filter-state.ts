@@ -17,11 +17,15 @@ export class ProductFilterState {
     const categories = params.get('categories');
     const minPrice = params.get('minPrice');
     const maxPrice = params.get('maxPrice');
+    const saleEvent = params.get('saleEvent');
+    let isBestSeller = params.get('isBestSeller');
 
     return {
       categories: categories ? categories.split(',') : [],
       minPrice: minPrice != null ? Number(minPrice) : null,
       maxPrice: maxPrice != null ? Number(maxPrice) : null,
+      saleEvent: saleEvent != null ? saleEvent : null,
+      isBestSeller: isBestSeller ? isBestSeller.toLowerCase() === 'true' : null,
     };
   });
 

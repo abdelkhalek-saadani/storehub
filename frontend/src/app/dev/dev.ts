@@ -77,7 +77,6 @@ import { ProductCard } from '../products/product-card/product-card';
     DeliveryAddressForm,
     CategorySquaredButton,
     CategoryBar,
-    CartItem,
     CheckoutForm,
     ReviewOrder,
     CheckoutDetails,
@@ -120,7 +119,7 @@ import { ProductCard } from '../products/product-card/product-card';
 
           <span class="label">Cart Item</span>
 
-          <app-cart-item />
+          <!--          <app-cart-item />-->
 
           <span class="label">Product Card</span>
 

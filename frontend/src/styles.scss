@@ -212,6 +212,11 @@ mat-chip.category-chip {
     elevated-container-color: #F8F7F8,
     outline-color: #F8F7F8,
     container-height: 40px,
+    focus-state-layer-color: transparent,
+    focus-state-layer-opacity: 1,
+    selected-focus-state-layer-color: transparent,
+    selected-focus-state-layer-opacity: 1,
+    hover-state-layer-color: transparent,
   ))
 }
 

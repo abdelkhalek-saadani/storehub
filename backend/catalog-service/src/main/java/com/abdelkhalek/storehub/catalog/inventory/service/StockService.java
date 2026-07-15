@@ -43,9 +43,10 @@ public class StockService {
      * Called synchronously at checkout (POST /catalog/reservations).
      * All-or-nothing across the cart: if any line item is short, the whole
      * transaction rolls back and InsufficientStockException propagates.
-     *
+     * <p>
      * Retry is at the WHOLE-METHOD level, not per row: if the transaction
-     * fails because another checkout won the race on one of the rows, we
+     * fails because another checkout won the race on one of the rows (so we have a stale view
+     * but there still is available stock to reserve it) , we
      * redo the entire attempt against fresh data rather than trying to
      * patch a half-applied transaction.
      */
@@ -60,8 +61,7 @@ public class StockService {
                 if (attempt >= MAX_RETRIES) {
                     throw ex;
                 }
-                // no sleep/backoff needed at this contention level for a portfolio
-                // project; add exponential backoff here if you want to defend that detail
+                // no sleep/backoff needed at this contention level for now
             }
         }
     }
@@ -79,7 +79,7 @@ public class StockService {
 
             Stock stock = stockMapper.toDomain(stockEntity);
             stock.reserve(item.quantity()); // throws InsufficientStockException if short
-            stockMapper.applyTo(stock,stockEntity);
+            stockMapper.applyTo(stock, stockEntity);
 
             //stockRepository.save(stock);
 
@@ -89,7 +89,9 @@ public class StockService {
         }
     }
 
-    /** Called when order-service consumes PaymentSucceeded. */
+    /**
+     * Called when order-service consumes PaymentSucceeded.
+     */
     @Transactional
     public void confirmForOrder(UUID storeId, UUID orderId) {
         List<Reservation> active = reservationRepository
@@ -101,7 +103,7 @@ public class StockService {
                     .orElseThrow();
             Stock stock = stockMapper.toDomain(stockEntity);
             stock.confirmDeduction(reservation.getQuantity());
-            stockMapper.applyTo(stock,stockEntity);
+            stockMapper.applyTo(stock, stockEntity);
             // stockRepository.save(stock);
 
             stockMovementRepository.save(new StockMovement(
@@ -113,7 +115,9 @@ public class StockService {
         }
     }
 
-    /** Called when order-service consumes PaymentFailed, or on explicit cancellation. */
+    /**
+     * Called when order-service consumes PaymentFailed, or on explicit cancellation.
+     */
     @Transactional
     public void releaseForOrder(UUID storeId, UUID orderId) {
         List<Reservation> active = reservationRepository
@@ -126,7 +130,7 @@ public class StockService {
 
             Stock stock = stockMapper.toDomain(stockEntity);
             stock.release(reservation.getQuantity());
-            stockMapper.applyTo(stock,stockEntity);
+            stockMapper.applyTo(stock, stockEntity);
             //stockRepository.save(stock);
 
             reservation.release();
@@ -151,7 +155,7 @@ public class StockService {
 
             Stock stock = stockMapper.toDomain(stockEntity);
             stock.release(reservation.getQuantity());
-            stockMapper.applyTo(stock,stockEntity);
+            stockMapper.applyTo(stock, stockEntity);
             //stockRepository.save(stock);
 
             reservation.expire();

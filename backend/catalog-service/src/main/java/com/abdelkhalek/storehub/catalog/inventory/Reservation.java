@@ -11,7 +11,7 @@ import java.util.UUID;
 /**
  * Mutable lifecycle entity (unlike StockMovement, which is append-only).
  * A reservation moves through ACTIVE -> {CONFIRMED | RELEASED | EXPIRED}.
- * Transition timestamps are kept on the row itself since a portfolio project
+ * Transition timestamps are kept on the row itself, for now
  * doesn't need a second ledger just for reservation state history.
  */
 @Entity

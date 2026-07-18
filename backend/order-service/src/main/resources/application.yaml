@@ -10,6 +10,13 @@ spring:
     url: jdbc:postgresql://localhost:5432/order_db
     locations: classpath:db/postgres/migration
 
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
   security:
     oauth2:
       resourceserver:

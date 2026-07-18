@@ -9,6 +9,13 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
   security:
     oauth2:
       resourceserver:
@@ -43,6 +50,7 @@ storehub:
   internal-client-registration: internal-service
   admin-client-registration: keycloak-admin
   catalog-base-url: ${CATALOG_BASE_URL}
+  order-base-url: ${ORDER_BASE_URL}
   kc-base-url: ${KC_BASE_URL}
   realm: storehub
 

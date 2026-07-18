@@ -36,7 +36,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResponseStatusException.class)
     public Mono<ResponseEntity<Map<String, String>>> handleResponseStatus(ResponseStatusException ex) {
-        log.warn("Handled ResponseStatusException: {}", ex.getReason(), ex);
+        if (!ex.getStatusCode().equals(HttpStatus.CONFLICT)) {
+            log.warn("Handled ResponseStatusException: {}", ex.getReason(), ex);
+        }
+        log.warn("Handled ResponseStatusException: {}", ex.getReason());
         return Mono.just(ResponseEntity.status(ex.getStatusCode())
                 .body(Map.of("message", ex.getReason() != null ? ex.getReason() : "Request failed")));
     }

@@ -1,9 +1,17 @@
-package com.abdelkhalek.storehub.order.store;
+package com.abdelkhalek.storehub.order.store.controller;
 
 import com.abdelkhalek.storehub.order.common.identity.KeycloakAdminService;
+import com.abdelkhalek.storehub.order.store.StoreEventPublisher;
+import com.abdelkhalek.storehub.order.store.model.CreateStoreRequest;
+import com.abdelkhalek.storehub.order.store.model.MembershipRole;
+import com.abdelkhalek.storehub.order.store.model.Store;
+import com.abdelkhalek.storehub.order.store.model.StoreMembership;
+import com.abdelkhalek.storehub.order.store.repository.StoreMembershipRepository;
+import com.abdelkhalek.storehub.order.store.repository.StoreRepository;
 import com.abdelkhalek.storehub.order.user.User;
 import com.abdelkhalek.storehub.order.user.UserRepository;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,22 +25,15 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/api/stores")
+@RequiredArgsConstructor
 public class StoreController {
 
     private final StoreRepository storeRepository;
     private final StoreMembershipRepository membershipRepository;
     private final UserRepository userRepository;
     private final KeycloakAdminService keycloakAdminService;
+    private final StoreEventPublisher storeEventPublisher;
 
-    public StoreController(StoreRepository storeRepository,
-                           StoreMembershipRepository membershipRepository,
-                           UserRepository userRepository,
-                           KeycloakAdminService keycloakAdminService) {
-        this.storeRepository = storeRepository;
-        this.membershipRepository = membershipRepository;
-        this.userRepository = userRepository;
-        this.keycloakAdminService = keycloakAdminService;
-    }
 
     @PostMapping
     public Mono<ResponseEntity<Store>> createStore(@Valid @RequestBody CreateStoreRequest req,
@@ -62,8 +63,10 @@ public class StoreController {
                 .flatMap(savedStore ->
                         membershipRepository.save(new StoreMembership(user.getId(), savedStore.getId(), MembershipRole.STORE_OWNER))
                                 .then(keycloakAdminService.addRealmRole(keycloakId, MembershipRole.STORE_OWNER.name()))
-                                .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(savedStore))
-                                .onErrorResume(err -> rollback(savedStore,user,  keycloakId, err))
+                                .then(storeEventPublisher.storeCreated(user,savedStore))
+                                .thenReturn(ResponseEntity.status(HttpStatus.CREATED)
+                                        .body(savedStore))
+                                .onErrorResume(err -> rollback(savedStore, user, keycloakId, err))
                 );
     }
 

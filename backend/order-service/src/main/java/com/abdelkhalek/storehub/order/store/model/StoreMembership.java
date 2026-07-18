@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.order.store;
+package com.abdelkhalek.storehub.order.store.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

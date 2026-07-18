@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.order.store;
+package com.abdelkhalek.storehub.order.store.model;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +15,6 @@ public class Store {
 
     @Id
     private UUID id;
-
     private String name;
     private String description;
     private String address;

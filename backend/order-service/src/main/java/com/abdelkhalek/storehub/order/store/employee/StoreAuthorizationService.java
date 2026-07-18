@@ -1,8 +1,8 @@
 package com.abdelkhalek.storehub.order.store.employee;
 
 
-import com.abdelkhalek.storehub.order.store.MembershipRole;
-import com.abdelkhalek.storehub.order.store.StoreMembershipRepository;
+import com.abdelkhalek.storehub.order.store.model.MembershipRole;
+import com.abdelkhalek.storehub.order.store.repository.StoreMembershipRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;

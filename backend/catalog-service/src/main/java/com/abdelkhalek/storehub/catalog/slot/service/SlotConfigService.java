@@ -66,9 +66,8 @@ public class SlotConfigService {
         int durationMin = config.getSlotDurationMin();
 
         for (DeliverySlot slot : safeToUpdate) {
-            LocalDateTime newStart = LocalDateTime.of(slot.getSlotDate(), config.getStartTime());
             // Re-derive this slot's position within the day rather than assuming
-            // slot index alignment - safest for simple 1:1 rebuild after edits.
+            // slot index alignment, safest for simple 1:1 rebuild after edits.
             slot.setStartTime(recalculateStart(slot, config));
             slot.setEndTime(slot.getStartTime().plusMinutes(durationMin));
             slot.setMaxCapacity(config.getMaxCapacity());

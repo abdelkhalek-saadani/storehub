@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.order.user;
+package com.abdelkhalek.storehub.order.user.model;
 
 import java.util.UUID;
 

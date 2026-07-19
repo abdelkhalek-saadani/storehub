@@ -17,7 +17,6 @@ import java.util.UUID;
 public class StoreShadow {
 
     @Id
-    @GeneratedValue
     private UUID id;
     private UUID ownerId;
     private String status;

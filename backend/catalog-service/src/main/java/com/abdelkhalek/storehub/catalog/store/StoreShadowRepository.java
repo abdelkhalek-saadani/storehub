@@ -6,12 +6,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.transaction.annotation.Transactional;
 
 
 public interface StoreShadowRepository extends JpaRepository<StoreShadow, UUID> {
 
+    List<StoreShadow> findAllByStatus(String status);
 
     @Transactional
     @Modifying

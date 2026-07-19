@@ -13,8 +13,6 @@ public interface SlotReservationRepository extends JpaRepository<SlotReservation
 
     Optional<SlotReservation> findByIdAndStoreId(UUID id, UUID storeId);
 
-    Optional<SlotReservation> findByOrderIdAndTenantId(Long orderId, Long tenantId);
-
     List<SlotReservation> findByStatusAndExpiresAtBefore(
             SlotReservation.Status status, LocalDateTime cutoff);
 }

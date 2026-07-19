@@ -19,6 +19,8 @@ public interface DeliverySlotRepository extends JpaRepository<DeliverySlot, UUID
     List<DeliverySlot> findByStoreIdAndSlotDateBetweenAndStatus(
             UUID storeId, LocalDate from, LocalDate to, DeliverySlot.Status status);
 
+    Boolean existsByStoreIdAndSlotDateAndStartTime(UUID storeId, LocalDate slotDate,
+                                                   LocalDateTime startTime);
 
 
     // --- Atomic capacity increment ---

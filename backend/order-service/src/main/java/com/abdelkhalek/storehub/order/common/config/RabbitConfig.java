@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.order.store;
+package com.abdelkhalek.storehub.order.common.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -45,7 +45,7 @@ public class RabbitConfig {
 
     @Bean
     ApplicationRunner declareExchange(Sender sender) {
-        return args -> sender.declareExchange(ExchangeSpecification.exchange("store.exchange")
+        return args -> sender.declareExchange(ExchangeSpecification.exchange("storehub.exchange")
                 .type("topic").durable(true)).block();
     }
 

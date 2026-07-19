@@ -1,8 +1,8 @@
-package com.abdelkhalek.storehub.order.store;
+package com.abdelkhalek.storehub.order.user;
 
-import com.abdelkhalek.storehub.order.store.model.Store;
-import com.abdelkhalek.storehub.order.store.model.StoreCreatedEvent;
+
 import com.abdelkhalek.storehub.order.user.model.User;
+import com.abdelkhalek.storehub.order.user.model.UserCreatedEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -17,14 +17,13 @@ import java.time.Instant;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class StoreEventPublisher {
+public class UserEventPublisher {
 
     private final Sender sender;
     private final ObjectMapper objectMapper;
 
-    public Mono<Void> storeCreated(User user, Store store) {
-        var event = new StoreCreatedEvent(store.getId(), user.getId(),
-                "ACTIVE", Instant.now());
+    public Mono<Void> userCreated(User user) {
+        var event = new UserCreatedEvent(user.getId(), user.getKeycloakId(), Instant.now());
         byte[] payload;
         try {
             payload = objectMapper.writeValueAsBytes(event);
@@ -32,6 +31,7 @@ public class StoreEventPublisher {
             return Mono.error(e);
         }
         log.debug("Publishing event to RabbitMQ: {}, Bytes: {}", event, payload);
-        return sender.send(Mono.just(new OutboundMessage("store.exchange", "store.created", payload)));
+        return sender.send(Mono.just(new OutboundMessage("storehub.exchange", "user.created",
+                payload)));
     }
 }

@@ -1,5 +1,8 @@
-package com.abdelkhalek.storehub.order.user;
+package com.abdelkhalek.storehub.order.user.service;
 
+import com.abdelkhalek.storehub.order.user.model.LastStoreResponse;
+import com.abdelkhalek.storehub.order.user.model.User;
+import com.abdelkhalek.storehub.order.user.repository.UserRepository;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;

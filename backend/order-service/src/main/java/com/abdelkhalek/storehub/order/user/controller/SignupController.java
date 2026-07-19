@@ -1,6 +1,10 @@
-package com.abdelkhalek.storehub.order.user;
+package com.abdelkhalek.storehub.order.user.controller;
 
 import com.abdelkhalek.storehub.order.common.identity.KeycloakAdminService;
+import com.abdelkhalek.storehub.order.user.UserEventPublisher;
+import com.abdelkhalek.storehub.order.user.model.SignupRequest;
+import com.abdelkhalek.storehub.order.user.model.User;
+import com.abdelkhalek.storehub.order.user.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +23,12 @@ public class SignupController {
 
     private final KeycloakAdminService keycloakAdminService;
     private final UserRepository userRepository;
+    private final UserEventPublisher userEventPublisher;
 
-    public SignupController(KeycloakAdminService keycloakAdminService, UserRepository userRepository) {
+    public SignupController(KeycloakAdminService keycloakAdminService, UserRepository userRepository, UserEventPublisher userEventPublisher) {
         this.keycloakAdminService = keycloakAdminService;
         this.userRepository = userRepository;
+        this.userEventPublisher = userEventPublisher;
     }
 
     @PostMapping("/signup")
@@ -40,6 +46,7 @@ public class SignupController {
     private Mono<ResponseEntity<Map<String, String>>> createKeycloakAndLocalUser(SignupRequest req) {
         return keycloakAdminService.createUser(req)
                 .flatMap(keycloakId -> saveLocalUser(req, keycloakId)
+                        .flatMap(userEventPublisher::userCreated)
                         .thenReturn(ResponseEntity.status(HttpStatus.CREATED)
                                 .body(Map.<String, String>of("message", "User created, please login")))
                         .onErrorResume(dbError ->

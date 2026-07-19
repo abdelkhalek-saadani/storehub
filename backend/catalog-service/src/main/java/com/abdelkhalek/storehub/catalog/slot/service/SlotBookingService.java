@@ -77,7 +77,7 @@ public class SlotBookingService {
         reservation.setStatus(SlotReservation.Status.CONFIRMED);
         reservation.setOrderId(orderId);
         slotReservationRepository.save(reservation);
-        // bookedCount stays incremented - the slot capacity was already committed at reserve time.
+        // bookedCount stays incremented, the slot capacity was already committed at reserve time.
     }
 
     /**

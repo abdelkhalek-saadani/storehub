@@ -1,7 +1,7 @@
 package com.abdelkhalek.storehub.order.common.identity;
 
 import com.abdelkhalek.storehub.order.common.security.StorehubProperties;
-import com.abdelkhalek.storehub.order.user.SignupRequest;
+import com.abdelkhalek.storehub.order.user.model.SignupRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

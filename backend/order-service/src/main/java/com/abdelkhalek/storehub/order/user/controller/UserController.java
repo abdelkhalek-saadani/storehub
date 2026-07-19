@@ -1,5 +1,8 @@
-package com.abdelkhalek.storehub.order.user;
+package com.abdelkhalek.storehub.order.user.controller;
 
+import com.abdelkhalek.storehub.order.user.model.LastStoreResponse;
+import com.abdelkhalek.storehub.order.user.model.User;
+import com.abdelkhalek.storehub.order.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

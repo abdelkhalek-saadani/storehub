@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.catalog.store;
+package com.abdelkhalek.storehub.catalog.common.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -32,16 +32,29 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    TopicExchange storeExchange() { return new TopicExchange("store.exchange", true, false); }
-
-    @Bean
-    Queue storeCreatedQueue() { return new Queue("store.created.queue"); }
-
-    @Bean
-    Binding binding(Queue storeCreatedQueue, TopicExchange storeExchange) {
-        return BindingBuilder.bind(storeCreatedQueue).to(storeExchange).with("store.created");
+    TopicExchange storehubExchange() {
+        return new TopicExchange("storehub.exchange", true, false);
     }
 
+    @Bean
+    Queue storeCreatedQueue() {
+        return new Queue("store.created.queue");
+    }
+
+    @Bean
+    Binding binding(Queue storeCreatedQueue, TopicExchange storehubExchange) {
+        return BindingBuilder.bind(storeCreatedQueue).to(storehubExchange).with("store.created");
+    }
+
+    @Bean
+    Queue userCreatedQueue() {
+        return new Queue("user.created.queue");
+    }
+
+    @Bean
+    Binding userBinding(Queue userCreatedQueue, TopicExchange storehubExchange) {
+        return BindingBuilder.bind(userCreatedQueue).to(storehubExchange).with("user.created");
+    }
 
 
 }

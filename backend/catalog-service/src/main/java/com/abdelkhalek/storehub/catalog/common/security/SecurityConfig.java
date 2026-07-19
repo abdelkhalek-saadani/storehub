@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.catalog;
+package com.abdelkhalek.storehub.catalog.common.security;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,6 +39,10 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/admin/slot-configs").hasRole("STORE_OWNER")
+                        .requestMatchers(HttpMethod.POST,
+                                "/api/delivery-slots/reserve",
+                                "/api/delivery-slots/reservations/**").hasRole("SERVICE")
+                        .requestMatchers(HttpMethod.PATCH,"/api/delivery-slots/*/override").hasRole("STORE_OWNER")
                         .requestMatchers(HttpMethod.GET, "api/**").permitAll()
                         .requestMatchers("/internal/**").hasRole("SERVICE")
                         .anyRequest().authenticated()

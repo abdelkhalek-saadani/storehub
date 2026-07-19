@@ -15,6 +15,8 @@ public interface StoreShadowRepository extends JpaRepository<StoreShadow, UUID> 
 
     List<StoreShadow> findAllByStatus(String status);
 
+    StoreShadow findByOwnerId(UUID ownerId);
+
     @Transactional
     @Modifying
     @Query(value = """

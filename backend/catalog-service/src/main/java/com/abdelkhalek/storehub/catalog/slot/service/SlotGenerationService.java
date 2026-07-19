@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -61,9 +62,44 @@ public class SlotGenerationService {
         }
     }
 
-    private void materializeSlotsForConfig(SlotConfig config, LocalDate date) {
+    /**
+     * Generates slots for the given config across a rolling window of days.
+     * <p>
+     * A slot is generated for each date within the next ROLLING_WINDOW_DAYS days
+     * whose day of week matches config.getDayOfWeek() (0 = Sunday, ..., 6 = Saturday).
+     * <p>
+     * Example: if config.getDayOfWeek() == 1 (Monday) and ROLLING_WINDOW_DAYS == 10,
+     * this method generates slots for every Monday falling within the next 10 days
+     * (typically one or two Mondays, depending on today's date).
+     *
+     * @param config the slot configuration to generate slots for
+     * @return the total number of slots generated
+     */
+    public Integer generateForConfigAcrossWindow(SlotConfig config) {
+        LocalDate date;
+        int counter = 0;
+
+        for (int i = 0; i < ROLLING_WINDOW_DAYS; i++) {
+            date = LocalDate.now().plusDays(i);
+            if (date.getDayOfWeek().getValue() % 7 == config.getDayOfWeek()) {
+                counter += materializeSlotsForConfig(config, date);
+            }
+        }
+
+        return counter;
+    }
+
+    /**
+     * Create concrete slots for a given configuration at a specific Date
+     *
+     * @param config
+     * @param date
+     * @return the number of generated slots
+     */
+    private Integer materializeSlotsForConfig(SlotConfig config, LocalDate date) {
         LocalDateTime cursor = LocalDateTime.of(date, config.getStartTime());
         LocalDateTime dayEnd = LocalDateTime.of(date, config.getEndTime());
+        int counter = 0;
 
         while (cursor.plusMinutes(config.getSlotDurationMin()).isBefore(dayEnd.plusSeconds(1))) {
             LocalDateTime slotStart = cursor;
@@ -85,6 +121,7 @@ public class SlotGenerationService {
                         .manualOverride(false)
                         .build();
                 deliverySlotRepository.save(slot);
+                counter++;
             } else {
                 // If it already exists we skip silently, this is what protects
                 // manually-overridden or already-booked slots from generation re-runs.
@@ -93,6 +130,7 @@ public class SlotGenerationService {
 
             cursor = slotEnd;
         }
+        return counter;
     }
 
     private java.util.List<UUID> storeIds() {
@@ -100,5 +138,56 @@ public class SlotGenerationService {
                 .toList();
 
     }
+
+    /**
+     * Create concrete slots for a given configuration at a specific Date
+     * the same as materializeSlotsForConfig just with dynamic slot end value assignment
+     *
+     * @param config
+     * @param date
+     * @return the number of generated slots
+     */
+    private Integer materializeSlotsForConfigWithDynamicSlotEnd(SlotConfig config, LocalDate date) {
+        LocalDateTime cursor = LocalDateTime.of(date, config.getStartTime());
+        LocalDateTime dayEnd = LocalDateTime.of(date, config.getEndTime());
+        int counter = 0;
+
+        while (cursor.plusMinutes(config.getSlotDurationMin()).isBefore(dayEnd.plusSeconds(1))) {
+            LocalDateTime slotStart = cursor;
+            LocalDateTime slotEnd;
+
+            boolean exists = deliverySlotRepository.existsByStoreIdAndSlotDateAndStartTime(
+                    config.getStoreId(), date, slotStart);
+
+            if (!exists) {
+                slotEnd = cursor.plusMinutes(config.getSlotDurationMin());
+                DeliverySlot slot = DeliverySlot.builder()
+                        .storeId(config.getStoreId())
+                        .slotConfigId(config.getId())
+                        .slotDate(date)
+                        .startTime(slotStart)
+                        .endTime(slotEnd)
+                        .maxCapacity(config.getMaxCapacity())
+                        .bookedCount(0)
+                        .status(DeliverySlot.Status.OPEN)
+                        .manualOverride(false)
+                        .build();
+                deliverySlotRepository.save(slot);
+                counter++;
+            } else {
+                // If it already exists we skip silently, this is what protects
+                // manually-overridden or already-booked slots from generation re-runs.
+                slotEnd = deliverySlotRepository
+                        .findByStoreIdAndSlotDateAndStartTime(config.getStoreId(), date, slotStart)
+                        .getEndTime();
+                log.debug("Slot already exists: {},setting slotEnd to {} and skipping generation" +
+                        " for this slot", slotStart, slotEnd);
+            }
+
+            cursor = slotEnd;
+        }
+        return counter;
+    }
+
 }
 

@@ -6,21 +6,19 @@ import com.abdelkhalek.storehub.catalog.slot.entity.DeliverySlot;
 import com.abdelkhalek.storehub.catalog.slot.entity.SlotReservation;
 import com.abdelkhalek.storehub.catalog.slot.repository.DeliverySlotRepository;
 import com.abdelkhalek.storehub.catalog.slot.service.SlotBookingService;
+import com.abdelkhalek.storehub.catalog.store.StoreService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Tenant identification: taken from a header set by the gateway/auth layer
- * after resolving the caller's store. In production, prefer extracting this
- * from a validated JWT claim rather than trusting a raw client header.
- */
 @RestController
 @RequestMapping("/api/delivery-slots")
 @RequiredArgsConstructor
@@ -28,6 +26,7 @@ public class DeliverySlotController {
 
     private final DeliverySlotRepository deliverySlotRepository;
     private final SlotBookingService slotBookingService;
+    private final StoreService storeService;
 
     @GetMapping
     public List<DeliverySlot> getAvailableSlots(
@@ -46,27 +45,27 @@ public class DeliverySlotController {
         return slotBookingService.reserveSlot(storeId, request.slotId(), request.cartId());
     }
 
-    /*@PostMapping("/reservations/{reservationId}/release")
+    @PostMapping("/reservations/{reservationId}/release")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void release(
-            @RequestHeader("X-Tenant-Id") Long tenantId,
-            @PathVariable Long reservationId) {
-        slotBookingService.releaseReservation(tenantId, reservationId);
+            @RequestParam UUID storeId,
+            @PathVariable UUID reservationId) {
+        slotBookingService.releaseReservation(storeId, reservationId);
     }
 
-    *//**
+    /*
      * Owner exception-editing a single materialized occurrence (e.g. holiday
      * capacity cut). Sets manualOverride=true so neither the nightly
      * generation job nor a future config sync will ever touch this row again.
-     *//*
+     */
     @PatchMapping("/{slotId}/override")
     public DeliverySlot manualOverride(
-            @RequestHeader("X-Tenant-Id") Long tenantId,
-            @PathVariable Long slotId,
+            @AuthenticationPrincipal Jwt jwt,
+            @PathVariable UUID slotId,
             @RequestParam(required = false) Integer maxCapacity,
             @RequestParam(required = false) DeliverySlot.Status status) {
-
-        DeliverySlot slot = deliverySlotRepository.findByIdAndTenantId(slotId, tenantId)
+        UUID storeId = storeService.getStoreId(jwt.getSubject());
+        DeliverySlot slot = deliverySlotRepository.findByIdAndStoreId(slotId, storeId)
                 .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Slot not found: " + slotId));
 
         if (maxCapacity != null) slot.setMaxCapacity(maxCapacity);
@@ -74,5 +73,5 @@ public class DeliverySlotController {
         slot.setManualOverride(true);
 
         return deliverySlotRepository.save(slot);
-    }*/
+    }
 }

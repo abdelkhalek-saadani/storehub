@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,9 +24,12 @@ public class SlotConfigService {
 
     private final SlotConfigRepository slotConfigRepository;
     private final DeliverySlotRepository deliverySlotRepository;
+    private final SlotGenerationService slotGenerationService;
 
     public SlotConfig create(SlotConfig config) {
-        return slotConfigRepository.save(config);
+        SlotConfig slotConfig = slotConfigRepository.save(config);
+        slotGenerationService.generateForConfigAcrossWindow(slotConfig);
+        return slotConfig;
     }
 
     /**
@@ -45,6 +49,8 @@ public class SlotConfigService {
         SlotConfig existing = slotConfigRepository.findByIdAndStoreId(configId, storeId)
                 .orElseThrow(() -> new EntityNotFoundException("Slot config not found: " + configId));
 
+        LocalTime oldStartTime = existing.getStartTime();
+
         existing.setStartTime(updated.getStartTime());
         existing.setEndTime(updated.getEndTime());
         existing.setSlotDurationMin(updated.getSlotDurationMin());
@@ -54,38 +60,53 @@ public class SlotConfigService {
         existing.setActive(updated.isActive());
         slotConfigRepository.save(existing);
 
-        syncFutureSlots(existing);
+        syncFutureSlots(existing, oldStartTime);
         return existing;
     }
 
-    private void syncFutureSlots(SlotConfig config) {
+    private void syncFutureSlots(SlotConfig config, LocalTime oldStartTime) {
         List<DeliverySlot> safeToUpdate = deliverySlotRepository
                 .findBySlotConfigIdAndStoreIdAndSlotDateGreaterThanEqualAndManualOverrideFalseAndBookedCount(
                         config.getId(), config.getStoreId(), LocalDate.now(), 0);
 
-        int durationMin = config.getSlotDurationMin();
+        deliverySlotRepository.deleteAll(safeToUpdate);
+
+        int generatedSlotsCount = slotGenerationService.generateForConfigAcrossWindow(config);
+
+        // No longer Needed
+/*        int durationMin = config.getSlotDurationMin();
 
         for (DeliverySlot slot : safeToUpdate) {
             // Re-derive this slot's position within the day rather than assuming
             // slot index alignment, safest for simple 1:1 rebuild after edits.
-            slot.setStartTime(recalculateStart(slot, config));
+            slot.setStartTime(recalculateStart(slot, config, oldStartTime));
             slot.setEndTime(slot.getStartTime().plusMinutes(durationMin));
             slot.setMaxCapacity(config.getMaxCapacity());
         }
-        deliverySlotRepository.saveAll(safeToUpdate);
+        deliverySlotRepository.saveAll(safeToUpdate);*/
 
-        log.info("Synced {} slot(s) for config {} after update", safeToUpdate.size(), config.getId());
+        log.info("Deleted {} slot(s) out of sync for config {} and added {} slot(s) after update",
+                safeToUpdate.size(),
+                config.getId(),
+                generatedSlotsCount);
     }
 
+    // No longer needed
     // Keeps the slot's relative position in the day if duration changed,
     // otherwise this is a straightforward same-slot-index recompute.
-    private LocalDateTime recalculateStart(DeliverySlot slot, SlotConfig config) {
+    private LocalDateTime recalculateStart(DeliverySlot slot, SlotConfig config, LocalTime oldStartTime) {
+        log.debug("Recalculating start time for slot {} for config {}", slot, config);
         LocalDateTime dayStart = LocalDateTime.of(slot.getSlotDate(), config.getStartTime());
+        LocalDateTime oldDayStart = LocalDateTime.of(slot.getSlotDate(), oldStartTime);
+        log.debug("Day start: {}", dayStart);
         long originalDurationMin = Duration.between(slot.getStartTime(), slot.getEndTime())
                 .toMinutes();
         if (originalDurationMin <= 0) originalDurationMin = config.getSlotDurationMin();
-        long minutesFromDayStart = Duration.between(dayStart, slot.getStartTime()).toMinutes();
+        long minutesFromDayStart = Duration.between(oldDayStart, slot.getStartTime()).toMinutes();
+        log.debug("Minutes from day start: {}", minutesFromDayStart);
         long index = minutesFromDayStart / Math.max(originalDurationMin, 1);
-        return dayStart.plusMinutes(index * config.getSlotDurationMin());
+        LocalDateTime startTime = dayStart.plusMinutes(index * config.getSlotDurationMin());
+        log.debug("New index {}, new start time {}", index, startTime);
+        return startTime;
     }
 }

@@ -22,6 +22,8 @@ public interface DeliverySlotRepository extends JpaRepository<DeliverySlot, UUID
     Boolean existsByStoreIdAndSlotDateAndStartTime(UUID storeId, LocalDate slotDate,
                                                    LocalDateTime startTime);
 
+    DeliverySlot findByStoreIdAndSlotDateAndStartTime(UUID storeId, LocalDate slotDate,
+                                                      LocalDateTime startTime);
 
     // --- Atomic capacity increment ---
     // The WHERE clause (bookedCount < maxCapacity) is what actually prevents overbooking
@@ -32,26 +34,26 @@ public interface DeliverySlotRepository extends JpaRepository<DeliverySlot, UUID
     // the service layer and use the version column protection for concurrency
     @Modifying
     @Query("""
-        UPDATE DeliverySlot d
-        SET d.bookedCount = d.bookedCount + 1,
-            d.status = CASE WHEN d.bookedCount + 1 >= d.maxCapacity THEN 'FULL' ELSE d.status END
-        WHERE d.id = :slotId
-          AND d.storeId = :storeId
-          AND d.bookedCount < d.maxCapacity
-          AND d.status = 'OPEN'
-        """)
+            UPDATE DeliverySlot d
+            SET d.bookedCount = d.bookedCount + 1,
+                d.status = CASE WHEN d.bookedCount + 1 >= d.maxCapacity THEN 'FULL' ELSE d.status END
+            WHERE d.id = :slotId
+              AND d.storeId = :storeId
+              AND d.bookedCount < d.maxCapacity
+              AND d.status = 'OPEN'
+            """)
     int tryIncrementBooking(@Param("slotId") UUID slotId, @Param("storeId") UUID storeId);
 
     // --- Atomic capacity release (on reservation expiry/cancel) ---
     @Modifying
     @Query("""
-        UPDATE DeliverySlot d
-        SET d.bookedCount = d.bookedCount - 1,
-            d.status = CASE WHEN d.status = 'FULL' THEN 'OPEN' ELSE d.status END
-        WHERE d.id = :slotId
-          AND d.storeId = :storeId
-          AND d.bookedCount > 0
-        """)
+            UPDATE DeliverySlot d
+            SET d.bookedCount = d.bookedCount - 1,
+                d.status = CASE WHEN d.status = 'FULL' THEN 'OPEN' ELSE d.status END
+            WHERE d.id = :slotId
+              AND d.storeId = :storeId
+              AND d.bookedCount > 0
+            """)
     int decrementBooking(@Param("slotId") UUID slotId, @Param("storeId") UUID storeId);
 
     // Candidates safe for config-sync: future, untouched by owner, no bookings yet.

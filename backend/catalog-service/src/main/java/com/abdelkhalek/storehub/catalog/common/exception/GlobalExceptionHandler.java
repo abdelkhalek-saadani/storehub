@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.catalog;
+package com.abdelkhalek.storehub.catalog.common.exception;
 
 import com.abdelkhalek.storehub.catalog.inventory.exception.InsufficientStockException;
 import com.abdelkhalek.storehub.catalog.pricing.exceptions.StockNotFoundException;

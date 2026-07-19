@@ -7,6 +7,6 @@ import java.util.UUID;
 
 public record ReserveSlotRequest(
         @NotNull UUID slotId,
-        @NotBlank UUID cartId       // This won't be needed since we will link the reservation to
+        UUID cartId       // This won't be needed since we will link the reservation to
         // the order later
 ) {}

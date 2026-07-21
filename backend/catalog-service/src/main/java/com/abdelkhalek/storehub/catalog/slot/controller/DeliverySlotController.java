@@ -1,7 +1,9 @@
 package com.abdelkhalek.storehub.catalog.slot.controller;
 
 
+import com.abdelkhalek.storehub.catalog.dtos.AvailabilityResponse;
 import com.abdelkhalek.storehub.catalog.slot.dto.ReserveSlotRequest;
+import com.abdelkhalek.storehub.catalog.slot.dto.ReserveSlotResponse;
 import com.abdelkhalek.storehub.catalog.slot.entity.DeliverySlot;
 import com.abdelkhalek.storehub.catalog.slot.entity.SlotReservation;
 import com.abdelkhalek.storehub.catalog.slot.repository.DeliverySlotRepository;
@@ -11,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -37,12 +40,21 @@ public class DeliverySlotController {
                 storeId, from, to, DeliverySlot.Status.OPEN);
     }
 
+    @GetMapping("check-availability")
+    public ResponseEntity<AvailabilityResponse> checkAvailability(
+            @RequestParam UUID storeId,
+            @RequestParam UUID slotId) {
+        return ResponseEntity.ok()
+                .body(new AvailabilityResponse(slotBookingService.isAvailable(storeId, slotId)));
+    }
+
     @PostMapping("/reserve")
     @ResponseStatus(HttpStatus.CREATED)
-    public SlotReservation reserve(
+    public ReserveSlotResponse reserve(
             @RequestParam UUID storeId,
             @Valid @RequestBody ReserveSlotRequest request) {
-        return slotBookingService.reserveSlot(storeId, request.slotId(), request.cartId());
+        SlotReservation reservedSlot = slotBookingService.reserveSlot(storeId, request.slotId());
+        return new ReserveSlotResponse(reservedSlot.getId());
     }
 
     @PostMapping("/reservations/{reservationId}/release")
@@ -50,7 +62,7 @@ public class DeliverySlotController {
     public void release(
             @RequestParam UUID storeId,
             @PathVariable UUID reservationId) {
-        slotBookingService.releaseReservation(storeId, reservationId);
+        slotBookingService.releaseReservation(reservationId);
     }
 
     /*

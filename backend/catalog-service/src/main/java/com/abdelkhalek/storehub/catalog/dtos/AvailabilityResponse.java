@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.catalog.inventory.dto;
+package com.abdelkhalek.storehub.catalog.dtos;
 
 public record AvailabilityResponse(
         boolean available

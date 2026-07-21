@@ -14,7 +14,12 @@ import java.util.UUID;
 
 public interface DeliverySlotRepository extends JpaRepository<DeliverySlot, UUID> {
 
-    Optional<DeliverySlot> findByIdAndStoreId(UUID id, UUID tenantId);
+    Optional<DeliverySlot> findByIdAndStoreId(UUID id, UUID storeId);
+
+    Boolean existsByIdAndStoreId(UUID id, UUID storeId);
+
+    Boolean existsByStoreIdAndIdAndStatus(UUID storeId, UUID slotId,
+                                                 DeliverySlot.Status status);
 
     List<DeliverySlot> findByStoreIdAndSlotDateBetweenAndStatus(
             UUID storeId, LocalDate from, LocalDate to, DeliverySlot.Status status);

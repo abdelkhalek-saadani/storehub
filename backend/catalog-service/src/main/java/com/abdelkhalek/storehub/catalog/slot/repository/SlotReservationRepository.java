@@ -9,9 +9,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface SlotReservationRepository extends JpaRepository<SlotReservation, Long> {
+public interface SlotReservationRepository extends JpaRepository<SlotReservation, UUID> {
 
     Optional<SlotReservation> findByIdAndStoreId(UUID id, UUID storeId);
+
+
 
     List<SlotReservation> findByStatusAndExpiresAtBefore(
             SlotReservation.Status status, LocalDateTime cutoff);

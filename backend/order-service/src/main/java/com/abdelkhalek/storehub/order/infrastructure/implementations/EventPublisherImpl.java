@@ -3,8 +3,6 @@ package com.abdelkhalek.storehub.order.infrastructure.implementations;
 import com.abdelkhalek.storehub.order.order.models.DomainEvent;
 import com.abdelkhalek.storehub.order.order.models.OrderCreatedEvent;
 import com.abdelkhalek.storehub.order.order.spi.EventPublisher;
-import com.abdelkhalek.storehub.order.order.dto.ItemsReleaseEvent;
-import com.abdelkhalek.storehub.order.infrastructure.models.slot.SlotReleaseEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -15,14 +13,8 @@ public class EventPublisherImpl implements EventPublisher {
     public Void publish(DomainEvent event) {
         log.info("Publishing event {}", event);
         switch (event){
-            case ItemsReleaseEvent itemsReleaseEvent :
-                System.out.println("ItemsReleaseEvent captured and published");
-                break;
             case OrderCreatedEvent orderCreatedEvent:
                 System.out.println("OrderCreatedEvent captured and published");
-                break;
-            case SlotReleaseEvent slotReleaseEvent:
-                System.out.println("SlotReleaseEvent captured and published");
                 break;
             default:
                 throw new IllegalStateException("Unexpected event type: " + event);

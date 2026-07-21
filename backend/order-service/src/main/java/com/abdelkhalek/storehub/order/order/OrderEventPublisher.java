@@ -1,6 +1,7 @@
 package com.abdelkhalek.storehub.order.order;
 
 
+import com.abdelkhalek.storehub.order.order.dto.SlotReleaseEvent;
 import com.abdelkhalek.storehub.order.order.dto.ItemsReleaseEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,8 +31,21 @@ public class OrderEventPublisher {
         } catch (JsonProcessingException e) {
             return Mono.error(e);
         }
-        log.debug("Publishing event to RabbitMQ: {}, Bytes: {}", event, payload);
+        log.debug("Publishing items release event to RabbitMQ: {}, Bytes: {}", event, payload);
         return sender.send(Mono.just(new OutboundMessage("store.exchange", "items.released",
+                payload)));
+    }
+
+    public Mono<Void> slotReleased(UUID retainId) {
+        var event = new SlotReleaseEvent(retainId);
+        byte[] payload;
+        try {
+            payload = objectMapper.writeValueAsBytes(event);
+        } catch (JsonProcessingException e) {
+            return Mono.error(e);
+        }
+        log.debug("Publishing slot release event to RabbitMQ: {}, Bytes: {}", event, payload);
+        return sender.send(Mono.just(new OutboundMessage("store.exchange", "slot.released",
                 payload)));
     }
 }

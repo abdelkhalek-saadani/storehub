@@ -70,5 +70,16 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(itemsReleasedQueue).to(storehubExchange).with("items.released");
     }
 
+    @Bean
+    Queue slotReleasedQueue() {
+        return new Queue("slot.released.queue");
+    }
+
+    @Bean
+    Binding slotBinding(@Qualifier("slotReleasedQueue") Queue slotReleasedQueue,
+                         TopicExchange storehubExchange) {
+        return BindingBuilder.bind(slotReleasedQueue).to(storehubExchange).with("slot.released");
+    }
+
 
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -23,6 +24,20 @@ public class SlotBookingService {
     private final DeliverySlotRepository deliverySlotRepository;
     private final SlotReservationRepository slotReservationRepository;
 
+    public Boolean isAvailable(UUID storeId, UUID slotId) {
+        Optional<DeliverySlot> dsOptional = deliverySlotRepository.findByIdAndStoreId(slotId,
+                storeId);
+        if (dsOptional.isEmpty()) {
+            return false;
+        }
+        DeliverySlot ds = dsOptional.get();
+        if (ds.getBookedCount().equals(ds.getMaxCapacity())
+        || !ds.getStatus().equals(DeliverySlot.Status.OPEN)) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * Called when the user submit checkout form, by the order-creation flow.
      * The atomic UPDATE (tryIncrementBooking) is what actually enforces
@@ -31,7 +46,7 @@ public class SlotBookingService {
      * and we throw immediately.
      */
     @Transactional
-    public SlotReservation reserveSlot(UUID storeId, UUID slotId, UUID cartId) {
+    public SlotReservation reserveSlot(UUID storeId, UUID slotId) {
         DeliverySlot slot = deliverySlotRepository.findByIdAndStoreId(slotId, storeId)
                 .orElseThrow(() -> new EntityNotFoundException("Slot not found: " + slotId));
 
@@ -54,7 +69,6 @@ public class SlotBookingService {
         SlotReservation reservation = new SlotReservation();
         reservation.setStoreId(storeId);
         reservation.setSlotId(slotId);
-        reservation.setCartId(cartId);
         reservation.setStatus(SlotReservation.Status.RESERVED);
         reservation.setReservedAt(LocalDateTime.now());
         reservation.setExpiresAt(LocalDateTime.now().plusMinutes(RESERVATION_TTL_MINUTES));
@@ -84,9 +98,8 @@ public class SlotBookingService {
      * Called on order-creation flow rollback, explicit cancellation or payment abandonment.
      */
     @Transactional
-    public void releaseReservation(UUID storeId, UUID reservationId) {
-        SlotReservation reservation = slotReservationRepository.findByIdAndStoreId(reservationId,
-                        storeId)
+    public void releaseReservation(UUID reservationId) {
+        SlotReservation reservation = slotReservationRepository.findById(reservationId)
                 .orElseThrow(() -> new EntityNotFoundException("Reservation not found: " + reservationId));
 
         if (reservation.getStatus() == SlotReservation.Status.RELEASED
@@ -94,7 +107,7 @@ public class SlotBookingService {
             return; // already released, idempotent no-op
         }
 
-        deliverySlotRepository.decrementBooking(reservation.getSlotId(), storeId);
+        deliverySlotRepository.decrementBooking(reservation.getSlotId(), reservation.getStoreId());
         reservation.setStatus(SlotReservation.Status.RELEASED);
         slotReservationRepository.save(reservation);
     }

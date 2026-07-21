@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Slf4j
-@Service("orderProductServiceAdapter")
-public class ProductServiceAdapter implements ProductService {
+@Service("orderProductServiceImpl")
+public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductClient productClient;

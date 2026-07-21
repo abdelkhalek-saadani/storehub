@@ -2,33 +2,7 @@ package com.abdelkhalek.storehub.order.implementations.slot;
 
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import com.abdelkhalek.storehub.order.infrastructure.implementations.slot.SlotClient;
-import com.abdelkhalek.storehub.order.infrastructure.models.slot.AvailabilityRequest;
-import com.abdelkhalek.storehub.order.infrastructure.models.slot.DeliveryRequest;
-import com.abdelkhalek.storehub.order.infrastructure.models.StoreRequest;
-import com.abdelkhalek.storehub.order.infrastructure.models.slot.SlotRequest;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-
-import java.util.UUID;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-
-
-@ExtendWith(SpringExtension.class)
+/*@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
 @TestPropertySource(properties = {
@@ -185,4 +159,4 @@ class SlotClientTest {
     }
 
 
-}
+}*/

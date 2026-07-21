@@ -1,7 +1,7 @@
 package com.abdelkhalek.storehub.order.infrastructure.implementations;
 
-import com.abdelkhalek.storehub.order.domain.models.Order;
-import com.abdelkhalek.storehub.order.domain.spi.OrderRepository;
+import com.abdelkhalek.storehub.order.order.models.Order;
+import com.abdelkhalek.storehub.order.order.spi.OrderRepository;
 import com.abdelkhalek.storehub.order.infrastructure.mappers.OrderEntityMapper;
 import com.abdelkhalek.storehub.order.infrastructure.models.order.OrderEntity;
 import lombok.RequiredArgsConstructor;

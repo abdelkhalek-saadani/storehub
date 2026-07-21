@@ -1,6 +1,6 @@
 package com.abdelkhalek.storehub.order.infrastructure.models.slot;
 
-import com.abdelkhalek.storehub.order.domain.models.DeliveryMode;
+import com.abdelkhalek.storehub.order.order.models.DeliveryMode;
 import lombok.Data;
 
 @Data

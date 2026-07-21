@@ -1,9 +1,9 @@
 package com.abdelkhalek.storehub.order.infrastructure.implementations;
 
-import com.abdelkhalek.storehub.order.domain.models.DomainEvent;
-import com.abdelkhalek.storehub.order.domain.models.OrderCreatedEvent;
-import com.abdelkhalek.storehub.order.domain.spi.EventPublisher;
-import com.abdelkhalek.storehub.order.infrastructure.models.product.ItemsReleaseEvent;
+import com.abdelkhalek.storehub.order.order.models.DomainEvent;
+import com.abdelkhalek.storehub.order.order.models.OrderCreatedEvent;
+import com.abdelkhalek.storehub.order.order.spi.EventPublisher;
+import com.abdelkhalek.storehub.order.order.dto.ItemsReleaseEvent;
 import com.abdelkhalek.storehub.order.infrastructure.models.slot.SlotReleaseEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

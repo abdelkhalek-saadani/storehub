@@ -105,7 +105,7 @@ public class CartService {
             cart.setFinalTotal(pricesResponse.getFinalTotal());
             cart.setTotalDiscount(pricesResponse.getTotalDiscount());
             cart.setOriginalTotal(pricesResponse.getOriginalTotal());
-            log.debug("cart domain: {}", cart);
+            log.debug("cart order: {}", cart);
             return cart;
         }));
     }

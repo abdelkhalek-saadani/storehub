@@ -29,21 +29,18 @@ import { MatSelectModule } from '@angular/material/select';
 import { PickStoreLocationForm } from '../components/molecules/pick-store-location-form/pick-store-location-form';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { DeliveryAddressForm } from '../components/molecules/delivery-address-form/delivery-address-form';
-import { CategorySquaredButton } from '../components/atoms/category-squared-button/category-squared-button';
-import { CategoryBar } from '../components/molecules/category-bar/category-bar';
+import { DeliveryAddressForm } from '@components/molecules/delivery-address-form/delivery-address-form';
+import { CategorySquaredButton } from '@components/atoms/category-squared-button/category-squared-button';
+import { CategoryBar } from '@components/molecules/category-bar/category-bar';
 import { Breakpoints } from '@core/constants/breakpoints';
-import { MatCardImage } from '@angular/material/card';
-import { CartItem } from '../components/molecules/cart-item/cart-item';
-import { CheckoutForm } from '../components/molecules/checkout-form/checkout-form';
+import { CheckoutForm } from '@components/molecules/checkout-form/checkout-form';
 import { ReviewOrder } from '../components/molecules/review-order/review-order';
-import { CheckoutDetails } from '../components/molecules/checkout-details/checkout-details';
-import { WishlistProductCard } from '../components/molecules/wishlist-product-card/wishlist-product-card';
+import { CheckoutDetails } from '@components/molecules/checkout-details/checkout-details';
+import { WishlistProductCard } from '@components/molecules/wishlist-product-card/wishlist-product-card';
 import { OrderConfirmation } from '../components/molecules/order-confirmation/order-confirmation';
 import { OrderTracking } from '../components/molecules/order-tracking/order-tracking';
 import { Gallery } from '../components/molecules/gallery/gallery';
 import Keycloak from 'keycloak-js';
-import { ProductCard } from '../products/product-card/product-card';
 @Component({
   selector: 'app-dev',
   imports: [
@@ -75,7 +72,6 @@ import { ProductCard } from '../products/product-card/product-card';
     MatSelectModule,
     PickStoreLocationForm,
     DeliveryAddressForm,
-    CategorySquaredButton,
     CategoryBar,
     CheckoutForm,
     ReviewOrder,
@@ -273,7 +269,7 @@ import { ProductCard } from '../products/product-card/product-card';
         <h2 class="section-title">Buttons — matButton="filled"</h2>
         <div class="rows">
           <span class="label">Category Squared Button</span>
-          <app-category-squared-button />
+          <!--<app-category-squared-button />-->
 
           <div class="row">
             <span class="label">matButton + text</span>

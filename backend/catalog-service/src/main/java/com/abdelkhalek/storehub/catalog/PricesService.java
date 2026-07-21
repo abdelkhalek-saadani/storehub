@@ -3,7 +3,7 @@ package com.abdelkhalek.storehub.catalog;
 import com.abdelkhalek.storehub.catalog.dtos.PriceItemRequest;
 import com.abdelkhalek.storehub.catalog.dtos.PricesRequest;
 import com.abdelkhalek.storehub.catalog.dtos.PricesResponse;
-import com.abdelkhalek.storehub.catalog.inventory.StockEntity;
+import com.abdelkhalek.storehub.catalog.inventory.entity.StockEntity;
 import com.abdelkhalek.storehub.catalog.inventory.exception.InsufficientStockException;
 import com.abdelkhalek.storehub.catalog.inventory.repository.StockRepository;
 import com.abdelkhalek.storehub.catalog.pricing.exceptions.StockNotFoundException;

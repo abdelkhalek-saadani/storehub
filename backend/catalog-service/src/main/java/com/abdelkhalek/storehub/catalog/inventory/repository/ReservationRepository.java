@@ -1,7 +1,7 @@
 package com.abdelkhalek.storehub.catalog.inventory.repository;
 
 
-import com.abdelkhalek.storehub.catalog.inventory.Reservation;
+import com.abdelkhalek.storehub.catalog.inventory.entity.Reservation;
 import com.abdelkhalek.storehub.catalog.inventory.enums.ReservationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 

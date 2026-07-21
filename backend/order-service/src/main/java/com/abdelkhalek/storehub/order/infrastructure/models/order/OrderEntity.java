@@ -1,7 +1,7 @@
 package com.abdelkhalek.storehub.order.infrastructure.models.order;
 
-import com.abdelkhalek.storehub.order.domain.models.DeliveryMode;
-import com.abdelkhalek.storehub.order.domain.models.PaymentMode;
+import com.abdelkhalek.storehub.order.order.models.DeliveryMode;
+import com.abdelkhalek.storehub.order.order.models.PaymentMode;
 import io.github.joselion.springr2dbcrelationships.annotations.OneToMany;
 import io.github.joselion.springr2dbcrelationships.annotations.OneToOne;
 import lombok.AllArgsConstructor;

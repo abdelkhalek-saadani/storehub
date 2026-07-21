@@ -1,7 +1,6 @@
 package com.abdelkhalek.storehub.order.infrastructure.implementations.slot;
 
-import com.abdelkhalek.storehub.order.infrastructure.models.product.RetainResponse;
-import com.abdelkhalek.storehub.order.infrastructure.models.slot.*;
+import com.abdelkhalek.storehub.order.order.dto.RetainResponse;
 import com.abdelkhalek.storehub.order.infrastructure.models.slot.*;
 import com.abdelkhalek.storehub.order.infrastructure.models.StoreRequest;
 import lombok.extern.slf4j.Slf4j;

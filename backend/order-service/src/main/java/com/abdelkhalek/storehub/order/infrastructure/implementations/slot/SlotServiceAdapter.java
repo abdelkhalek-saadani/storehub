@@ -1,10 +1,10 @@
 package com.abdelkhalek.storehub.order.infrastructure.implementations.slot;
 
-import com.abdelkhalek.storehub.order.domain.models.Delivery;
-import com.abdelkhalek.storehub.order.domain.models.Slot;
-import com.abdelkhalek.storehub.order.domain.models.Store;
-import com.abdelkhalek.storehub.order.domain.spi.EventPublisher;
-import com.abdelkhalek.storehub.order.domain.spi.SlotService;
+import com.abdelkhalek.storehub.order.order.models.Delivery;
+import com.abdelkhalek.storehub.order.order.models.Slot;
+import com.abdelkhalek.storehub.order.order.models.Store;
+import com.abdelkhalek.storehub.order.order.spi.EventPublisher;
+import com.abdelkhalek.storehub.order.order.spi.SlotService;
 import com.abdelkhalek.storehub.order.infrastructure.mappers.DeliveryRequestMapper;
 import com.abdelkhalek.storehub.order.infrastructure.mappers.SlotRequestMapper;
 import com.abdelkhalek.storehub.order.infrastructure.mappers.StoreRequestMapper;

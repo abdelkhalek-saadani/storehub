@@ -2,15 +2,15 @@ package com.abdelkhalek.storehub.order.implementations.product;
 
 
 
-import com.abdelkhalek.storehub.order.domain.models.CartItem;
-import com.abdelkhalek.storehub.order.domain.models.Store;
-import com.abdelkhalek.storehub.order.domain.spi.EventPublisher;
-import com.abdelkhalek.storehub.order.infrastructure.implementations.product.ProductClient;
-import com.abdelkhalek.storehub.order.infrastructure.implementations.product.ProductServiceAdapter;
-import com.abdelkhalek.storehub.order.infrastructure.mappers.CartItemRequestMapper;
+import com.abdelkhalek.storehub.order.order.models.OrderItem;
+import com.abdelkhalek.storehub.order.order.models.Store;
+import com.abdelkhalek.storehub.order.order.spi.EventPublisher;
+import com.abdelkhalek.storehub.order.order.service.ProductClient;
+import com.abdelkhalek.storehub.order.order.service.ProductServiceAdapter;
+import com.abdelkhalek.storehub.order.order.mapper.CartItemRequestMapper;
 import com.abdelkhalek.storehub.order.infrastructure.mappers.StoreRequestMapper;
-import com.abdelkhalek.storehub.order.infrastructure.models.CartItemRequest;
-import com.abdelkhalek.storehub.order.infrastructure.models.product.ItemsReleaseEvent;
+import com.abdelkhalek.storehub.order.order.dto.CartItemRequest;
+import com.abdelkhalek.storehub.order.order.dto.ItemsReleaseEvent;
 import com.abdelkhalek.storehub.order.infrastructure.models.StoreRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,7 +46,7 @@ class ProductServiceAdapterTest {
     @InjectMocks
     private ProductServiceAdapter productServiceAdapter;
 
-    private List<CartItem> cartItems;
+    private List<OrderItem> cartItems;
     private Store store;
     private List<CartItemRequest> cartItemRequests;
     private StoreRequest storeRequest;
@@ -55,7 +55,7 @@ class ProductServiceAdapterTest {
     @BeforeEach
     void setUp() {
 
-        cartItems = Arrays.asList(new CartItem(), new CartItem());
+        cartItems = Arrays.asList(new OrderItem(), new OrderItem());
         UUID storeId = UUID.randomUUID();
         store = new Store(storeId);
         cartItemRequests = Arrays.asList(new CartItemRequest(), new CartItemRequest());

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -19,6 +20,7 @@ import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
+@Setter
 public class Stock {
 
     private UUID storeId;

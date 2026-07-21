@@ -1,7 +1,7 @@
 package com.abdelkhalek.storehub.order;
 
-import com.abdelkhalek.storehub.order.domain.OrderService;
-import com.abdelkhalek.storehub.order.domain.models.*;
+import com.abdelkhalek.storehub.order.order.OrderService;
+import com.abdelkhalek.storehub.order.order.models.*;
 import com.abdelkhalek.storehub.order.infrastructure.implementations.OrderReactiveRepository;
 import com.abdelkhalek.storehub.order.infrastructure.models.order.OrderEntity;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
@@ -36,13 +36,13 @@ public class OrderApplication {
 		OrderReactiveRepository orderReactiveRepository = ctx.getBean(OrderReactiveRepository.class);
 		// Arrange
 		Cart cart = new Cart();
-		/*CartItem item1 = new CartItem(
+		/*OrderItem item1 = new OrderItem(
 				UUID.randomUUID(),
 				5,
 				BigDecimal.valueOf(50),
 				BigDecimal.TEN,
 				BigDecimal.TEN);
-		CartItem item2 = new CartItem(
+		OrderItem item2 = new OrderItem(
 				UUID.randomUUID(),
 				10,
 				new Money(BigDecimal.valueOf(20)),

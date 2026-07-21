@@ -1,8 +1,8 @@
 package com.abdelkhalek.storehub.order.infrastructure.implementations;
 
-import com.abdelkhalek.storehub.order.domain.models.Order;
-import com.abdelkhalek.storehub.order.domain.models.PaymentLink;
-import com.abdelkhalek.storehub.order.domain.spi.PaymentService;
+import com.abdelkhalek.storehub.order.order.models.Order;
+import com.abdelkhalek.storehub.order.order.models.PaymentLink;
+import com.abdelkhalek.storehub.order.order.spi.PaymentService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 

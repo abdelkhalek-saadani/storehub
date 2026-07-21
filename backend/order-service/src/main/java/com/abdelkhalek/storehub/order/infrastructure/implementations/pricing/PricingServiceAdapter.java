@@ -1,12 +1,10 @@
 package com.abdelkhalek.storehub.order.infrastructure.implementations.pricing;
 
-import com.abdelkhalek.storehub.order.domain.models.CartItem;
-import com.abdelkhalek.storehub.order.domain.models.Order;
-import com.abdelkhalek.storehub.order.infrastructure.mappers.CartItemRequestMapper;
+import com.abdelkhalek.storehub.order.order.models.OrderItem;
+import com.abdelkhalek.storehub.order.order.models.Order;
+import com.abdelkhalek.storehub.order.order.mapper.CartItemRequestMapper;
 import com.abdelkhalek.storehub.order.infrastructure.mappers.PriceRequestMapper;
-import com.abdelkhalek.storehub.order.domain.models.*;
-import com.abdelkhalek.storehub.order.domain.spi.PricingService;
-import com.abdelkhalek.storehub.order.infrastructure.mappers.*;
+import com.abdelkhalek.storehub.order.order.spi.PricingService;
 import com.abdelkhalek.storehub.order.infrastructure.models.pricing.PriceRequest;
 import com.abdelkhalek.storehub.order.infrastructure.models.pricing.PriceResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +33,7 @@ public class PricingServiceAdapter implements PricingService {
         Mono<PriceResponse> priceResponseMono = pricingClient.calculateOrderTotals(priceRequest);
         return priceResponseMono
                 .map( (priceResponse -> {
-                    List<CartItem> items = cartItemRequestMapper.toCartItems(priceResponse.getItems());
+                    List<OrderItem> items = cartItemRequestMapper.toCartItems(priceResponse.getItems());
                     order.setCartItems(items);
                     log.info("Calculated order total value: {}", priceResponse.getTotal());
                     order.setTotal(priceResponse.getTotal());

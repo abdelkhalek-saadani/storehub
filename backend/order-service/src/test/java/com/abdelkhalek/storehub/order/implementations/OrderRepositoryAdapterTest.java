@@ -1,7 +1,7 @@
 package com.abdelkhalek.storehub.order.implementations;
 
 
-import com.abdelkhalek.storehub.order.domain.models.Order;
+import com.abdelkhalek.storehub.order.order.models.Order;
 import com.abdelkhalek.storehub.order.infrastructure.implementations.OrderReactiveRepository;
 import com.abdelkhalek.storehub.order.infrastructure.implementations.OrderRepositoryAdapter;
 import com.abdelkhalek.storehub.order.infrastructure.mappers.OrderEntityMapper;
@@ -105,7 +105,7 @@ class OrderRepositoryAdapterTest {
     }
 
     private Order createSampleOrder() {
-        // Create a sample Order domain object
+        // Create a sample Order order object
         // Note: This implementation might need to be adjusted based on the actual Order class structure
         Order order = new Order();
         // Set necessary properties

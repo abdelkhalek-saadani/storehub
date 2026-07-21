@@ -1,7 +1,6 @@
 package com.abdelkhalek.storehub.catalog.inventory.repository;
 
-import com.abdelkhalek.storehub.catalog.inventory.StockEntity;
-import com.abdelkhalek.storehub.catalog.inventory.domain.Stock;
+import com.abdelkhalek.storehub.catalog.inventory.entity.StockEntity;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;

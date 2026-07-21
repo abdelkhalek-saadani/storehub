@@ -1,6 +1,6 @@
 package com.abdelkhalek.storehub.order.infrastructure.models.pricing;
 
-import com.abdelkhalek.storehub.order.domain.models.Money;
+import com.abdelkhalek.storehub.order.order.models.Money;
 import lombok.Data;
 
 import java.util.List;

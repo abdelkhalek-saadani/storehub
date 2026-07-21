@@ -1,6 +1,6 @@
 package com.abdelkhalek.storehub.order.infrastructure.mappers;
 
-import com.abdelkhalek.storehub.order.domain.models.Order;
+import com.abdelkhalek.storehub.order.order.models.Order;
 import com.abdelkhalek.storehub.order.infrastructure.models.pricing.PriceRequest;
 import org.mapstruct.Mapper;
 

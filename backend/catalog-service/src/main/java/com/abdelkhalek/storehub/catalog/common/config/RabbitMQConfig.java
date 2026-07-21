@@ -9,6 +9,7 @@ import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -42,7 +43,8 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    Binding binding(Queue storeCreatedQueue, TopicExchange storehubExchange) {
+    Binding binding(@Qualifier("storeCreatedQueue") Queue storeCreatedQueue,
+                    TopicExchange storehubExchange) {
         return BindingBuilder.bind(storeCreatedQueue).to(storehubExchange).with("store.created");
     }
 
@@ -52,8 +54,20 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    Binding userBinding(Queue userCreatedQueue, TopicExchange storehubExchange) {
+    Binding userBinding(@Qualifier("userCreatedQueue") Queue userCreatedQueue,
+                        TopicExchange storehubExchange) {
         return BindingBuilder.bind(userCreatedQueue).to(storehubExchange).with("user.created");
+    }
+
+    @Bean
+    Queue itemsReleasedQueue() {
+        return new Queue("items.released.queue");
+    }
+
+    @Bean
+    Binding itemsBinding(@Qualifier("itemsReleasedQueue") Queue itemsReleasedQueue,
+                         TopicExchange storehubExchange) {
+        return BindingBuilder.bind(itemsReleasedQueue).to(storehubExchange).with("items.released");
     }
 
 

@@ -1,13 +1,13 @@
 package com.abdelkhalek.storehub.order.implementations.pricing;
 
-import com.abdelkhalek.storehub.order.domain.models.CartItem;
-import com.abdelkhalek.storehub.order.domain.models.Money;
-import com.abdelkhalek.storehub.order.domain.models.Order;
+import com.abdelkhalek.storehub.order.order.models.OrderItem;
+import com.abdelkhalek.storehub.order.order.models.Money;
+import com.abdelkhalek.storehub.order.order.models.Order;
 import com.abdelkhalek.storehub.order.infrastructure.implementations.pricing.PricingClient;
 import com.abdelkhalek.storehub.order.infrastructure.implementations.pricing.PricingServiceAdapter;
-import com.abdelkhalek.storehub.order.infrastructure.mappers.CartItemRequestMapper;
+import com.abdelkhalek.storehub.order.order.mapper.CartItemRequestMapper;
 import com.abdelkhalek.storehub.order.infrastructure.mappers.PriceRequestMapper;
-import com.abdelkhalek.storehub.order.infrastructure.models.CartItemRequest;
+import com.abdelkhalek.storehub.order.order.dto.CartItemRequest;
 import com.abdelkhalek.storehub.order.infrastructure.models.pricing.PriceRequest;
 import com.abdelkhalek.storehub.order.infrastructure.models.pricing.PriceResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +44,7 @@ class PricingServiceAdapterTest {
     private Order testOrder;
     private PriceRequest testPriceRequest;
     private PriceResponse testPriceResponse;
-    private List<CartItem> responseCartItems;
+    private List<OrderItem> responseCartItems;
 
     @BeforeEach
     void setUp() {
@@ -143,11 +143,11 @@ class PricingServiceAdapterTest {
         Order order = new Order();
         order.setId(UUID.randomUUID());
 
-        CartItem cartItem1 = new CartItem();
+        OrderItem cartItem1 = new OrderItem();
         cartItem1.setProductId(UUID.randomUUID());
         cartItem1.setQuantity(1);
 
-        CartItem cartItem2 = new CartItem();
+        OrderItem cartItem2 = new OrderItem();
         cartItem2.setProductId(UUID.randomUUID());
         cartItem2.setQuantity(10);
 
@@ -190,8 +190,8 @@ class PricingServiceAdapterTest {
         return priceResponse;
     }*/
 
-    //private List<CartItem> createResponseCartI/**/tems() /*{
-      /*  CartItem item1 = new CartItem(
+    //private List<OrderItem> createResponseCartI/**/tems() /*{
+      /*  OrderItem item1 = new OrderItem(
                 testOrder.getCartItems().get(0).getProductId(),
                 testPriceResponse.getItems().get(0).getQuantity(),
                 testPriceResponse.getItems().get(0).getSubtotal(),
@@ -199,7 +199,7 @@ class PricingServiceAdapterTest {
                 testPriceResponse.getItems().get(0).getOriginalUnitPrice()
         );
 
-        CartItem item2 = new CartItem(
+        OrderItem item2 = new OrderItem(
                 testOrder.getCartItems().get(1).getProductId(),
                 testPriceResponse.getItems().get(1).getQuantity(),
                 testPriceResponse.getItems().get(1).getSubtotal(),

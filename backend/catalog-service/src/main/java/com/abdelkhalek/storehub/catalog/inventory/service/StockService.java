@@ -1,17 +1,20 @@
 package com.abdelkhalek.storehub.catalog.inventory.service;
 
 
-import com.abdelkhalek.storehub.catalog.inventory.Reservation;
-import com.abdelkhalek.storehub.catalog.inventory.StockEntity;
+import com.abdelkhalek.storehub.catalog.inventory.entity.Reservation;
+import com.abdelkhalek.storehub.catalog.inventory.entity.StockEntity;
+import com.abdelkhalek.storehub.catalog.inventory.dto.Item;
 import com.abdelkhalek.storehub.catalog.inventory.mapper.StockMapper;
-import com.abdelkhalek.storehub.catalog.inventory.StockMovement;
+import com.abdelkhalek.storehub.catalog.inventory.entity.StockMovement;
 import com.abdelkhalek.storehub.catalog.inventory.domain.*;
 import com.abdelkhalek.storehub.catalog.inventory.enums.MovementType;
 import com.abdelkhalek.storehub.catalog.inventory.enums.ReservationStatus;
 import com.abdelkhalek.storehub.catalog.inventory.repository.ReservationRepository;
 import com.abdelkhalek.storehub.catalog.inventory.repository.StockMovementRepository;
 import com.abdelkhalek.storehub.catalog.inventory.repository.StockRepository;
+import com.abdelkhalek.storehub.catalog.pricing.exceptions.StockNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -20,10 +23,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class StockService {
@@ -40,7 +45,28 @@ public class StockService {
     private StockService self;
 
     /**
-     * Called synchronously at checkout (POST /catalog/reservations).
+     * Check the availability if a given list of items( productId, qty)
+     *
+     * @param storeId store to check the products availability in
+     * @param items   the items to check
+     * @return true if there is sufficient stock, false otherwise
+     */
+    public Boolean checkStock(UUID storeId, List<Item> items) {
+        for (Item item : items) {
+            StockEntity stockEntity = stockRepository
+                    .findByStoreIdAndProductId(storeId, item.productId())
+                    .orElseThrow(() -> new StockNotFoundException(item.productId()));
+            log.debug("Checking stock: {}", stockEntity);
+            if (stockEntity.getQuantityAvailable() < item.quantity()) {
+                return false;
+            }
+        }
+        ;
+        return true;
+    }
+
+    /**
+     * Called synchronously at checkout (POST /api/inventory/reservations).
      * All-or-nothing across the cart: if any line item is short, the whole
      * transaction rolls back and InsufficientStockException propagates.
      * <p>
@@ -49,13 +75,14 @@ public class StockService {
      * but there still is available stock to reserve it) , we
      * redo the entire attempt against fresh data rather than trying to
      * patch a half-applied transaction.
+     *
+     * @return the list of reservations ids
      */
-    public void reserveForOrder(UUID storeId, UUID orderId, List<ReservationItem> items) {
+    public List<UUID> reserveForOrder(UUID storeId, UUID orderId, List<ReservationItem> items) {
         int attempt = 0;
         while (true) {
             try {
-                self.reserveForOrderTx(storeId, orderId, items);
-                return;
+                return self.reserveForOrderTx(storeId, orderId, items);
             } catch (ObjectOptimisticLockingFailureException ex) {
                 attempt++;
                 if (attempt >= MAX_RETRIES) {
@@ -67,9 +94,10 @@ public class StockService {
     }
 
     @Transactional
-    protected void reserveForOrderTx(UUID storeId, UUID orderId, List<ReservationItem> items) {
+    protected List<UUID> reserveForOrderTx(UUID storeId, UUID orderId, List<ReservationItem> items) {
         Instant expiresAt = Instant.now().plus(Duration.ofMinutes(15)); // checkout hold TTL
 
+        List<UUID> reservationIds = new ArrayList<>();
         for (ReservationItem item : items) {
 
             StockEntity stockEntity = stockRepository.findByStoreIdAndProductId(storeId,
@@ -81,12 +109,14 @@ public class StockService {
             stock.reserve(item.quantity()); // throws InsufficientStockException if short
             stockMapper.applyTo(stock, stockEntity);
 
-            //stockRepository.save(stock);
+            //stockRepository.save(stockEntity);
 
             Reservation reservation = new Reservation(
                     storeId, orderId, item.productId(), item.quantity(), expiresAt);
-            reservationRepository.save(reservation);
+            Reservation r = reservationRepository.save(reservation);
+            reservationIds.add(r.getId());
         }
+        return reservationIds;
     }
 
     /**
@@ -111,6 +141,30 @@ public class StockService {
                     -reservation.getQuantity(), orderId, "payment succeeded"));
 
             reservation.confirm();
+            //reservationRepository.save(reservation);
+        }
+    }
+
+    /**
+     * Release items reservations by their reservation ids
+     */
+    @Transactional
+    public void releaseItems(List<UUID> reservationIds) {
+        List<Reservation> active = reservationRepository
+                .findAllById(reservationIds);
+
+        UUID storeId = active.getFirst().getStoreId();
+        for (Reservation reservation : active) {
+            StockEntity stockEntity = stockRepository
+                    .findByStoreIdAndProductId(storeId, reservation.getProductId())
+                    .orElseThrow();
+
+            Stock stock = stockMapper.toDomain(stockEntity);
+            stock.release(reservation.getQuantity());
+            stockMapper.applyTo(stock, stockEntity);
+            //stockRepository.save(stock);
+
+            reservation.release();
             //reservationRepository.save(reservation);
         }
     }

@@ -1,9 +1,9 @@
 package com.abdelkhalek.storehub.order.infrastructure.implementations;
 
-import com.abdelkhalek.storehub.order.domain.models.Delivery;
-import com.abdelkhalek.storehub.order.domain.models.Slot;
-import com.abdelkhalek.storehub.order.domain.models.Store;
-import com.abdelkhalek.storehub.order.domain.spi.SlotService;
+import com.abdelkhalek.storehub.order.order.models.Delivery;
+import com.abdelkhalek.storehub.order.order.models.Slot;
+import com.abdelkhalek.storehub.order.order.models.Store;
+import com.abdelkhalek.storehub.order.order.spi.SlotService;
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 

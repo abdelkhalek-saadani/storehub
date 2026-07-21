@@ -1,6 +1,6 @@
 package com.abdelkhalek.storehub.order.infrastructure.models.pricing;
 
-import com.abdelkhalek.storehub.order.infrastructure.models.CartItemRequest;
+import com.abdelkhalek.storehub.order.order.dto.CartItemRequest;
 import lombok.Data;
 
 import java.util.List;

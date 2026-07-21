@@ -1,7 +1,7 @@
 package com.abdelkhalek.storehub.order.implementations;
 
-import com.abdelkhalek.storehub.order.domain.models.DeliveryMode;
-import com.abdelkhalek.storehub.order.domain.models.PaymentMode;
+import com.abdelkhalek.storehub.order.order.models.DeliveryMode;
+import com.abdelkhalek.storehub.order.order.models.PaymentMode;
 import com.abdelkhalek.storehub.order.infrastructure.implementations.OrderReactiveRepository;
 import com.abdelkhalek.storehub.order.infrastructure.models.order.AddressEntity;
 import com.abdelkhalek.storehub.order.infrastructure.models.order.MoneyEntity;

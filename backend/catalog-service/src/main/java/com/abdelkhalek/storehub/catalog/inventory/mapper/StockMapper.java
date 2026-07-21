@@ -1,6 +1,6 @@
 package com.abdelkhalek.storehub.catalog.inventory.mapper;
 
-import com.abdelkhalek.storehub.catalog.inventory.StockEntity;
+import com.abdelkhalek.storehub.catalog.inventory.entity.StockEntity;
 import com.abdelkhalek.storehub.catalog.inventory.domain.Stock;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

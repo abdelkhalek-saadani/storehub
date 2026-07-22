@@ -2,8 +2,8 @@ package com.abdelkhalek.storehub.order.cart;
 
 import com.abdelkhalek.storehub.order.cart.dtos.CartResponse;
 import com.abdelkhalek.storehub.order.cart.dtos.UpdateCartRequest;
-import com.abdelkhalek.storehub.order.cart.services.cart.CartService;
-import com.abdelkhalek.storehub.order.cart.services.price.PricesResponse;
+import com.abdelkhalek.storehub.order.cart.service.CartService;
+import com.abdelkhalek.storehub.order.shared.dto.PricesResponse;
 import com.abdelkhalek.storehub.order.user.service.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

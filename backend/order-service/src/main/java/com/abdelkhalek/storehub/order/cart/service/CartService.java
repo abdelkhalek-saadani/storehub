@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.order.cart.services.cart;
+package com.abdelkhalek.storehub.order.cart.service;
 
 import com.abdelkhalek.storehub.order.cart.CartMapper;
 import com.abdelkhalek.storehub.order.cart.domain.Cart;
@@ -7,10 +7,10 @@ import com.abdelkhalek.storehub.order.cart.dtos.AddItemRequest;
 import com.abdelkhalek.storehub.order.cart.dtos.CartResponse;
 import com.abdelkhalek.storehub.order.cart.dtos.UpdateCartRequest;
 import com.abdelkhalek.storehub.order.cart.entities.CartEntity;
-import com.abdelkhalek.storehub.order.cart.services.price.PriceItemResponse;
-import com.abdelkhalek.storehub.order.cart.services.price.PricesRequest;
-import com.abdelkhalek.storehub.order.cart.services.price.PricesResponse;
-import com.abdelkhalek.storehub.order.cart.services.price.PricesService;
+import com.abdelkhalek.storehub.order.shared.dto.PriceItemResponse;
+import com.abdelkhalek.storehub.order.shared.dto.PricesRequest;
+import com.abdelkhalek.storehub.order.shared.dto.PricesResponse;
+import com.abdelkhalek.storehub.order.shared.service.PricesService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -61,7 +61,7 @@ public class CartService {
 
     public Mono<PricesResponse> quote(UpdateCartRequest request) {
         if (request.items().isEmpty()) {
-            return Mono.just(PricesResponse.empty());
+            return Mono.just(new PricesResponse(List.of(), BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO));
         }
         return pricesService.fetchPrices(cartMapper.fromGuestCartRequestToPricesRequest(request));
     }
@@ -95,16 +95,16 @@ public class CartService {
 
         return pricesResponseMono.map((pricesResponse -> {
             log.debug("Prices Response: {}", pricesResponse);
-            for (PriceItemResponse pr : pricesResponse.getItems()) {
+            for (PriceItemResponse pr : pricesResponse.items()) {
                 log.debug("Price Item: {}", pr);
             }
             List<CartItem> items =
-                    cartMapper.fromPriceItemsResponse(pricesResponse.getItems());
+                    cartMapper.fromPriceItemsResponse(pricesResponse.items());
 
             cart.setItems(items);
-            cart.setFinalTotal(pricesResponse.getFinalTotal());
-            cart.setTotalDiscount(pricesResponse.getTotalDiscount());
-            cart.setOriginalTotal(pricesResponse.getOriginalTotal());
+            cart.setFinalTotal(pricesResponse.finalTotal());
+            cart.setTotalDiscount(pricesResponse.totalDiscount());
+            cart.setOriginalTotal(pricesResponse.originalTotal());
             log.debug("cart order: {}", cart);
             return cart;
         }));

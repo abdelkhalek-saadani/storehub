@@ -1,6 +1,5 @@
-package com.abdelkhalek.storehub.order.infrastructure.models.order;
+package com.abdelkhalek.storehub.order.order.entity;
 
-import com.abdelkhalek.storehub.order.order.entity.OrderEntity;
 import io.github.joselion.springr2dbcrelationships.annotations.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,6 +9,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -18,28 +18,30 @@ import java.util.UUID;
 @NoArgsConstructor
 
 @Table(
-        name = "cart_item"
+        name = "order_item"
 )
-public class CartItemEntity {
+public class OrderItemEntity {
+
 
     @Id
     UUID id;
+
+    String productName;
+
     UUID productId;
+
     int quantity;
 
-
-    BigDecimal subtotal;
-
     BigDecimal unitPrice;
+    BigDecimal originalLineTotal;
+    BigDecimal discountAmount;
+    BigDecimal finalLineTotal;
+    String appliedOfferLabel;
 
-    BigDecimal originalUnitPrice;
-
-    @ManyToOne( foreignKey = "cart_id")
+    @ManyToOne(foreignKey = "order_id")
     OrderEntity order;
     UUID orderId;
 
+    LocalDateTime createdAt;
 
-//    public MoneyEntity getSubtotal() {
-//        return subtotal;
-//    }
 }

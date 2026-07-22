@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.order.cart.services.cart;
+package com.abdelkhalek.storehub.order.cart.service;
 
 
 import com.abdelkhalek.storehub.order.cart.entities.CartEntity;

@@ -2,8 +2,8 @@ package com.abdelkhalek.storehub.order;
 
 import com.abdelkhalek.storehub.order.order.OrderService;
 import com.abdelkhalek.storehub.order.order.models.*;
-import com.abdelkhalek.storehub.order.infrastructure.implementations.OrderReactiveRepository;
-import com.abdelkhalek.storehub.order.infrastructure.models.order.OrderEntity;
+import com.abdelkhalek.storehub.order.order.repository.OrderReactiveRepository;
+import com.abdelkhalek.storehub.order.order.entity.OrderEntity;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.servers.Server;

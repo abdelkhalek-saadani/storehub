@@ -1,9 +1,11 @@
-package com.abdelkhalek.storehub.order.cart.services.price;
+package com.abdelkhalek.storehub.order.shared.service;
 
 import com.abdelkhalek.storehub.order.cart.dtos.CatalogErrorResponse;
 import com.abdelkhalek.storehub.order.cart.exception.CatalogServiceException;
 import com.abdelkhalek.storehub.order.cart.exception.CatalogServiceUnavailableException;
 import com.abdelkhalek.storehub.order.cart.exception.ProductNotFoundException;
+import com.abdelkhalek.storehub.order.shared.dto.PricesRequest;
+import com.abdelkhalek.storehub.order.shared.dto.PricesResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

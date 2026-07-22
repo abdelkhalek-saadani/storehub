@@ -2,10 +2,10 @@ package com.abdelkhalek.storehub.order.implementations;
 
 import com.abdelkhalek.storehub.order.order.models.DeliveryMode;
 import com.abdelkhalek.storehub.order.order.models.PaymentMode;
-import com.abdelkhalek.storehub.order.infrastructure.implementations.OrderReactiveRepository;
+import com.abdelkhalek.storehub.order.order.repository.OrderReactiveRepository;
 import com.abdelkhalek.storehub.order.infrastructure.models.order.AddressEntity;
 import com.abdelkhalek.storehub.order.infrastructure.models.order.MoneyEntity;
-import com.abdelkhalek.storehub.order.infrastructure.models.order.OrderEntity;
+import com.abdelkhalek.storehub.order.order.entity.OrderEntity;
 import com.abdelkhalek.storehub.order.infrastructure.models.order.SlotEntity;
 import io.github.joselion.springr2dbcrelationships.R2dbcRelationshipsCallbacks;
 import org.flywaydb.core.Flyway;

@@ -2,10 +2,10 @@ package com.abdelkhalek.storehub.order.implementations;
 
 
 import com.abdelkhalek.storehub.order.order.models.Order;
-import com.abdelkhalek.storehub.order.infrastructure.implementations.OrderReactiveRepository;
-import com.abdelkhalek.storehub.order.infrastructure.implementations.OrderRepositoryAdapter;
+import com.abdelkhalek.storehub.order.order.repository.OrderReactiveRepository;
+import com.abdelkhalek.storehub.order.order.repository.OrderRepositoryAdapter;
 import com.abdelkhalek.storehub.order.infrastructure.mappers.OrderEntityMapper;
-import com.abdelkhalek.storehub.order.infrastructure.models.order.OrderEntity;
+import com.abdelkhalek.storehub.order.order.entity.OrderEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

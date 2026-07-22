@@ -12,7 +12,6 @@ import reactor.core.Exceptions;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -272,23 +271,6 @@ public class OrderService {
     }
 
 
-    /**
-     * Calculates delivery fee based on delivery mode
-     *
-     * @return Mono<Money> with the fee amount or zero for pickup
-     */
-    private Mono<Money> calculateDeliveryFee(Delivery delivery, Cart cart, Store store) {
-        return delivery.getMode().equals(DeliveryMode.HOME_DELIVERY) ?
-                getDeliveryFee(cart.getItems(), delivery.getAddress(), store) :
-                Mono.just(new Money()); // No fee for pickup
-    }
-
-
-    private Mono<Money> getDeliveryFee(List<OrderItem> items, Address customerAddress, Store store) {
-        return Mono.fromSupplier(() -> new Money(BigDecimal.TEN));
-    }
-
-
     private Mono<Order> calculateOrderTotals(Order order) {
         // Call external service to calculate all totals and discounts.
         return pricingService.calculateOrderTotals(order)
@@ -326,6 +308,8 @@ public class OrderService {
     }
 
     private void publishOrderCreatedEvent(Order order) {
+        // On order created event published, the catalog service will add the order id to the
+        // reservations, it will confirm reservation on payment success
         eventPublisher.publish(new OrderCreatedEvent(order));
     }
 

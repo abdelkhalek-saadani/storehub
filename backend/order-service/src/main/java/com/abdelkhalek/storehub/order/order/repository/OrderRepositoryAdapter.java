@@ -1,9 +1,9 @@
-package com.abdelkhalek.storehub.order.infrastructure.implementations;
+package com.abdelkhalek.storehub.order.order.repository;
 
+import com.abdelkhalek.storehub.order.order.entity.OrderEntity;
+import com.abdelkhalek.storehub.order.order.mapper.OrderMapper;
 import com.abdelkhalek.storehub.order.order.models.Order;
 import com.abdelkhalek.storehub.order.order.spi.OrderRepository;
-import com.abdelkhalek.storehub.order.infrastructure.mappers.OrderEntityMapper;
-import com.abdelkhalek.storehub.order.infrastructure.models.order.OrderEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -15,13 +15,13 @@ import reactor.core.publisher.Mono;
 public class OrderRepositoryAdapter implements OrderRepository {
 
     private final OrderReactiveRepository orderReactiveRepository;
-    private final OrderEntityMapper orderEntityMapper;
+    private final OrderMapper orderMapper;
 
     @Override
     public Mono<Order> save(Order order) {
-        log.info("order total value : {}", order.getTotal());
-        Mono<OrderEntity> orderEntity = orderReactiveRepository.save(orderEntityMapper.fromOrder(order));
-        return orderEntity.map(orderEntityMapper::toOrder);
+        log.debug("Saving Order: {}", order);
+        Mono<OrderEntity> orderEntity = orderReactiveRepository.save(orderMapper.toEntity(order));
+        return orderEntity.map(orderMapper::fromEntity);
     }
 
 }

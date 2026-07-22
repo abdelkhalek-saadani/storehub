@@ -4,7 +4,7 @@ import com.abdelkhalek.storehub.order.order.models.OrderItem;
 import com.abdelkhalek.storehub.order.order.models.Money;
 import com.abdelkhalek.storehub.order.order.models.Order;
 import com.abdelkhalek.storehub.order.infrastructure.implementations.pricing.PricingClient;
-import com.abdelkhalek.storehub.order.infrastructure.implementations.pricing.PricingServiceAdapter;
+import com.abdelkhalek.storehub.order.order.service.PricingServiceImpl;
 import com.abdelkhalek.storehub.order.order.mapper.CartItemRequestMapper;
 import com.abdelkhalek.storehub.order.infrastructure.mappers.PriceRequestMapper;
 import com.abdelkhalek.storehub.order.order.dto.CartItemRequest;
@@ -26,7 +26,7 @@ import java.util.UUID;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class PricingServiceAdapterTest {
+class PricingServiceImplTest {
 
     @Mock
     private PricingClient pricingClient;
@@ -38,7 +38,7 @@ class PricingServiceAdapterTest {
     private CartItemRequestMapper cartItemRequestMapper;
 
     @InjectMocks
-    private PricingServiceAdapter pricingServiceAdapter;
+    private PricingServiceImpl pricingServiceImpl;
 
     // Test data
     private Order testOrder;
@@ -72,7 +72,7 @@ class PricingServiceAdapterTest {
                 .thenReturn(Mono.just(testPriceResponse));
 
         // Act
-        Mono<Order> result = pricingServiceAdapter.calculateOrderTotals(testOrder);
+        Mono<Order> result = pricingServiceImpl.calculateOrderTotals(testOrder);
 
         // Assert
         StepVerifier.create(result)
@@ -93,7 +93,7 @@ class PricingServiceAdapterTest {
                 .thenReturn(Mono.error(exception));
 
         // Act
-        Mono<Order> result = pricingServiceAdapter.calculateOrderTotals(testOrder);
+        Mono<Order> result = pricingServiceImpl.calculateOrderTotals(testOrder);
 
         // Assert
         StepVerifier.create(result)
@@ -125,7 +125,7 @@ class PricingServiceAdapterTest {
         when(cartItemRequestMapper.toCartItems(emptyResponse.getItems())).thenReturn(List.of());
 
         // Act
-        Mono<Order> result = pricingServiceAdapter.calculateOrderTotals(emptyOrder);
+        Mono<Order> result = pricingServiceImpl.calculateOrderTotals(emptyOrder);
 
         // Assert
         StepVerifier.create(result)

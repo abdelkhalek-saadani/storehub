@@ -1,6 +1,6 @@
 package com.abdelkhalek.storehub.order.order.models;
 
-import com.abdelkhalek.storehub.order.cart.services.price.AppliedOffer;
+import com.abdelkhalek.storehub.order.shared.model.AppliedOffer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

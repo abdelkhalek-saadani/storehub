@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.order.cart.services.price;
+package com.abdelkhalek.storehub.order.shared.model;
 
 import lombok.Data;
 

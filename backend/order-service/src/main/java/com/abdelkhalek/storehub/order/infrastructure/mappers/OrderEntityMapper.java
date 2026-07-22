@@ -1,7 +1,7 @@
 package com.abdelkhalek.storehub.order.infrastructure.mappers;
 
-import com.abdelkhalek.storehub.order.order.models.*;
-import com.abdelkhalek.storehub.order.infrastructure.models.order.*;
+import com.abdelkhalek.storehub.order.order.entity.OrderEntity;
+import com.abdelkhalek.storehub.order.order.models.Order;
 import org.mapstruct.Mapper;
 
 @Mapper(
@@ -12,12 +12,6 @@ public interface OrderEntityMapper {
     OrderEntity fromOrder(Order order);
     Order toOrder(OrderEntity orderEntity);
 
-    AddressEntity fromAddress(Address address);
-    Address toAddress(AddressEntity addressEntity);
-    CartItemEntity fromCartItem(OrderItem cartItem);
-    OrderItem toCartItem(CartItemEntity cartItemEntity);
-    MoneyEntity fromMoney(Money money);
-    Money toMoney(MoneyEntity moneyEntity);
-    SlotEntity fromSlot(Slot slot);
-    Slot toSlot(SlotEntity slotEntity);
+
+
 }

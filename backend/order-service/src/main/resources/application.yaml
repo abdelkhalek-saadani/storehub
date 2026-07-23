@@ -50,6 +50,7 @@ storehub:
   catalog-base-url: ${CATALOG_BASE_URL}
   kc-base-url: ${KC_BASE_URL}
   realm: storehub
+  rabbit.exchange: storehub.exchange
 
 
 

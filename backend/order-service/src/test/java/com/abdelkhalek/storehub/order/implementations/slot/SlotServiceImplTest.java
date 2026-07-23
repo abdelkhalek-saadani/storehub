@@ -12,7 +12,7 @@ import com.abdelkhalek.storehub.order.infrastructure.mappers.SlotRequestMapper;
 import com.abdelkhalek.storehub.order.infrastructure.mappers.StoreRequestMapper;
 import com.abdelkhalek.storehub.order.infrastructure.models.StoreRequest;
 import com.abdelkhalek.storehub.order.infrastructure.models.slot.DeliveryRequest;
-import com.abdelkhalek.storehub.order.order.dto.SlotReleaseEvent;
+import com.abdelkhalek.storehub.order.order.event.SlotReleaseEvent;
 import com.abdelkhalek.storehub.order.infrastructure.models.slot.SlotRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

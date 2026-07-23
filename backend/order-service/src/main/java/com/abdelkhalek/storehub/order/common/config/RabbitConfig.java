@@ -7,6 +7,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import reactor.core.publisher.Mono;
@@ -17,6 +18,7 @@ import reactor.rabbitmq.SenderOptions;
 
 @Configuration
 @Slf4j
+@EnableConfigurationProperties(RabbitProperties.class)
 public class RabbitConfig {
 
 
@@ -44,8 +46,8 @@ public class RabbitConfig {
     }
 
     @Bean
-    ApplicationRunner declareExchange(Sender sender) {
-        return args -> sender.declareExchange(ExchangeSpecification.exchange("storehub.exchange")
+    ApplicationRunner declareExchange(Sender sender, RabbitProperties props) {
+        return args -> sender.declareExchange(ExchangeSpecification.exchange(props.exchange())
                 .type("topic").durable(true)).block();
     }
 

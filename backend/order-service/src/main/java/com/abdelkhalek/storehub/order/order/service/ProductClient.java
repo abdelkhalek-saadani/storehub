@@ -59,7 +59,7 @@ public class ProductClient {
                         .queryParam("storeId", request.storeId())
                         .path("api/inventory/reservations").build())
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(new RetainRequest(request.items(), request.storeId()))
+                .bodyValue(request.items())
                 .retrieve()
                 .bodyToMono(RetainResponse.class)
                 .map(RetainResponse::getRetainIds)

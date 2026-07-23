@@ -49,6 +49,7 @@ public class ProductServiceImpl implements ProductService {
             List<CartItemRequest> items =
                     cartItemRequestMapper.fromCartItemEntities(cartEntity.getItems());
             RetainRequest request = new RetainRequest(items, storeId);
+            log.debug("items: {}", items);
             return productClient.retain(request);
         });
     }

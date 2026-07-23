@@ -4,6 +4,7 @@ import com.abdelkhalek.storehub.catalog.inventory.enums.ReservationStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -27,6 +28,7 @@ public class Reservation {
     @Column(nullable = false)
     private UUID storeId;
 
+    @Setter
     @Column(nullable = true)
     private UUID orderId;
 

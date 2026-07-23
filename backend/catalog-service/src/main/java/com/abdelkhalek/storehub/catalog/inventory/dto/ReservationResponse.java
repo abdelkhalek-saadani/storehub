@@ -4,6 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 public record ReservationResponse(
-        List<UUID> reservationIds
+        List<UUID> retainIds
 ) {
 }

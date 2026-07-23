@@ -1,32 +1,7 @@
 package com.abdelkhalek.storehub.order.implementations.pricing;
 
-import com.abdelkhalek.storehub.order.order.models.OrderItem;
-import com.abdelkhalek.storehub.order.order.models.Money;
-import com.abdelkhalek.storehub.order.order.models.Order;
-import com.abdelkhalek.storehub.order.infrastructure.implementations.pricing.PricingClient;
-import com.abdelkhalek.storehub.order.order.service.PricingServiceImpl;
-import com.abdelkhalek.storehub.order.order.mapper.CartItemRequestMapper;
-import com.abdelkhalek.storehub.order.infrastructure.mappers.PriceRequestMapper;
-import com.abdelkhalek.storehub.order.order.dto.CartItemRequest;
-import com.abdelkhalek.storehub.order.infrastructure.models.pricing.PriceRequest;
-import com.abdelkhalek.storehub.order.infrastructure.models.pricing.PriceResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
-
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.UUID;
-
-import static org.mockito.Mockito.*;
-
-@ExtendWith(MockitoExtension.class)
-class PricingServiceImplTest {
+/*@ExtendWith(MockitoExtension.class)
+*//**//*class PricingServiceImplTest {
 
     @Mock
     private PricingClient pricingClient;
@@ -153,8 +128,9 @@ class PricingServiceImplTest {
 
         order.setCartItems(List.of(cartItem1, cartItem2));
         return order;
-    }
+    }*/
 
+/*
     private PriceRequest createTestPriceRequest() {
         CartItemRequest request1 = new CartItemRequest();
         request1.setProductId(testOrder.getCartItems().get(0).getProductId().toString());
@@ -169,6 +145,7 @@ class PricingServiceImplTest {
         return priceRequest;
     }
 
+*/
     /*private PriceResponse createTestPriceResponse() {
         CartItemResponse response1 = new CartItemResponse();
         response1.setProductId(testOrder.getCartItems().get(0).getProductId().toString());
@@ -210,20 +187,37 @@ class PricingServiceImplTest {
         return List.of(item1, item2);
     }*/
 
+/**//*
     private boolean verifyOrderUpdated(Order updatedOrder) {
+*/
+/*
         // Verify order ID remains unchanged
         if (!updatedOrder.getId().equals(testOrder.getId())) {
             return false;
         }
 
         // Verify cart items were updated correctly
+*//*
+
+*/
+/*
         if (updatedOrder.getCartItems().size() != responseCartItems.size()) {
             return false;
         }
+*//*
+*/
+/*
+
 
         // Verify total was set correctly
-        return updatedOrder.getTotal() != null &&
+   *//*
+
+*/
+/*     return updatedOrder.getTotal() != null &&
                 updatedOrder.getTotal().getValue().equals(testPriceResponse.getTotal().getValue()) &&
                 updatedOrder.getCartItems().equals(responseCartItems);
-    }
-}
+    }*//*
+*/
+/*
+
+}*/

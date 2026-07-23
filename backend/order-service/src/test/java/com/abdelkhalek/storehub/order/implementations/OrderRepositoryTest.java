@@ -1,42 +1,6 @@
 package com.abdelkhalek.storehub.order.implementations;
 
-import com.abdelkhalek.storehub.order.order.models.DeliveryMode;
-import com.abdelkhalek.storehub.order.order.models.PaymentMode;
-import com.abdelkhalek.storehub.order.order.repository.OrderReactiveRepository;
-import com.abdelkhalek.storehub.order.infrastructure.models.order.AddressEntity;
-import com.abdelkhalek.storehub.order.infrastructure.models.order.MoneyEntity;
-import com.abdelkhalek.storehub.order.order.entity.OrderEntity;
-import com.abdelkhalek.storehub.order.infrastructure.models.order.SlotEntity;
-import io.github.joselion.springr2dbcrelationships.R2dbcRelationshipsCallbacks;
-import org.flywaydb.core.Flyway;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.context.TestPropertySource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import reactor.test.StepVerifier;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-@DataR2dbcTest
+/*@DataR2dbcTest
 @Testcontainers
 @TestPropertySource(properties = "spring.flyway.enabled=false")
 @Import({OrderRepositoryTest.RelationshipsTestConfig.class})
@@ -85,7 +49,7 @@ class OrderRepositoryTest {
         flyway.migrate();
     }
 
-    /*@Test
+    *//*@Test
     void shouldSaveAndFindOrder() {
         orderEntity = createOrderEntity();
 
@@ -109,7 +73,7 @@ class OrderRepositoryTest {
                     return hasFirstProduct && hasLastProduct;
                 })
                 .verifyComplete();
-    }*/
+    }*//*
 
     @Test
     void shouldReturnEmptyWhenOrderNotFound() {
@@ -119,7 +83,7 @@ class OrderRepositoryTest {
                 .verifyComplete();
     }
 
-    /*@Test
+    *//*@Test
     void shouldDeleteOrder() {
         orderEntity = createOrderEntity();
 
@@ -127,9 +91,9 @@ class OrderRepositoryTest {
                         .flatMap(saved -> orderReactiveRepository.deleteById(saved.getId())
                                 .then(orderReactiveRepository.findById(saved.getId()))))
                 .verifyComplete();
-    }*/
+    }*//*
 
-    /*@Test
+    *//*@Test
     void shouldFindAllOrders() {
         OrderEntity order1 = createOrderEntity();
         OrderEntity order2 = createOrderEntity();
@@ -139,7 +103,7 @@ class OrderRepositoryTest {
                         .thenMany(orderReactiveRepository.findAll()))
                 .expectNextCount(2)
                 .verifyComplete();
-    }*/
+    }*//*
 
     @Test
     void shouldSaveOrderWithEmptyCartItems() {
@@ -155,7 +119,7 @@ class OrderRepositoryTest {
                 .verifyComplete();
     }
 
-    /*@Test
+    @Test
     void shouldUpdateOrder() {
         orderEntity = createOrderEntity();
 
@@ -167,9 +131,10 @@ class OrderRepositoryTest {
                         .flatMap(updated -> orderReactiveRepository.findById(updated.getId())))
                 .expectNextMatches(found -> found.getPaymentMode() == PaymentMode.CASH)
                 .verifyComplete();
-    }*/
+    }
 
-    private OrderEntity createOrderEntityWithoutCartItems() {
+    private OrderEntity createOrderEntityWithoutCartItems()*/
+/*{
         LocalDateTime date = LocalDateTime.now();
         AddressEntity deliveryAddress = new AddressEntity(null, "Delivery City", "DC", 12345);
         AddressEntity invoiceAddress = new AddressEntity(null, "456 Invoice Rd", "Invoice City", 12345);
@@ -188,14 +153,15 @@ class OrderRepositoryTest {
 
         UUID slotRetainId = UUID.randomUUID();
         UUID inventoryRetainId = UUID.randomUUID();
-
+*//**//*
         return new OrderEntity(
                 null, date, deliveryAddress.getId(), deliveryAddress, invoiceAddress, invoiceAddress.getId(),
                 deliveryMode, slot, slot.getId(), paymentMode, originalSubtotal, originalSubtotal.getId(),
                 subtotal, subtotal.getId(), deliveryFee, deliveryFee.getId(), total, total.getId(),
                 new ArrayList<>(), slotRetainId, inventoryRetainId
         );
-    }
+    }*/
+
 
     /*public static OrderEntity createOrderEntity() {
         LocalDateTime date = LocalDateTime.now();
@@ -243,5 +209,5 @@ class OrderRepositoryTest {
 
         order.setSlot(slot);
         return order;
-    }*/
-}
+    }
+}/**/

@@ -1,12 +1,16 @@
 package com.abdelkhalek.storehub.order.order;
 
 
-import com.abdelkhalek.storehub.order.order.dto.SlotReleaseEvent;
-import com.abdelkhalek.storehub.order.order.dto.ItemsReleaseEvent;
+import com.abdelkhalek.storehub.order.common.config.RabbitProperties;
+import com.abdelkhalek.storehub.order.order.event.ItemsReleaseEvent;
+import com.abdelkhalek.storehub.order.order.event.OrderCreateEvent;
+import com.abdelkhalek.storehub.order.order.event.SlotReleaseEvent;
+import com.abdelkhalek.storehub.order.order.models.Order;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.rabbitmq.OutboundMessage;
@@ -18,7 +22,10 @@ import java.util.UUID;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@EnableConfigurationProperties(RabbitProperties.class)
 public class OrderEventPublisher {
+
+    private final RabbitProperties props;
 
     private final Sender sender;
     private final ObjectMapper objectMapper;
@@ -32,7 +39,7 @@ public class OrderEventPublisher {
             return Mono.error(e);
         }
         log.debug("Publishing items release event to RabbitMQ: {}, Bytes: {}", event, payload);
-        return sender.send(Mono.just(new OutboundMessage("store.exchange", "items.released",
+        return sender.send(Mono.just(new OutboundMessage(props.exchange(), "items.released",
                 payload)));
     }
 
@@ -45,7 +52,20 @@ public class OrderEventPublisher {
             return Mono.error(e);
         }
         log.debug("Publishing slot release event to RabbitMQ: {}, Bytes: {}", event, payload);
-        return sender.send(Mono.just(new OutboundMessage("store.exchange", "slot.released",
+        return sender.send(Mono.just(new OutboundMessage(props.exchange(), "slot.released",
+                payload)));
+    }
+
+    public Mono<Void> orderCreated(Order order) {
+        var event = new OrderCreateEvent(order.getId(), order.getSlotRetainId(), order.getInventoryRetainIds());
+        byte[] payload;
+        try {
+            payload = objectMapper.writeValueAsBytes(event);
+        } catch (JsonProcessingException e) {
+            return Mono.error(e);
+        }
+        log.debug("Publishing order create event to RabbitMQ: {}, Bytes: {}", event, payload);
+        return sender.send(Mono.just(new OutboundMessage(props.exchange(), "order.created",
                 payload)));
     }
 }

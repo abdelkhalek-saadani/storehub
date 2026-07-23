@@ -81,5 +81,28 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(slotReleasedQueue).to(storehubExchange).with("slot.released");
     }
 
+    @Bean
+    public Queue inventoryOrderCreatedQueue() {
+        return new Queue("inventory.order.created.queue", true);
+    }
+
+    @Bean
+    public Binding inventoryOrderCreatedBinding(Queue inventoryOrderCreatedQueue, TopicExchange storehubExchange) {
+        return BindingBuilder.bind(inventoryOrderCreatedQueue)
+                .to(storehubExchange)
+                .with("order.created");
+    }
+
+    @Bean
+    public Queue slotOrderCreatedQueue() {
+        return new Queue("slot.order.created.queue", true);
+    }
+
+    @Bean
+    public Binding slotOrderCreatedBinding(Queue slotOrderCreatedQueue, TopicExchange storehubExchange) {
+        return BindingBuilder.bind(slotOrderCreatedQueue)
+                .to(storehubExchange)
+                .with("order.created");
+    }
 
 }

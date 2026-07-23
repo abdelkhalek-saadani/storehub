@@ -1,7 +1,10 @@
 package com.abdelkhalek.storehub.order.order.service;
 
+import com.abdelkhalek.storehub.order.cart.service.CartRepository;
+import com.abdelkhalek.storehub.order.order.OrderEventPublisher;
 import com.abdelkhalek.storehub.order.order.exceptions.OrderCalculationException;
 import com.abdelkhalek.storehub.order.order.exceptions.UnavailableException;
+import com.abdelkhalek.storehub.order.order.mapper.OrderMapper;
 import com.abdelkhalek.storehub.order.order.models.*;
 import com.abdelkhalek.storehub.order.order.spi.*;
 import com.abdelkhalek.storehub.order.user.service.UserService;
@@ -12,6 +15,7 @@ import reactor.core.Exceptions;
 import reactor.core.publisher.Mono;
 import reactor.util.function.Tuple2;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -53,12 +57,14 @@ public class OrderService {
     private final ProductService productService;
     private final PricingService pricingService;
     private final OrderRepository orderRepository;
-    private final EventPublisher eventPublisher;
+    private final CartRepository cartRepository;
     private final PaymentService paymentService;
     private final UserService userService;
+    private final OrderEventPublisher orderEventPublisher;
+    private final OrderMapper orderMapper;
 
 
-    private Mono<Order> placeOrder(OrderRequest orderRequest) {
+    public Mono<Order> placeOrder(OrderRequest orderRequest) {
         // First check if order is valid based on resources availability
         return checkAvailability(orderRequest.storeId(), orderRequest.cartId(), orderRequest.slotId())
                 .flatMap(isAvailable -> {
@@ -188,13 +194,26 @@ public class OrderService {
 
         List<UUID> inventoryRetainIds = results.getT1().getValue();
         UUID slotRetainId = results.getT2().getValue();
-
-        return Mono.fromSupplier(() -> createInitialOrderObject(userId, orderRequest.storeId(),
-                        inventoryRetainIds, slotRetainId, orderRequest.slotId(),
-                        orderRequest.billingAddress(), orderRequest.deliveryAddress()))
+        return cartRepository.findById(orderRequest.cartId()).map((cartEntity) ->
+                {
+                    List<OrderItem> items = orderMapper.fromCartItemEntities(cartEntity.getItems());
+                    return createInitialOrderObject(userId,
+                            orderRequest.storeId(), items,
+                            inventoryRetainIds, slotRetainId, orderRequest.slotId(),
+                            orderRequest.billingAddress(), orderRequest.deliveryAddress());
+                })
                 .flatMap(this::calculateOrderTotals)
                 .flatMap(this::saveOrder)
-                .doOnSuccess(this::publishOrderCreatedEvent)
+                .flatMap(savedOrder ->
+                        publishOrderCreatedEvent(savedOrder)
+                                .timeout(Duration.ofSeconds(5))
+                                .onErrorResume(error -> {
+                                    log.error("Failed to publish event for order: {}",
+                                            savedOrder.getId(), error);
+                                    return Mono.empty();
+                                })
+                                .thenReturn(savedOrder)
+                )
                 .onErrorResume(e -> releaseResources(inventoryRetainIds, slotRetainId)
                         .then(Mono.error(e)));
     }
@@ -250,7 +269,7 @@ public class OrderService {
         return slotService.release(retainId)
                 .onErrorResume(e -> {
                     log.error("Failed to release delivery slot: {}", retainId, e);
-                    return Mono.empty(); // Continue with the main error path even if release fails
+                    return Mono.empty();
                 });
     }
 
@@ -285,11 +304,13 @@ public class OrderService {
                 });
     }
 
-    private Order createInitialOrderObject(UUID userId, UUID storeId, List<UUID> inventoryRetainIds,
+    private Order createInitialOrderObject(UUID userId, UUID storeId,
+                                           List<OrderItem> items, List<UUID> inventoryRetainIds,
                                            UUID slotRetainId, UUID slotId, String billingAddress,
                                            String deliveryAddress) {
         Order order = Order.builder()
                 .userId(userId)
+                .items(items)
                 .inventoryRetainIds(inventoryRetainIds)
                 .slotRetainId(slotRetainId)
                 .slotId(slotId)
@@ -307,10 +328,8 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    private void publishOrderCreatedEvent(Order order) {
-        // On order created event published, the catalog service will add the order id to the
-        // reservations, it will confirm reservation on payment success
-        eventPublisher.publish(new OrderCreatedEvent(order));
+    private Mono<Void> publishOrderCreatedEvent(Order order) {
+        return orderEventPublisher.orderCreated(order);
     }
 
     public Mono<PaymentLink> placeOrderWithOnlinePayment(OrderRequest orderRequest) {

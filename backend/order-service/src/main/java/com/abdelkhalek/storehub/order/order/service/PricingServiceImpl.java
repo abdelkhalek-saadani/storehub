@@ -35,6 +35,8 @@ public class PricingServiceImpl implements PricingService {
     @Override
     public Mono<Order> calculateOrderTotals(Order order) {
         PricesRequest pricesRequest = orderMapper.toPricesRequest(order);
+        log.debug(order.toString());
+        log.debug(pricesRequest.toString());
         Mono<PricesResponse> pricesResponseMono = pricesService.fetchPrices(pricesRequest);
 
         return pricesResponseMono.map((pricesResponse -> {

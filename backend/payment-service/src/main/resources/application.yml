@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: Payment Service
+  profiles:
+    active: dev
+logging:
+  level:
+    com.proxiad.payment: DEBUG
+
+server:
+  port: 8083

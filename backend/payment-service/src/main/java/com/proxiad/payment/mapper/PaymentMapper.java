@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 public interface PaymentMapper {
 
     @Mapping(target = "message", source = "message")
+    @Mapping(target = "paymentId", source = "paymentEntity.id")
     PaymentResponse fromEntityToResponse(PaymentEntity paymentEntity, String message);
 
 }

@@ -1,4 +1,4 @@
-package com.proxiad.payment.config;
+package com.proxiad.payment.common.config;
 
 import com.proxiad.payment.exception.PayPalApiException;
 import lombok.RequiredArgsConstructor;

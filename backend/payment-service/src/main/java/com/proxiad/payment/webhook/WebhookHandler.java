@@ -7,7 +7,8 @@ import com.proxiad.payment.enums.PaymentStatus;
 import com.proxiad.payment.enums.ResourceType;
 import com.proxiad.payment.event.EventPublisher;
 import com.proxiad.payment.event.PaymentStatusEvent;
-import com.proxiad.payment.repository.PaymentRepository;
+import com.proxiad.payment.exception.WebhookProcessingException;
+import com.proxiad.payment.exception.WebhookVerificationException;
 import com.proxiad.payment.repository.ProcessedWebhookEventRepository;
 import com.proxiad.payment.service.PaymentService;
 import com.proxiad.payment.service.PayPalService;
@@ -162,6 +163,8 @@ public class WebhookHandler {
 
     private void handleAuthorizationVoided(WebhookEvent webhookEvent) {
         log.debug("Processing authorization voided event type: {}", webhookEvent.getEventType());
+
+
         PaymentEntity payment = paymentService.updateStatus(
                 ResourceType.fromValue(webhookEvent.getResourceType()),
                 webhookEvent.getResourceId(),

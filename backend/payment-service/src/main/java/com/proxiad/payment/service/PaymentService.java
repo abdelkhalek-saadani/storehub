@@ -9,6 +9,7 @@ import com.proxiad.payment.entity.PaymentAuditEntity;
 import com.proxiad.payment.entity.PaymentEntity;
 import com.proxiad.payment.enums.PaymentStatus;
 import com.proxiad.payment.enums.ResourceType;
+import com.proxiad.payment.exception.PayPalApiException;
 import com.proxiad.payment.exception.PaymentNotFoundException;
 import com.proxiad.payment.exception.PaymentServiceException;
 import com.proxiad.payment.mapper.PaymentMapper;
@@ -40,8 +41,8 @@ public class PaymentService {
     private final PayPalService payPalService;
     private final PaymentMapper paymentMapper;
 
-    public PaymentEntity getById(String paymentId) {
-        return findPaymentByResource(ResourceType.ID, paymentId);
+    public PaymentEntity getById(UUID paymentId) {
+        return findPaymentByResource(ResourceType.ID, paymentId.toString());
     }
 
     public PaymentEntity getByAuthorizationId(String authorizationId) {
@@ -102,14 +103,16 @@ public class PaymentService {
             return paymentMapper.fromEntityToResponse(savedPayment, "Payment created successfully");
 
         } catch (DataIntegrityViolationException e) {
-            // Race: another request created it first, return the existing one
+            // Race: another request created it first, return the existing one(rare case)
             return paymentRepository.findByOrderId(orderId)
                     .map((payment -> {
-                        log.info("Payment already exists for order: {}, returning existing payment: {}",
+                        log.info("Payment already exists for order: {}, returning existing " +
+                                        "payment: {} ( TOCTOU race)",
                                 payment.getOrderId(), payment.getId());
                         return paymentMapper.fromEntityToResponse(
                                 payment,
-                                "Payment already exists for this order");
+                                "Payment already exists for this order due to another request won" +
+                                        " the race");
                     }))
                     .orElseThrow(() -> new PaymentServiceException("Failed to create payment", e));
         } catch (Exception e) {
@@ -124,23 +127,14 @@ public class PaymentService {
         try {
             log.info("Voiding authorization: {}", authorizationId);
 
-            PaymentEntity payment = findPaymentByResource(ResourceType.AUTHORIZATION, authorizationId);
-
-            // Call PayPal API first
             String paypalStatus = payPalService.voidAuthorizedPayment(authorizationId);
             log.debug("PayPal void response status: {}", paypalStatus);
 
-            // Update payment status
-//            PaymentEntity payment = updateStatus(
-//                    ResourceType.AUTHORIZATION,
-//                    authorizationId,
-//                    PaymentStatus.CANCELLED
-//            );
+            PaymentEntity payment = updateStatus(ResourceType.AUTHORIZATION, authorizationId,
+                    PaymentStatus.CANCEL_PENDING);
 
-            return paymentMapper.fromEntityToResponse(payment, "Authorization voided successfully, status updates when webhook is processed");
-        } catch (PaymentNotFoundException e) {
-            throw e; // Re-throw as is
-        } catch (Exception e) {
+            return paymentMapper.fromEntityToResponse(payment, "Void requested, status updates when webhook is processed");
+        } catch (PayPalApiException e) {
             log.error("Failed to void authorization: {}", authorizationId, e);
             throw new PaymentServiceException("Failed to void authorization", e);
         }
@@ -151,21 +145,15 @@ public class PaymentService {
         try {
             log.info("Refunding capture: {}", captureId);
 
-            // Call PayPal API first
             String refundId = payPalService.refundCapture(captureId);
 
-            // Update payment status
-//            PaymentEntity payment = updateStatus(
-//                    ResourceType.CAPTURE,
-//                    captureId,
-//                    PaymentStatus.REFUNDED
-//            );
-
             PaymentEntity payment = setRefundId(ResourceType.CAPTURE, captureId, refundId);
+            payment = updateStatus(payment, PaymentStatus.REFUND_PENDING);
 
-            return paymentMapper.fromEntityToResponse(payment, "refund request accepted, processing...");
-
-        } catch (Exception e) {
+            return paymentMapper.fromEntityToResponse(payment, "Refund request accepted, processing...");
+        } catch (PaymentNotFoundException e) {
+            throw e;
+        } catch (PayPalApiException e) {
             log.error("Failed to refund capture: {}", captureId, e);
             throw new PaymentServiceException("Failed to refund capture", e);
         }
@@ -176,24 +164,17 @@ public class PaymentService {
         try {
             log.info("Capturing authorization: {}", authorizationId);
 
-            // Call PayPal API first
             String captureId = payPalService.captureAuthorizedPayment(authorizationId);
             log.debug("PayPal capture id: {}", captureId);
 
-            // Update payment status
-//            PaymentEntity payment = updateStatus(
-//                    ResourceType.AUTHORIZATION,
-//                    authorizationId,
-//                    PaymentStatus.CAPTURED
-//            );
-
-            // Set the capture id
             PaymentEntity payment = setCaptureId(ResourceType.AUTHORIZATION, authorizationId, captureId);
+            payment = updateStatus(payment, PaymentStatus.CAPTURE_PENDING);
 
             return paymentMapper.fromEntityToResponse(payment,
-                    "Authorization captured successfully, status will get updated when the webhook is processed");
-
-        } catch (Exception e) {
+                    "Capture requested, status will get updated when the webhook is processed");
+        } catch (PaymentNotFoundException e) {
+            throw e;
+        } catch (PayPalApiException e) {
             log.error("Failed to capture authorization: {}", authorizationId, e);
             throw new PaymentServiceException("Failed to capture authorization", e);
         }
@@ -202,19 +183,17 @@ public class PaymentService {
     @Transactional
     public PaymentResponse authorizePaypalOrder(String paypalOrderId) {
         try {
-            log.info("Authorizing PayPal order: {}", paypalOrderId);
+            log.debug("Authorizing PayPal order: {}", paypalOrderId);
 
             // Call PayPal API first
             AuthorizePaypalOrderResponse authorizationResponse = payPalService.authorizeOrder(paypalOrderId);
             log.debug("PayPal authorization response: {}", authorizationResponse);
 
-            log.info("PayPal authorize response: {}", authorizationResponse);
-
             // Update payment status
             PaymentEntity payment = updateStatus(
                     ResourceType.CHECKOUT_ORDER,
                     paypalOrderId,
-                    PaymentStatus.AUTHORIZED
+                    PaymentStatus.AUTHORIZE_PENDING
             );
 
             payment.setAuthorizationId(authorizationResponse.getAuthorizationId());
@@ -228,66 +207,56 @@ public class PaymentService {
         }
     }
 
+
     @Transactional
-    public PaymentEntity updateStatus(ResourceType resourceType,
-                                      String resourceId, PaymentStatus newStatus) {
-        try {
-            log.debug("Updating payment status - ResourceType: {}, ResourceId: {}, NewStatus: {}",
-                    resourceType, resourceId, newStatus);
+    public PaymentEntity updateStatus(ResourceType resourceType, String resourceId, PaymentStatus newStatus) {
+        PaymentEntity payment = findPaymentByResource(resourceType, resourceId);
+        return updateStatus(payment, newStatus);
+    }
 
-            PaymentEntity paymentEntity = findPaymentByResource(resourceType, resourceId);
-            PaymentStatus oldStatus = paymentEntity.getStatus();
+    @Transactional
+    public PaymentEntity updateStatus(PaymentEntity paymentEntity, PaymentStatus newStatus) {
+        log.debug("Updating payment status - PaymentId: {}, NewStatus: {}", paymentEntity.getId(), newStatus);
 
-            // Update status and last modified time
-            paymentEntity.setStatus(newStatus);
-            paymentEntity.setUpdatedAt(LocalDateTime.now());
+        PaymentStatus oldStatus = paymentEntity.getStatus();
 
-            PaymentEntity savedPayment = paymentRepository.save(paymentEntity);
-
-            // Create audit record
-            createAuditRecord(paymentEntity.getId(), oldStatus, newStatus,
-                    "Status updated via " + resourceType + " resource");
-
-            log.debug("Payment status updated successfully - PaymentId: {}, OldStatus: {}, NewStatus: {}",
-                    paymentEntity.getId(), oldStatus, newStatus);
-
-            return savedPayment;
-
-        } catch (PaymentNotFoundException e) {
-            throw e; // Re-throw as is
-        } catch (Exception e) {
-            log.error("Failed to update payment status - ResourceType: {}, ResourceId: {}, NewStatus: {}",
-                    resourceType, resourceId, newStatus, e);
-            throw new PaymentServiceException("Failed to update payment status", e);
+        if (newStatus.equals(PaymentStatus.CANCELLED)
+                && (!oldStatus.equals(PaymentStatus.CANCEL_PENDING))) {
+            log.warn("Payment Status Moving from {} to {}, Expected to be moving from " +
+                    "{}_PENDING to {}", oldStatus, newStatus, newStatus, newStatus);
         }
+
+        paymentEntity.setStatus(newStatus);
+        paymentEntity.setUpdatedAt(LocalDateTime.now());
+
+        PaymentEntity savedPayment = paymentRepository.save(paymentEntity);
+
+        createAuditRecord(paymentEntity.getId(), oldStatus, newStatus, "Status updated");
+
+        log.debug("Payment status updated successfully - PaymentId: {}, OldStatus: {}, NewStatus: {}",
+                paymentEntity.getId(), oldStatus, newStatus);
+
+        return savedPayment;
+    }
+
+
+    public PaymentEntity setAuthorizationId(PaymentEntity payment, String authorizationId) {
+        log.debug("Setting payment authorization id {}", authorizationId);
+        payment.setAuthorizationId(authorizationId);
+        payment.setUpdatedAt(LocalDateTime.now());
+
+        PaymentEntity savedPayment = paymentRepository.save(payment);
+
+        log.debug("Payment authorization id set successfully - PaymentId: {}, authorizationId: {}",
+                payment.getId(), payment.getAuthorizationId());
+
+        return savedPayment;
     }
 
     @Transactional
     public PaymentEntity setAuthorizationId(ResourceType resourceType, String resourceId, String authorizationId) {
-        try {
-            log.debug("Setting payment authorization id - ResourceType: {}, ResourceId: {}, AuthorizationId: {}",
-                    resourceType, resourceId, authorizationId);
-
-            PaymentEntity paymentEntity = findPaymentByResource(resourceType, resourceId);
-
-            paymentEntity.setAuthorizationId(authorizationId);
-            paymentEntity.setUpdatedAt(LocalDateTime.now());
-
-            PaymentEntity savedPayment = paymentRepository.save(paymentEntity);
-
-
-            log.debug("Payment authorization id set successfully - PaymentId: {}, authorizationId: {}",
-                    paymentEntity.getId(), paymentEntity.getAuthorizationId());
-
-            return savedPayment;
-
-        } catch (PaymentNotFoundException e) {
-            throw e; // Re-throw as is
-        } catch (Exception e) {
-            log.error("Failed to set payment authorization id - ResourceType: {}, ResourceId: {}, AuthorizationId: {}",
-                    resourceType, resourceId, authorizationId, e);
-            throw new PaymentServiceException("Failed to set authorization id", e);
-        }
+        PaymentEntity paymentEntity = findPaymentByResource(resourceType, resourceId);
+        return setAuthorizationId(paymentEntity, authorizationId);
     }
 
     public PaymentEntity setRefundId(ResourceType resourceType, String resourceId, String refundId) {
@@ -345,34 +314,23 @@ public class PaymentService {
     }
 
     public PaymentEntity findPaymentByResource(ResourceType resourceType, String resourceId) {
-        switch (resourceType) {
-            case CHECKOUT_ORDER:
-                return paymentRepository.findByPaymentOrderId(resourceId)
-                        .orElseThrow(() -> new PaymentNotFoundException(
-                                "Payment not found by payment order ID: " + resourceId));
-
-            case AUTHORIZATION:
-                return paymentRepository.findByAuthorizationId(resourceId)
-                        .orElseThrow(() -> new PaymentNotFoundException(
-                                "Payment not found by authorization ID: " + resourceId));
-
-            case CAPTURE:
-                return paymentRepository.findByCaptureId(resourceId)
-                        .orElseThrow(() -> new PaymentNotFoundException(
-                                "Payment not found by capture ID: " + resourceId));
-            case ID:
-                return paymentRepository.findById(UUID.fromString(resourceId))
-                        .orElseThrow(() -> new PaymentNotFoundException(
-                                "Payment not found by Payment ID: " + resourceId));
-            case REFUND:
-                return paymentRepository.findByRefundId(resourceId)
-                        .orElseThrow(() -> new PaymentNotFoundException(
-                                "Payment not found by Refund ID: " + resourceId));
-            default:
-                throw new IllegalArgumentException(
-                        "Unsupported resource type: " + resourceType +
-                                ". Supported types are: " + Arrays.toString(ResourceType.values()));
-        }
+        return switch (resourceType) {
+            case CHECKOUT_ORDER -> paymentRepository.findByPaymentOrderId(resourceId)
+                    .orElseThrow(() -> new PaymentNotFoundException(
+                            "Payment not found by payment order ID: " + resourceId));
+            case AUTHORIZATION -> paymentRepository.findByAuthorizationId(resourceId)
+                    .orElseThrow(() -> new PaymentNotFoundException(
+                            "Payment not found by authorization ID: " + resourceId));
+            case CAPTURE -> paymentRepository.findByCaptureId(resourceId)
+                    .orElseThrow(() -> new PaymentNotFoundException(
+                            "Payment not found by capture ID: " + resourceId));
+            case ID -> paymentRepository.findById(UUID.fromString(resourceId))
+                    .orElseThrow(() -> new PaymentNotFoundException(
+                            "Payment not found by Payment ID: " + resourceId));
+            case REFUND -> paymentRepository.findByRefundId(resourceId)
+                    .orElseThrow(() -> new PaymentNotFoundException(
+                            "Payment not found by Refund ID: " + resourceId));
+        };
     }
 
     private void createAuditRecord(UUID paymentId, PaymentStatus oldStatus, PaymentStatus newStatus, String description) {

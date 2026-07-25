@@ -137,7 +137,7 @@ public class PayPalController {
     }
 
     @PostMapping("/{paymentId}/void")
-    public ResponseEntity<PaymentResponse> voidAuthorization(@PathVariable String paymentId) {
+    public ResponseEntity<PaymentResponse> voidAuthorization(@PathVariable UUID paymentId) {
         PaymentEntity payment;
         try {
             payment = paymentService.getById(paymentId);
@@ -153,7 +153,7 @@ public class PayPalController {
     }
 
     @PostMapping("/{paymentId}/refund")
-    public ResponseEntity<PaymentResponse> refundCapture(@PathVariable String paymentId) {
+    public ResponseEntity<PaymentResponse> refundCapture(@PathVariable UUID paymentId) {
         PaymentEntity payment;
         try {
             payment = paymentService.getById(paymentId);
@@ -169,7 +169,7 @@ public class PayPalController {
 
     // Testing endpoints - should be removed in production or protected with profiles
     @PostMapping("/{paymentId}/capture")
-    public ResponseEntity<PaymentResponse> captureAuthorization(@PathVariable String paymentId) {
+    public ResponseEntity<PaymentResponse> captureAuthorization(@PathVariable UUID paymentId) {
         PaymentEntity payment;
         try {
             payment = paymentService.getById(paymentId);
@@ -187,7 +187,7 @@ public class PayPalController {
     }
 
     @PostMapping("/{paymentId}/authorize")
-    public ResponseEntity<PaymentResponse> authorizeOrder(@PathVariable String paymentId) {
+    public ResponseEntity<PaymentResponse> authorizeOrder(@PathVariable UUID paymentId) {
         PaymentEntity payment;
         try {
             payment = paymentService.getById(paymentId);

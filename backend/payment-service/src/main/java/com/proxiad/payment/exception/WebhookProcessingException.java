@@ -1,4 +1,4 @@
-package com.proxiad.payment.webhook;
+package com.proxiad.payment.exception;
 
 public class WebhookProcessingException extends RuntimeException {
     public WebhookProcessingException(String message, Throwable cause) {

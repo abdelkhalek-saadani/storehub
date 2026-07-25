@@ -1,10 +1,14 @@
 package com.proxiad.payment.enums;
 
+import jakarta.persistence.GeneratedValue;
+import lombok.Getter;
+
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Getter
 public enum ResourceType {
     AUTHORIZATION("authorization"),
     CHECKOUT_ORDER("checkout-order"),

@@ -1,10 +1,14 @@
 package com.proxiad.payment.enums;
 
 public enum PaymentStatus {
-    CREATED,        //First Status
-    CAPTURED,       //
+    CREATED,
+    CAPTURED,
+    CAPTURE_PENDING,
     CANCELLED,
+    CANCEL_PENDING,
     REFUNDED,
-    APPROVED,       //Second
-    AUTHORIZED      //Third
+    REFUND_PENDING,
+    APPROVED,
+    AUTHORIZED,
+    AUTHORIZE_PENDING,
 }

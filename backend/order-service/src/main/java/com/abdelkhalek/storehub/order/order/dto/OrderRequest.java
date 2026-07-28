@@ -13,7 +13,8 @@ public record OrderRequest (
         String deliveryAddress,
         String firstName,
         String lastName,
-        String phoneNumber
+        String phoneNumber,
+        @NotBlank UUID idempotencyKey
 
 ){
 

@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.order.order.service;
+package com.abdelkhalek.storehub.order.order.service.slot;
 
 import com.abdelkhalek.storehub.order.order.dto.AvailabilityResponse;
 import com.abdelkhalek.storehub.order.order.dto.slot.RetainRequest;
@@ -29,9 +29,6 @@ public class SlotClient {
 
 
     public Mono<Boolean> getAvailability(UUID storeId, UUID slotId) {
-        log.info("Checking slot availability..." +
-                "slot: {}, store: {}", slotId, storeId);
-
 
         return webClient.get()
                 .uri(ub -> ub
@@ -41,6 +38,7 @@ public class SlotClient {
                 .retrieve()
                 .bodyToMono(AvailabilityResponse.class)
                 .map(AvailabilityResponse::isAvailable)
+                .doOnSubscribe(s -> log.info("Checking slot availability... slot: {}, store: {}", slotId, storeId))
                 .onErrorResume(e -> {
                     log.warn("Error checking availability of slot {} in store :{}", slotId, storeId);
                     log.debug("{}", e.getMessage());

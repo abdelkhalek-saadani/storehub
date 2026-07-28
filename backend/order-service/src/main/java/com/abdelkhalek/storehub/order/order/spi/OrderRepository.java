@@ -9,5 +9,7 @@ public interface OrderRepository {
 
     Mono<Order> save(Order order);
     Mono<Order> findById(UUID orderId);
+    Mono<Order> findByIdempotencyKey(UUID idempotencyKey);
+
 
 }

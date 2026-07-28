@@ -1,10 +1,10 @@
-package com.abdelkhalek.storehub.order.order.service;
+package com.abdelkhalek.storehub.order.order.service.product;
 
 
-import com.abdelkhalek.storehub.order.order.dto.AvailabilityRequest;
+import com.abdelkhalek.storehub.order.order.dto.product.AvailabilityRequest;
 import com.abdelkhalek.storehub.order.order.dto.AvailabilityResponse;
-import com.abdelkhalek.storehub.order.order.dto.RetainRequest;
-import com.abdelkhalek.storehub.order.order.dto.RetainResponse;
+import com.abdelkhalek.storehub.order.order.dto.product.RetainRequest;
+import com.abdelkhalek.storehub.order.order.dto.product.RetainResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;

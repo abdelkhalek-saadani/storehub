@@ -40,4 +40,5 @@ public class Order {
 
     String paymentApprovalLink;
 
+    UUID idempotencyKey;
 }

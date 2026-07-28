@@ -1,11 +1,11 @@
-package com.abdelkhalek.storehub.order.order.service;
+package com.abdelkhalek.storehub.order.order.service.product;
 
 import com.abdelkhalek.storehub.order.cart.entities.CartEntity;
 import com.abdelkhalek.storehub.order.cart.service.CartRepository;
 import com.abdelkhalek.storehub.order.order.OrderEventPublisher;
-import com.abdelkhalek.storehub.order.order.dto.AvailabilityRequest;
-import com.abdelkhalek.storehub.order.order.dto.CartItemRequest;
-import com.abdelkhalek.storehub.order.order.dto.RetainRequest;
+import com.abdelkhalek.storehub.order.order.dto.product.AvailabilityRequest;
+import com.abdelkhalek.storehub.order.order.dto.product.CartItemRequest;
+import com.abdelkhalek.storehub.order.order.dto.product.RetainRequest;
 import com.abdelkhalek.storehub.order.order.mapper.CartItemRequestMapper;
 import com.abdelkhalek.storehub.order.order.spi.ProductService;
 import lombok.extern.slf4j.Slf4j;

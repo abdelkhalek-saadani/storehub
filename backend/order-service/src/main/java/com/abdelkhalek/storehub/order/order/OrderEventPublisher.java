@@ -1,7 +1,7 @@
 package com.abdelkhalek.storehub.order.order;
 
 
-import com.abdelkhalek.storehub.order.common.config.RabbitProperties;
+import com.abdelkhalek.storehub.order.common.config.StorehubProperties;
 import com.abdelkhalek.storehub.order.order.event.ItemsReleaseEvent;
 import com.abdelkhalek.storehub.order.order.event.OrderCreateEvent;
 import com.abdelkhalek.storehub.order.order.event.SlotReleaseEvent;
@@ -22,10 +22,10 @@ import java.util.UUID;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-@EnableConfigurationProperties(RabbitProperties.class)
+@EnableConfigurationProperties(StorehubProperties.class)
 public class OrderEventPublisher {
 
-    private final RabbitProperties props;
+    private final StorehubProperties props;
 
     private final Sender sender;
     private final ObjectMapper objectMapper;
@@ -38,8 +38,9 @@ public class OrderEventPublisher {
         } catch (JsonProcessingException e) {
             return Mono.error(e);
         }
+
         log.debug("Publishing items release event to RabbitMQ: {}, Bytes: {}", event, payload);
-        return sender.send(Mono.just(new OutboundMessage(props.exchange(), "items.released",
+        return sender.send(Mono.just(new OutboundMessage(props.rabbit().exchange(), "items.released",
                 payload)));
     }
 
@@ -52,7 +53,7 @@ public class OrderEventPublisher {
             return Mono.error(e);
         }
         log.debug("Publishing slot release event to RabbitMQ: {}, Bytes: {}", event, payload);
-        return sender.send(Mono.just(new OutboundMessage(props.exchange(), "slot.released",
+        return sender.send(Mono.just(new OutboundMessage(props.rabbit().exchange(), "slot.released",
                 payload)));
     }
 
@@ -65,7 +66,7 @@ public class OrderEventPublisher {
             return Mono.error(e);
         }
         log.debug("Publishing order create event to RabbitMQ: {}, Bytes: {}", event, payload);
-        return sender.send(Mono.just(new OutboundMessage(props.exchange(), "order.created",
+        return sender.send(Mono.just(new OutboundMessage(props.rabbit().exchange(), "order.created",
                 payload)));
     }
 }

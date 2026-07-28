@@ -66,4 +66,6 @@ public class OrderEntity {
     // avoiding recalling payment-svc each time
     String paymentApprovalLink;
 
+    UUID idempotencyKey;
+
 }

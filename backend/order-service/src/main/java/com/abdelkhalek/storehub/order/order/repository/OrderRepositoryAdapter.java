@@ -34,4 +34,11 @@ public class OrderRepositoryAdapter implements OrderRepository {
         return orderEntity.map(orderMapper::fromEntity);
     }
 
+    @Override
+    public Mono<Order> findByIdempotencyKey(UUID idempotencyKey) {
+        log.debug("Getting Order with idem key: {}", idempotencyKey);
+        return orderReactiveRepository.findByIdempotencyKey(idempotencyKey)
+                .map(orderMapper::fromEntity);
+    }
+
 }

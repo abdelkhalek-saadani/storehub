@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.order.order.service;
+package com.abdelkhalek.storehub.order.order.service.slot;
 
 import com.abdelkhalek.storehub.order.order.OrderEventPublisher;
 import com.abdelkhalek.storehub.order.order.spi.SlotService;

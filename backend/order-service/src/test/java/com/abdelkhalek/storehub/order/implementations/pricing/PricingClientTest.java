@@ -10,7 +10,7 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.abdelkhalek.storehub.order.order.models.Money;
 import com.abdelkhalek.storehub.order.infrastructure.implementations.pricing.PricingClient;
-import com.abdelkhalek.storehub.order.order.dto.CartItemRequest;
+import com.abdelkhalek.storehub.order.order.dto.product.CartItemRequest;
 import com.abdelkhalek.storehub.order.infrastructure.models.pricing.CartItemResponse;
 import com.abdelkhalek.storehub.order.infrastructure.models.pricing.PriceRequest;
 import com.abdelkhalek.storehub.order.infrastructure.models.pricing.PriceResponse;

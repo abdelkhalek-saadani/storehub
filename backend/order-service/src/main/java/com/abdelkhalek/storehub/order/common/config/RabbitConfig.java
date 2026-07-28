@@ -1,15 +1,16 @@
 package com.abdelkhalek.storehub.order.common.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.rabbitmq.*;
@@ -19,9 +20,18 @@ import java.util.Map;
 
 @Configuration
 @Slf4j
-@EnableConfigurationProperties(RabbitProperties.class)
+@EnableConfigurationProperties(StorehubProperties.class)
+@RequiredArgsConstructor
 public class RabbitConfig {
 
+    private final StorehubProperties props;
+
+    private static final List<Binding> BINDING_DEFS = List.of(
+            new Binding("payment.status.queue", "payment.status.updated")
+    );
+
+    private record Binding(String queue, String routingKey) {
+    }
 
     @Bean
     Mono<Connection> rabbitConnectionMono(
@@ -47,8 +57,8 @@ public class RabbitConfig {
     }
 
     @Bean
-    ObjectMapper objectMapper() {
-        return new ObjectMapper().registerModule(new JavaTimeModule());
+    ObjectMapper objectMapper(Jackson2ObjectMapperBuilder builder) {
+        return builder.build();
     }
 
     @Bean
@@ -57,22 +67,16 @@ public class RabbitConfig {
     }
 
     @Bean
-    ApplicationRunner topology(Sender sender, RabbitProperties props) {
-        record Binding(String queue, String routingKey) {
-        }
+    ApplicationRunner topology(Sender sender) {
 
-        String exchangeName = props.exchange();
+        String exchangeName = props.rabbit().exchange();
         String dlxName = exchangeName + ".dlx";
-
-        List<Binding> bindings = List.of(
-                new Binding("payment.status.queue", "payment.status.updated")
-        );
 
         return args -> sender.declareExchange(ExchangeSpecification.exchange(exchangeName)
                         .type("topic").durable(true))
                 .then(sender.declareExchange(ExchangeSpecification.exchange(dlxName)
                         .type("topic").durable(true)))
-                .thenMany(Flux.fromIterable(bindings)
+                .thenMany(Flux.fromIterable(BINDING_DEFS)
                         .flatMap(b -> {
                             String dlqName = b.queue().replace(".queue", ".dlq");
 

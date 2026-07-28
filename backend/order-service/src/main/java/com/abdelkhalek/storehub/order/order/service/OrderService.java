@@ -2,10 +2,16 @@ package com.abdelkhalek.storehub.order.order.service;
 
 import com.abdelkhalek.storehub.order.cart.service.CartRepository;
 import com.abdelkhalek.storehub.order.order.OrderEventPublisher;
+import com.abdelkhalek.storehub.order.order.dto.OrderCreatedResponse;
+import com.abdelkhalek.storehub.order.order.dto.OrderRequest;
+import com.abdelkhalek.storehub.order.order.dto.PaymentResponse;
 import com.abdelkhalek.storehub.order.order.exceptions.OrderCalculationException;
 import com.abdelkhalek.storehub.order.order.exceptions.UnavailableException;
 import com.abdelkhalek.storehub.order.order.mapper.OrderMapper;
-import com.abdelkhalek.storehub.order.order.models.*;
+import com.abdelkhalek.storehub.order.order.models.Order;
+import com.abdelkhalek.storehub.order.order.models.OrderItem;
+import com.abdelkhalek.storehub.order.order.models.OrderStatus;
+import com.abdelkhalek.storehub.order.order.models.Result;
 import com.abdelkhalek.storehub.order.order.spi.*;
 import com.abdelkhalek.storehub.order.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -24,34 +30,6 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class OrderService {
-    /*
-     * Accept order creation arguments
-     * Responds with order details or payment link approval
-     */
-    /* createOrderWithCashPayment(cart, delivery, slot, coupon) returns order details
-
-        // Common Block Start name it common order processing
-        if delivery.mode PICKUP
-            Checks Store availability CheckStore(delivery(@store),slot)
-        if delivery.mode HOME_DELIVERY
-            Checks client address can be delivered to or nah CheckCustomerAddress(delivery(@customer), slot)
-            Get delivery fee  getDeliveryFee(cart(@items), delivery(@customer))
-        retainItems(items,@store or @customer) returns retainId (will use it to release stock if commands annulee or payment fails)
-        create an order object (its items contains their final unit prices and their discounts)
-        validateCoupon(order,coupon)
-        if coupon validated then apply
-        // Common Block End
-
-        store order and return Its details, probably will send an event telling others that this command needs to be treated (packing , delivery and so on)
-
-    */
-    /* createOrderWithOnlinePayment() returns payment link approval
-        // Common Block
-
-        createPaymentApprovalLink(order) this creates an online payment order waiting for approval from customer and returns the link
-        returns approval link for the customer
-
-    */
 
     private final SlotService slotService;
     private final ProductService productService;
@@ -317,6 +295,7 @@ public class OrderService {
                 .storeId(storeId)
                 .billingAddress(billingAddress)
                 .deliveryAddress(deliveryAddress)
+                .status(OrderStatus.CREATED)
                 .build();
         log.debug("Initializing order {}", order);
 
@@ -332,14 +311,23 @@ public class OrderService {
         return orderEventPublisher.orderCreated(order);
     }
 
-    public Mono<PaymentLink> placeOrderWithOnlinePayment(OrderRequest orderRequest) {
+    public Mono<OrderCreatedResponse> placeOrderWithOnlinePayment(OrderRequest orderRequest) {
         return placeOrder(orderRequest)
-                .flatMap((this::getPaymentApprovalLink))
+                .flatMap((order -> this.getPaymentApprovalLink(order)
+                        .flatMap((paymentResponse -> {
+                            order.setPaymentId(paymentResponse.paymentId());
+                            order.setPaymentApprovalLink(paymentResponse.approvalUrl());
+                            return orderRepository.save(order)
+                                    .map(order1 -> new OrderCreatedResponse(order1.getId(),
+                                            order1.getPaymentId(),
+                                            order1.getPaymentApprovalLink()));
+                        }))
+                ))
                 .onErrorResume(e -> Mono.error(new Exception("Failed to get payment approval link" + e)));
     }
 
 
-    private Mono<PaymentLink> getPaymentApprovalLink(Order order) {
+    private Mono<PaymentResponse> getPaymentApprovalLink(Order order) {
         return paymentService.getPaymentApprovalLink(order);
     }
 

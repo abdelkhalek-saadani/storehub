@@ -19,6 +19,8 @@ public class Order {
     BigDecimal finalTotal;
     BigDecimal totalDiscount;
     List<OrderItem> items;
+
+    @Builder.Default
     LocalDateTime createdAt = LocalDateTime.now();
     LocalDateTime updatedAt;
 
@@ -31,6 +33,11 @@ public class Order {
 
     UUID slotRetainId;
     List<UUID> inventoryRetainIds;
-    
+
+    OrderStatus status;
+
+    UUID paymentId;
+
+    String paymentApprovalLink;
 
 }

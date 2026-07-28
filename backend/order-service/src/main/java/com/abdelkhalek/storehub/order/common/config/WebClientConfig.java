@@ -17,6 +17,20 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class WebClientConfig {
 
     @Bean
+    public WebClient paymentWebClient(
+            StorehubProperties props,
+            ReactiveOAuth2AuthorizedClientManager authorizedClientManager) {
+
+        var oauth2 = new ServerOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);
+        oauth2.setDefaultClientRegistrationId(props.internalClientRegistration());
+
+        return WebClient.builder()
+                .baseUrl(props.paymentBaseUrl())
+                .filter(oauth2)
+                .build();
+    }
+
+    @Bean
     public WebClient keycloakWebClient(
             StorehubProperties props,
             ReactiveOAuth2AuthorizedClientManager authorizedClientManager) {

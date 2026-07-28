@@ -1,11 +1,16 @@
 package com.abdelkhalek.storehub.order.order.entity;
 
+import com.abdelkhalek.storehub.order.order.models.OrderStatus;
 import io.github.joselion.springr2dbcrelationships.annotations.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.r2dbc.config.EnableR2dbcAuditing;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.math.BigDecimal;
@@ -20,6 +25,7 @@ import java.util.UUID;
 @Table(
         name = "orders"
 )
+@EnableR2dbcAuditing
 public class OrderEntity {
 
     @Id
@@ -35,7 +41,9 @@ public class OrderEntity {
     List<OrderItemEntity> items;
 
 
-    LocalDateTime createdAt = LocalDateTime.now();
+    @CreatedDate
+    LocalDateTime createdAt;
+    @LastModifiedDate
     LocalDateTime updatedAt;
 
     String deliveryAddress;
@@ -47,5 +55,15 @@ public class OrderEntity {
 
     UUID slotRetainId;
     List<UUID> inventoryRetainIds;
+
+    @Column("status")
+    OrderStatus status;
+
+    UUID paymentId;
+
+    // paymentApprovalLink is cache from payment-service
+    // It is cached so responses returned due to idempotencyKey match have the approval link,
+    // avoiding recalling payment-svc each time
+    String paymentApprovalLink;
 
 }

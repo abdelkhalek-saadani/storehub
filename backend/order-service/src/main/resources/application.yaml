@@ -51,6 +51,7 @@ storehub:
   kc-base-url: ${KC_BASE_URL}
   realm: storehub
   rabbit.exchange: storehub.exchange
+  payment-base-url: ${PAYMENT_BASE_URL}
 
 
 

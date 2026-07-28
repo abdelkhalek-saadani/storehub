@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -21,6 +23,14 @@ public class OrderRepositoryAdapter implements OrderRepository {
     public Mono<Order> save(Order order) {
         log.debug("Saving Order: {}", order);
         Mono<OrderEntity> orderEntity = orderReactiveRepository.save(orderMapper.toEntity(order));
+        return orderEntity.map(orderMapper::fromEntity);
+    }
+
+    @Override
+    public Mono<Order> findById(UUID orderId) {
+        log.debug("Getting Order: {}", orderId);
+        Mono<OrderEntity> orderEntity =
+                orderReactiveRepository.findById(orderId);
         return orderEntity.map(orderMapper::fromEntity);
     }
 

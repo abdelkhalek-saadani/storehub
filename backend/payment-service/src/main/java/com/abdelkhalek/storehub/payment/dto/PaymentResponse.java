@@ -1,4 +1,4 @@
-package com.proxiad.payment.dto;
+package com.abdelkhalek.storehub.payment.dto;
 
 
 import java.util.UUID;

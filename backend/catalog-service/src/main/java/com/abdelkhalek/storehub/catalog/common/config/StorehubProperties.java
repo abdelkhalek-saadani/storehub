@@ -1,4 +1,11 @@
 package com.abdelkhalek.storehub.catalog.common.config;
 
-public class StorehubProperties {
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+@ConfigurationProperties(prefix = "storehub")
+public record StorehubProperties
+        (Rabbit rabbit){
+    public record Rabbit(
+            String exchange
+    ){}
 }

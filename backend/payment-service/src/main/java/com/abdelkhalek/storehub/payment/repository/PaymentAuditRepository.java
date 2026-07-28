@@ -1,6 +1,6 @@
-package com.proxiad.payment.repository;
+package com.abdelkhalek.storehub.payment.repository;
 
-import com.proxiad.payment.entity.PaymentAuditEntity;
+import com.abdelkhalek.storehub.payment.entity.PaymentAuditEntity;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.UUID;

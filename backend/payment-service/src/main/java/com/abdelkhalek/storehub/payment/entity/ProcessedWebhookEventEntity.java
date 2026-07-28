@@ -1,4 +1,4 @@
-package com.proxiad.payment.entity;
+package com.abdelkhalek.storehub.payment.entity;
 
 
 import jakarta.persistence.*;

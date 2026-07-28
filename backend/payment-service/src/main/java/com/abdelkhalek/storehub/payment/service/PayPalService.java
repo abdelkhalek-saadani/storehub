@@ -1,19 +1,19 @@
-package com.proxiad.payment.service;
+package com.abdelkhalek.storehub.payment.service;
 
+import com.abdelkhalek.storehub.payment.dto.paypal.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.proxiad.payment.common.config.PaypalProperties;
-import com.proxiad.payment.dto.AuthorizePaypalOrderResponse;
-import com.proxiad.payment.dto.CreatePaypalOrderResponse;
-import com.proxiad.payment.dto.PayPalOrderResponse;
+import com.abdelkhalek.storehub.payment.common.config.PaypalProperties;
+import com.abdelkhalek.storehub.payment.dto.AuthorizePaypalOrderResponse;
+import com.abdelkhalek.storehub.payment.dto.CreatePaypalOrderResponse;
+import com.abdelkhalek.storehub.payment.dto.PayPalOrderResponse;
 import com.proxiad.payment.dto.paypal.*;
-import com.proxiad.payment.exception.PayPalApiException;
+import com.abdelkhalek.storehub.payment.exception.PayPalApiException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.client.RestClientException;
 
 
 import java.math.BigDecimal;

@@ -1,4 +1,4 @@
-package com.proxiad.payment.common.security;
+package com.abdelkhalek.storehub.payment.common.security;
 
 
 import lombok.extern.slf4j.Slf4j;

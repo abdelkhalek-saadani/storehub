@@ -1,4 +1,4 @@
-package com.proxiad.payment.exception;
+package com.abdelkhalek.storehub.payment.exception;
 
 public class PaymentNotFoundException extends RuntimeException {
     public PaymentNotFoundException(String message) {

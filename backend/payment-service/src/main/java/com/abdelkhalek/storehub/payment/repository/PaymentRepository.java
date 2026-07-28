@@ -1,12 +1,11 @@
-package com.proxiad.payment.repository;
+package com.abdelkhalek.storehub.payment.repository;
 
-import com.proxiad.payment.entity.PaymentEntity;
-import com.proxiad.payment.enums.PaymentStatus;
+import com.abdelkhalek.storehub.payment.entity.PaymentEntity;
+import com.abdelkhalek.storehub.payment.enums.PaymentStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;

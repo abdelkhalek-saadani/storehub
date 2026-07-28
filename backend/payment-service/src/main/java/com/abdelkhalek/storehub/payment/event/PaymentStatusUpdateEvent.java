@@ -1,4 +1,4 @@
-package com.proxiad.payment.event;
+package com.abdelkhalek.storehub.payment.event;
 
 import java.time.Instant;
 import java.util.UUID;

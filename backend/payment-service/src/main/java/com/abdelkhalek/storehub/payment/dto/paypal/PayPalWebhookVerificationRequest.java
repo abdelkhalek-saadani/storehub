@@ -1,4 +1,4 @@
-package com.proxiad.payment.dto.paypal;
+package com.abdelkhalek.storehub.payment.dto.paypal;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;

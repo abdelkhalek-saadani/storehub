@@ -1,4 +1,4 @@
-package com.proxiad.payment.controller;
+package com.abdelkhalek.storehub.payment.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

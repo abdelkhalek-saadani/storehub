@@ -1,6 +1,6 @@
-package com.proxiad.payment.common.config;
+package com.abdelkhalek.storehub.payment.common.config;
 
-import com.proxiad.payment.exception.PayPalApiException;
+import com.abdelkhalek.storehub.payment.exception.PayPalApiException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

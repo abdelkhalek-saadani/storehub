@@ -1,11 +1,11 @@
 //package com.proxiad.payment.controller;
 //
-//import com.proxiad.payment.dto.CreatePaymentRequest;
-//import com.proxiad.payment.dto.PaymentResponse;
-//import com.proxiad.payment.entity.PaymentEntity;
-//import com.proxiad.payment.exception.PaymentNotFoundException;
-//import com.proxiad.payment.service.PaymentService;
-//import com.proxiad.payment.webhook.WebhookHandler;
+//import dto.com.abdelkhalek.storehub.payment.CreatePaymentRequest;
+//import dto.com.abdelkhalek.storehub.payment.PaymentResponse;
+//import entity.com.abdelkhalek.storehub.payment.PaymentEntity;
+//import exception.com.abdelkhalek.storehub.payment.PaymentNotFoundException;
+//import service.com.abdelkhalek.storehub.payment.PaymentService;
+//import webhook.com.abdelkhalek.storehub.payment.WebhookHandler;
 //import jakarta.validation.Valid;
 //import jakarta.validation.constraints.Max;
 //import jakarta.validation.constraints.Min;

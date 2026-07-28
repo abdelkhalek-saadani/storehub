@@ -2,20 +2,37 @@ package com.abdelkhalek.storehub.catalog.common.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RequiredArgsConstructor
 @Configuration
+@EnableConfigurationProperties(StorehubProperties.class)
+
 public class RabbitMQConfig {
+
+    private final StorehubProperties props;
+
+    private static final List<QueueDef> QUEUE_DEFS = List.of(
+            new QueueDef("store.created.queue", "store.created"),
+            new QueueDef("user.created.queue", "user.created"),
+            new QueueDef("items.released.queue", "items.released"),
+            new QueueDef("slot.released.queue", "slot.released"),
+            new QueueDef("inventory.order.created.queue", "order.created"),
+            new QueueDef("slot.order.created.queue", "order.created")
+    );
+
+    private record QueueDef(String queueName, String routingKey) {}
 
     @Bean
     public Jackson2JsonMessageConverter jackson2JsonMessageConverter(ObjectMapper objectMapper) {
@@ -29,80 +46,38 @@ public class RabbitMQConfig {
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
         factory.setMessageConverter(converter);
+        factory.setDefaultRequeueRejected(false);
         return factory;
     }
 
     @Bean
-    TopicExchange storehubExchange() {
-        return new TopicExchange("storehub.exchange", true, false);
+    Declarables topology() {
+        String exchangeName = props.rabbit().exchange();
+        String dlxName = exchangeName + ".dlx";
+
+        TopicExchange exchange = new TopicExchange(exchangeName, true, false);
+        TopicExchange dlx = new TopicExchange(dlxName, true, false);
+
+        List<Declarable> declarables = new ArrayList<>(List.of(exchange, dlx));
+
+        for (QueueDef def : QUEUE_DEFS) {
+            Queue queue = QueueBuilder.durable(def.queueName())
+                    .withArgument("x-dead-letter-exchange", dlxName)
+                    .withArgument("x-dead-letter-routing-key", def.routingKey())
+                    .build();
+
+            String dlqName = def.queueName().replace(".queue", ".dlq");
+            Queue dlq = QueueBuilder.durable(dlqName).build();
+
+            declarables.add(queue);
+            declarables.add(BindingBuilder.bind(queue).to(exchange).with(def.routingKey()));
+            declarables.add(dlq);
+            declarables.add(BindingBuilder.bind(dlq).to(dlx).with(def.routingKey()));
+        }
+
+        return new Declarables(declarables);
     }
 
-    @Bean
-    Queue storeCreatedQueue() {
-        return new Queue("store.created.queue");
-    }
 
-    @Bean
-    Binding binding(@Qualifier("storeCreatedQueue") Queue storeCreatedQueue,
-                    TopicExchange storehubExchange) {
-        return BindingBuilder.bind(storeCreatedQueue).to(storehubExchange).with("store.created");
-    }
-
-    @Bean
-    Queue userCreatedQueue() {
-        return new Queue("user.created.queue");
-    }
-
-    @Bean
-    Binding userBinding(@Qualifier("userCreatedQueue") Queue userCreatedQueue,
-                        TopicExchange storehubExchange) {
-        return BindingBuilder.bind(userCreatedQueue).to(storehubExchange).with("user.created");
-    }
-
-    @Bean
-    Queue itemsReleasedQueue() {
-        return new Queue("items.released.queue");
-    }
-
-    @Bean
-    Binding itemsBinding(@Qualifier("itemsReleasedQueue") Queue itemsReleasedQueue,
-                         TopicExchange storehubExchange) {
-        return BindingBuilder.bind(itemsReleasedQueue).to(storehubExchange).with("items.released");
-    }
-
-    @Bean
-    Queue slotReleasedQueue() {
-        return new Queue("slot.released.queue");
-    }
-
-    @Bean
-    Binding slotBinding(@Qualifier("slotReleasedQueue") Queue slotReleasedQueue,
-                         TopicExchange storehubExchange) {
-        return BindingBuilder.bind(slotReleasedQueue).to(storehubExchange).with("slot.released");
-    }
-
-    @Bean
-    public Queue inventoryOrderCreatedQueue() {
-        return new Queue("inventory.order.created.queue", true);
-    }
-
-    @Bean
-    public Binding inventoryOrderCreatedBinding(Queue inventoryOrderCreatedQueue, TopicExchange storehubExchange) {
-        return BindingBuilder.bind(inventoryOrderCreatedQueue)
-                .to(storehubExchange)
-                .with("order.created");
-    }
-
-    @Bean
-    public Queue slotOrderCreatedQueue() {
-        return new Queue("slot.order.created.queue", true);
-    }
-
-    @Bean
-    public Binding slotOrderCreatedBinding(Queue slotOrderCreatedQueue, TopicExchange storehubExchange) {
-        return BindingBuilder.bind(slotOrderCreatedQueue)
-                .to(storehubExchange)
-                .with("order.created");
-    }
 
 }

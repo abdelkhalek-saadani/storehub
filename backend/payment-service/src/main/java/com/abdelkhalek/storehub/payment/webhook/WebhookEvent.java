@@ -1,4 +1,4 @@
-package com.proxiad.payment.webhook;
+package com.abdelkhalek.storehub.payment.webhook;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Builder;

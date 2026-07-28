@@ -1,8 +1,7 @@
-package com.proxiad.payment.dto;
+package com.abdelkhalek.storehub.payment.dto;
 
-import com.proxiad.payment.entity.MoneyEntity;
-import com.proxiad.payment.entity.PaymentEntity;
-import com.proxiad.payment.enums.PaymentStatus;
+import com.abdelkhalek.storehub.payment.entity.PaymentEntity;
+import com.abdelkhalek.storehub.payment.enums.PaymentStatus;
 
 
 import java.math.BigDecimal;

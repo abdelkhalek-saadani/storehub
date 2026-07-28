@@ -1,10 +1,9 @@
-package com.proxiad.payment.event;
+package com.abdelkhalek.storehub.payment.event;
 
-import com.proxiad.payment.common.config.StorehubProperties;
+import com.abdelkhalek.storehub.payment.common.config.StorehubProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 

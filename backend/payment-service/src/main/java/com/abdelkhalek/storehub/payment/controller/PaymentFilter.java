@@ -1,4 +1,4 @@
-package com.proxiad.payment.controller;
+package com.abdelkhalek.storehub.payment.controller;
 
 import lombok.Builder;
 import lombok.Data;

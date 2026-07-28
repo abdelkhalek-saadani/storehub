@@ -1,7 +1,7 @@
-package com.proxiad.payment.service;
+package com.abdelkhalek.storehub.payment.service;
 
-import com.proxiad.payment.entity.PaymentEntity;
-import com.proxiad.payment.repository.PaymentRepository;
+import com.abdelkhalek.storehub.payment.entity.PaymentEntity;
+import com.abdelkhalek.storehub.payment.repository.PaymentRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -12,7 +12,7 @@ import java.time.temporal.WeekFields;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.proxiad.payment.enums.PaymentStatus;
+import com.abdelkhalek.storehub.payment.enums.PaymentStatus;
 
 @Service
 public class PaymentStatisticsService {

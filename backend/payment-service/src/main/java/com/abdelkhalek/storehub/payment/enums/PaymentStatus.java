@@ -1,4 +1,4 @@
-package com.proxiad.payment.enums;
+package com.abdelkhalek.storehub.payment.enums;
 
 public enum PaymentStatus {
     CREATED,

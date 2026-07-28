@@ -1,28 +1,26 @@
-package com.proxiad.payment.webhook;
+package com.abdelkhalek.storehub.payment.webhook;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.proxiad.payment.dto.PayPalWebhookPayload;
-import com.proxiad.payment.entity.PaymentEntity;
-import com.proxiad.payment.entity.ProcessedWebhookEventEntity;
-import com.proxiad.payment.enums.PaymentStatus;
-import com.proxiad.payment.enums.ResourceType;
-import com.proxiad.payment.event.EventPublisher;
-import com.proxiad.payment.event.PaymentStatusUpdateEvent;
-import com.proxiad.payment.exception.WebhookProcessingException;
-import com.proxiad.payment.exception.WebhookVerificationException;
-import com.proxiad.payment.repository.ProcessedWebhookEventRepository;
-import com.proxiad.payment.service.PaymentService;
-import com.proxiad.payment.service.PayPalService;
+import com.abdelkhalek.storehub.payment.dto.PayPalWebhookPayload;
+import com.abdelkhalek.storehub.payment.entity.PaymentEntity;
+import com.abdelkhalek.storehub.payment.entity.ProcessedWebhookEventEntity;
+import com.abdelkhalek.storehub.payment.enums.PaymentStatus;
+import com.abdelkhalek.storehub.payment.enums.ResourceType;
+import com.abdelkhalek.storehub.payment.event.EventPublisher;
+import com.abdelkhalek.storehub.payment.event.PaymentStatusUpdateEvent;
+import com.abdelkhalek.storehub.payment.exception.WebhookProcessingException;
+import com.abdelkhalek.storehub.payment.exception.WebhookVerificationException;
+import com.abdelkhalek.storehub.payment.repository.ProcessedWebhookEventRepository;
+import com.abdelkhalek.storehub.payment.service.PaymentService;
+import com.abdelkhalek.storehub.payment.service.PayPalService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Map;
 
 @Slf4j
 @Component

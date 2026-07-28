@@ -1,4 +1,4 @@
-package com.proxiad.payment.common.config;
+package com.abdelkhalek.storehub.payment.common.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

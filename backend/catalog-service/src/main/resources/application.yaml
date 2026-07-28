@@ -53,6 +53,7 @@ storehub:
   order-base-url: ${ORDER_BASE_URL}
   kc-base-url: ${KC_BASE_URL}
   realm: storehub
+  rabbit.exchange: storehub.exchange
 
 server:
   port: 8082

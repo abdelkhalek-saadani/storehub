@@ -1,6 +1,5 @@
-package com.proxiad.payment.enums;
+package com.abdelkhalek.storehub.payment.enums;
 
-import jakarta.persistence.GeneratedValue;
 import lombok.Getter;
 
 import java.util.Arrays;

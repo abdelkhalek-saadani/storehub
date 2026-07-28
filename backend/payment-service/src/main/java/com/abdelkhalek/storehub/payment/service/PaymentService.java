@@ -1,20 +1,19 @@
-package com.proxiad.payment.service;
+package com.abdelkhalek.storehub.payment.service;
 
-import com.proxiad.payment.controller.PaymentFilter;
-import com.proxiad.payment.dto.AuthorizePaypalOrderResponse;
-import com.proxiad.payment.dto.CreatePaypalOrderResponse;
-import com.proxiad.payment.dto.PaymentResponse;
-import com.proxiad.payment.entity.MoneyEntity;
-import com.proxiad.payment.entity.PaymentAuditEntity;
-import com.proxiad.payment.entity.PaymentEntity;
-import com.proxiad.payment.enums.PaymentStatus;
-import com.proxiad.payment.enums.ResourceType;
-import com.proxiad.payment.exception.PayPalApiException;
-import com.proxiad.payment.exception.PaymentNotFoundException;
-import com.proxiad.payment.exception.PaymentServiceException;
-import com.proxiad.payment.mapper.PaymentMapper;
-import com.proxiad.payment.repository.PaymentAuditRepository;
-import com.proxiad.payment.repository.PaymentRepository;
+import com.abdelkhalek.storehub.payment.controller.PaymentFilter;
+import com.abdelkhalek.storehub.payment.dto.AuthorizePaypalOrderResponse;
+import com.abdelkhalek.storehub.payment.dto.CreatePaypalOrderResponse;
+import com.abdelkhalek.storehub.payment.dto.PaymentResponse;
+import com.abdelkhalek.storehub.payment.entity.PaymentAuditEntity;
+import com.abdelkhalek.storehub.payment.entity.PaymentEntity;
+import com.abdelkhalek.storehub.payment.enums.PaymentStatus;
+import com.abdelkhalek.storehub.payment.enums.ResourceType;
+import com.abdelkhalek.storehub.payment.exception.PayPalApiException;
+import com.abdelkhalek.storehub.payment.exception.PaymentNotFoundException;
+import com.abdelkhalek.storehub.payment.exception.PaymentServiceException;
+import com.abdelkhalek.storehub.payment.mapper.PaymentMapper;
+import com.abdelkhalek.storehub.payment.repository.PaymentAuditRepository;
+import com.abdelkhalek.storehub.payment.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -24,10 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Currency;
 import java.util.Optional;
 import java.util.UUID;
 

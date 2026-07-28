@@ -1,6 +1,6 @@
-package com.proxiad.payment.entity;
+package com.abdelkhalek.storehub.payment.entity;
 
-import com.proxiad.payment.enums.PaymentStatus;
+import com.abdelkhalek.storehub.payment.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,9 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.UUID;
 
 @Entity

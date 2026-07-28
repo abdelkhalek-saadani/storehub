@@ -1,6 +1,6 @@
-package com.proxiad.payment.controller;
+package com.abdelkhalek.storehub.payment.controller;
 
-import com.proxiad.payment.service.PaymentStatisticsService;
+import com.abdelkhalek.storehub.payment.service.PaymentStatisticsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/payments/statistics")

@@ -1,4 +1,4 @@
-package com.proxiad.payment;
+package com.abdelkhalek.storehub.payment;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;

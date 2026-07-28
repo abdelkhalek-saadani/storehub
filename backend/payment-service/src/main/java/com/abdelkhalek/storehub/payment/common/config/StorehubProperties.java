@@ -1,4 +1,4 @@
-package com.proxiad.payment.common.config;
+package com.abdelkhalek.storehub.payment.common.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

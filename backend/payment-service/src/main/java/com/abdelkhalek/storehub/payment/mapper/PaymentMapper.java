@@ -1,7 +1,7 @@
-package com.proxiad.payment.mapper;
+package com.abdelkhalek.storehub.payment.mapper;
 
-import com.proxiad.payment.dto.PaymentResponse;
-import com.proxiad.payment.entity.PaymentEntity;
+import com.abdelkhalek.storehub.payment.dto.PaymentResponse;
+import com.abdelkhalek.storehub.payment.entity.PaymentEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

@@ -7,5 +7,16 @@ logging:
   level:
     com.proxiad.payment: DEBUG
 
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+
 server:
   port: 8083
+
+storehub:
+  rabbit.exchange: storehub.exchange

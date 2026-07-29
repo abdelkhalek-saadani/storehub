@@ -19,4 +19,9 @@ public enum OrderStatus {
 
     private final String label;
 
+    // to map from OrderStatus to its dto
+    public String getCode(){
+        return this.name();
+    }
+
 }

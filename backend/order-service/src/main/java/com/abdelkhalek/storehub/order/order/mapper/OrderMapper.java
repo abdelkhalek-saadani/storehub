@@ -1,6 +1,8 @@
 package com.abdelkhalek.storehub.order.order.mapper;
 
 import com.abdelkhalek.storehub.order.cart.entities.CartItemEntity;
+import com.abdelkhalek.storehub.order.order.dto.OrderDto;
+import com.abdelkhalek.storehub.order.order.dto.OrderItemDto;
 import com.abdelkhalek.storehub.order.order.entity.OrderEntity;
 import com.abdelkhalek.storehub.order.order.entity.OrderItemEntity;
 import com.abdelkhalek.storehub.order.order.models.Order;
@@ -20,7 +22,13 @@ import java.util.List;
 public interface OrderMapper {
     List<OrderItem> fromPriceItemsResponse(List<PriceItemResponse> priceItemsResponse);
 
+    @Mapping(source = "id", target = "orderItemId")
+    @Mapping(target = "appliedOfferLabel", source = "appliedOffer", qualifiedByName = "offerLabel")
+    OrderItemDto toOrderItemDto(OrderItem orderItem);
 
+
+    @Mapping(source = "id", target = "orderId")
+    OrderDto toOrderDto(Order order);
 
     PricesRequest toPricesRequest(Order order);
 
@@ -31,10 +39,21 @@ public interface OrderMapper {
 
     @Mapping(target = "appliedOfferLabel", source = "appliedOffer", qualifiedByName = "offerLabel")
     OrderItemEntity toOrderItemEntity(OrderItem orderItem);
+    @Mapping(source = "appliedOfferLabel", target = "appliedOffer", qualifiedByName = "offer")
+    OrderItem fromOrderItemEntity(OrderItemEntity orderItemEntity);
 
     @Named("offerLabel")
     default String mapOfferLabel(AppliedOffer offer) {
         return offer != null ? offer.getLabel() : null;
     }
+
+    @Named("offer")
+    default AppliedOffer mapOffer(String label) {
+        var ao = new AppliedOffer();
+        ao.setLabel(label);
+        return ao;
+    }
+
+
 
 }

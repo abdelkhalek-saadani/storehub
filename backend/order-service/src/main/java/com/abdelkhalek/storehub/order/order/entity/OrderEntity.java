@@ -60,6 +60,7 @@ public class OrderEntity {
     OrderStatus status;
 
     UUID paymentId;
+    String paymentOrderId;
 
     // paymentApprovalLink is cache from payment-service
     // It is cached so responses returned due to idempotencyKey match have the approval link,

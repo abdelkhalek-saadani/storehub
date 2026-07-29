@@ -37,6 +37,7 @@ public class Order {
     OrderStatus status;
 
     UUID paymentId;
+    String paymentOrderId;
 
     String paymentApprovalLink;
 

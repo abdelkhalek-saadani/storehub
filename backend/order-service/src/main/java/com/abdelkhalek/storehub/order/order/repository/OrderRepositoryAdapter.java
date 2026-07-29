@@ -22,7 +22,9 @@ public class OrderRepositoryAdapter implements OrderRepository {
     @Override
     public Mono<Order> save(Order order) {
         log.debug("Saving Order: {}", order);
-        Mono<OrderEntity> orderEntity = orderReactiveRepository.save(orderMapper.toEntity(order));
+        Mono<OrderEntity> orderEntity =
+                orderReactiveRepository.save(orderMapper.toEntity(order))
+                        .doOnNext(saved -> log.debug("Saved order entity: {}", saved));
         return orderEntity.map(orderMapper::fromEntity);
     }
 

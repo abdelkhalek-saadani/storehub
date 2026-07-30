@@ -5,6 +5,7 @@ import { environment } from '@environments/environment';
 import { StoreContext } from '../products/service/store-context';
 import { UpdateCartItem } from './model/update-cart-request';
 import { CartResponse } from './model/cart-response';
+import { tap } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class CartApi {
@@ -24,7 +25,6 @@ export class CartApi {
     let params = new HttpParams().set('storeId', this.getStoreId());
 
     const response = this.http.get<CartResponse>(this.cartUrl, { params });
-    console.log(response);
     return response;
   }
 
@@ -34,7 +34,6 @@ export class CartApi {
       items: items,
     };
     const response = this.http.post<CartResponse>(`${this.cartUrl}/items`, requestBody);
-    console.log(response);
     return response;
   }
 

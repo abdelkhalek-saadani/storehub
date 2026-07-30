@@ -14,32 +14,26 @@ import {
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
-import { ReviewOrder } from '@components/molecules/review-order/review-order';
-import { SummarizeOrder } from '@components/summarize-order/summarize-order';
-import { CheckoutDetails } from '@components/molecules/checkout-details/checkout-details';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { CheckoutForm } from '@components/molecules/checkout-form/checkout-form';
+import { CheckoutForm } from './checkout-form/checkout-form';
+import { CheckoutDetails } from './checkout-details/checkout-details';
+import { ReviewOrder } from '@shared/components/review-order/review-order';
+import { MatOption, MatSelect } from '@angular/material/select';
 
 @Component({
   selector: 'app-checkout',
   imports: [
-    MatDatepicker,
-    MatLabel,
-    MatDatepickerToggle,
-    MatInput,
-    MatDatepickerInput,
-    MatTimepickerInput,
     FormsModule,
-    MatTimepicker,
-    MatTimepickerToggle,
-    MatSuffix,
+
     MatFormFieldModule,
     DatePipe,
     MatIcon,
     ReviewOrder,
     CheckoutDetails,
     CheckoutForm,
+    CheckoutForm,
+    CheckoutDetails,
   ],
   host: {
     class:
@@ -63,30 +57,9 @@ import { CheckoutForm } from '@components/molecules/checkout-form/checkout-form'
           </div>
         }
       </div>
-      <div class="flex gap-2 justify-center items-center">
-        <mat-form-field>
-          <mat-label>Delivery Date</mat-label>
-          <input matInput [matDatepicker]="datepicker" [(ngModel)]="value" />
-          <mat-datepicker #datepicker />
-          <mat-datepicker-toggle [for]="datepicker" matSuffix />
-        </mat-form-field>
 
-        <mat-form-field>
-          <mat-label>Time Slot</mat-label>
-          <input
-            matInput
-            [matTimepicker]="timepicker"
-            [(ngModel)]="value"
-            [ngModelOptions]="{ updateOn: 'blur' }"
-          />
-          <mat-timepicker #timepicker />
-          <mat-timepicker-toggle [for]="timepicker" matSuffix />
-        </mat-form-field>
-      </div>
+      <app-checkout-form />
 
-      @if (!isMobile()) {
-        <app-checkout-form />
-      }
       <app-review-order />
     </div>
     <app-checkout-details class="md:w-1/3" />

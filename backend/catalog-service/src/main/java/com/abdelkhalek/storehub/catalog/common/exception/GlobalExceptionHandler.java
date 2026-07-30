@@ -2,6 +2,7 @@ package com.abdelkhalek.storehub.catalog.common.exception;
 
 import com.abdelkhalek.storehub.catalog.inventory.exception.InsufficientStockException;
 import com.abdelkhalek.storehub.catalog.pricing.exceptions.StockNotFoundException;
+import com.abdelkhalek.storehub.catalog.store.StoreNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .badRequest()
                 .body(Map.of("message",ex.getMessage()));
+    }
+
+    @ExceptionHandler(StoreNotFoundException.class)
+    public ResponseEntity<?> handleStoreNotFound(StoreNotFoundException ex) {
+        log.debug(ex.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(Map.of("message", ex.getMessage()));
     }
 
     @ExceptionHandler(StockNotFoundException.class)

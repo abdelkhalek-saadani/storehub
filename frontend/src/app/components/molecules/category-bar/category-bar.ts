@@ -3,7 +3,7 @@ import { CategorySquaredButton } from '../../atoms/category-squared-button/categ
 import { MatChip, MatChipAvatar, MatChipSet } from '@angular/material/chips';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { CategoryResponse, ProductService } from '../../../products/service/catalog-api';
+import { CategoryResponse, CatalogApi } from '@shared/service/catalog-api';
 
 @Component({
   selector: 'app-category-bar',
@@ -51,7 +51,7 @@ import { CategoryResponse, ProductService } from '../../../products/service/cata
 })
 export class CategoryBar {
   isSquaredButton = signal(false);
-  catalogApi = inject(ProductService);
+  catalogApi = inject(CatalogApi);
 
   constructor(bpo: BreakpointObserver) {
     bpo

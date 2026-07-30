@@ -4,13 +4,16 @@ package com.abdelkhalek.storehub.catalog.slot.controller;
 import com.abdelkhalek.storehub.catalog.dtos.AvailabilityResponse;
 import com.abdelkhalek.storehub.catalog.slot.dto.ReserveSlotRequest;
 import com.abdelkhalek.storehub.catalog.slot.dto.ReserveSlotResponse;
+import com.abdelkhalek.storehub.catalog.slot.dto.SlotDto;
 import com.abdelkhalek.storehub.catalog.slot.entity.DeliverySlot;
 import com.abdelkhalek.storehub.catalog.slot.entity.SlotReservation;
 import com.abdelkhalek.storehub.catalog.slot.repository.DeliverySlotRepository;
 import com.abdelkhalek.storehub.catalog.slot.service.SlotBookingService;
+import com.abdelkhalek.storehub.catalog.slot.service.SlotService;
 import com.abdelkhalek.storehub.catalog.store.StoreService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +22,9 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/delivery-slots")
 @RequiredArgsConstructor
@@ -30,14 +33,30 @@ public class DeliverySlotController {
     private final DeliverySlotRepository deliverySlotRepository;
     private final SlotBookingService slotBookingService;
     private final StoreService storeService;
+    private final SlotService slotService;
 
     @GetMapping
-    public List<DeliverySlot> getAvailableSlots(
+    public ResponseEntity<List<SlotDto>> getAvailableSlots(
             @RequestParam UUID storeId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
-        return deliverySlotRepository.findByStoreIdAndSlotDateBetweenAndStatus(
-                storeId, from, to, DeliverySlot.Status.OPEN);
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        Optional<List<DeliverySlot>> slots =
+                deliverySlotRepository.findByStoreIdAndSlotDate(storeId, date);
+        if (slots.isEmpty()) return ResponseEntity.notFound().build();
+        List<SlotDto> slotDtos = slots.get().stream()
+                .sorted(Comparator.comparing(DeliverySlot::getStartTime))
+                .map(s -> new SlotDto(s.getId(),
+                        slotService.extractSlotLabel(s.getStartTime(), s.getEndTime()))).toList();
+        return ResponseEntity.ok(slotDtos);
+    }
+
+    @GetMapping("check-days")
+    public ResponseEntity<List<LocalDate>> checkDays(
+            @RequestParam UUID storeId,
+            @RequestParam(required = false) @DateTimeFormat(iso =
+                    DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to) {
+
+        return ResponseEntity.ok(slotService.checkDays(storeId, from, to));
     }
 
     @GetMapping("check-availability")

@@ -29,6 +29,7 @@ public class StoreQueryController {
                                 .findByStoreIdAndRole(store.getId(), MembershipRole.STORE_OWNER)
                                 .map(membership -> new StoreSummary(
                                         store.getId(),
+                                        store.getSlug(),
                                         membership.getUserId(),
                                         "ACTIVE"
                                 ))

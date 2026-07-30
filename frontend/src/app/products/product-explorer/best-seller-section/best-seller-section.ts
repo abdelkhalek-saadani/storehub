@@ -15,7 +15,7 @@ import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-int
 import { NgClass } from '@angular/common';
 import { ScrollArrows } from '../scroll-arrows/scroll-arrows';
 import { ProductCard } from '../../product-card/product-card';
-import { ProductService } from '../../service/catalog-api';
+import { CatalogApi } from '@shared/service/catalog-api';
 import { catchError, of } from 'rxjs';
 import { RouterLink } from '@angular/router';
 
@@ -65,7 +65,7 @@ import { RouterLink } from '@angular/router';
 })
 export class BestSellerSection {
   private breakpointObserver = inject(BreakpointObserver);
-  private catalogApi = inject(ProductService);
+  private catalogApi = inject(CatalogApi);
   isMobile = signal(false);
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   retryTrigger = signal(0);

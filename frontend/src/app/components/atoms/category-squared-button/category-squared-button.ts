@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { CategoryResponse } from '../../../products/service/catalog-api';
+import { CategoryResponse } from '@shared/service/catalog-api';
 
 @Component({
   selector: 'app-category-squared-button',

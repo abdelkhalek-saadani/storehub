@@ -2,8 +2,6 @@ package com.abdelkhalek.storehub.catalog.store;
 
 import com.abdelkhalek.storehub.catalog.user.UserShadowRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -20,6 +18,15 @@ public class StoreService {
                 storeShadowRepository.findByOwnerId(userShadowRepository.findByKeycloakId(keycloakId)
                         .getId());
         return store.getId();
+    }
+
+    public UUID getIdBySlug(String slug) {
+        var storeOpt = storeShadowRepository.findBySlug(slug);
+        if (storeOpt.isEmpty()) {
+            throw new StoreNotFoundException("Store with slug " + slug + " not found");
+        }
+        return storeOpt.get().getId();
+
     }
 
 }

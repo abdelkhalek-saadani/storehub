@@ -1,6 +1,5 @@
 import { Component, signal } from '@angular/core';
 import { OrderTracking } from '@components/molecules/order-tracking/order-tracking';
-import { ReviewOrder } from '@components/molecules/review-order/review-order';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { PaymentSummary } from './payment-summary/payment-summary';
@@ -9,6 +8,7 @@ import { OrderSummary } from './order-summary/order-summary';
 import { InvoiceDownload } from './invoice-download/invoice-download';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ReviewOrder } from '@shared/components/review-order/review-order';
 
 @Component({
   selector: 'app-track-order',

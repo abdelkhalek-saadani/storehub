@@ -35,9 +35,11 @@ public class ProductService {
         return productMapper.toResponses(products);
     }
 
-    public List<ProductResponse> getBestSellerProducts(UUID storeId, Integer count) {
+    public List<ProductResponse> getBestSellerProducts(UUID storeSlug, Integer count) {
         List<ProductEntity> products = productRepository
-                .findByStoreIdAndIsBestSellerIsTrue(storeId, PageRequest.of(0, count));
+                .findByStoreIdAndIsBestSellerIsTrue(storeSlug, PageRequest.of(0, count));
         return productMapper.toResponses(products);
     }
+
+
 }

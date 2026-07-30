@@ -8,7 +8,6 @@ import com.abdelkhalek.storehub.payment.common.config.PaypalProperties;
 import com.abdelkhalek.storehub.payment.dto.AuthorizePaypalOrderResponse;
 import com.abdelkhalek.storehub.payment.dto.CreatePaypalOrderResponse;
 import com.abdelkhalek.storehub.payment.dto.PayPalOrderResponse;
-import com.proxiad.payment.dto.paypal.*;
 import com.abdelkhalek.storehub.payment.exception.PayPalApiException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

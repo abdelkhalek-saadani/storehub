@@ -31,7 +31,9 @@ public class StoreReconciliationJob {
             Instant now = Instant.now();
 
             if (stores != null && !stores.isEmpty()) {
-                stores.forEach(s -> storeShadowRepository.upsert(s.id(), s.ownerId(), s.status(), now));
+                stores.forEach(s -> storeShadowRepository.upsert(s.id(),s.slug(), s.ownerId(),
+                        s.status()
+                        , now));
                 log.info("Reconciliation completed: {} stores synced", stores.size());
             } else {
                 log.warn("No stores found, nothing to reconcile. Check if there are any stores in" +
@@ -43,5 +45,5 @@ public class StoreReconciliationJob {
     }
 }
 
-record StoreSummary(UUID id, UUID ownerId, String status) {
+record StoreSummary(UUID id, String slug, UUID ownerId, String status) {
 }

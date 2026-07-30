@@ -8,9 +8,7 @@ import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { FilterDialog } from '@components/filter-dialog/filter-dialog';
 import { FormsModule } from '@angular/forms';
-import { ProductQuery, ProductService } from '../service/catalog-api';
-import { StoreContext } from '../service/store-context';
-import { tap, switchMap, of, catchError } from 'rxjs';
+import { ProductQuery, CatalogApi } from '@shared/service/catalog-api';
 import { PagedResponse } from '../models/page-response';
 import { Product } from '../models/product';
 import { ProductCard } from '../product-card/product-card';
@@ -90,7 +88,7 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 export default class ProductsPage {
   private breakpointObserver = inject(BreakpointObserver);
   private filterState = inject(ProductFilterState);
-  private productService = inject(ProductService);
+  private productService = inject(CatalogApi);
 
   isMobile = signal(false);
   matDialog = inject(MatDialog);

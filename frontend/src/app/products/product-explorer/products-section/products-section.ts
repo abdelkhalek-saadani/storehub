@@ -8,7 +8,7 @@ import { ScrollArrows } from '../scroll-arrows/scroll-arrows';
 import { ProductCard } from '../../product-card/product-card';
 import { PagedResponse } from '../../models/page-response';
 import { Product } from '../../models/product';
-import { ProductQuery, ProductService } from '../../service/catalog-api';
+import { ProductQuery, CatalogApi } from '@shared/service/catalog-api';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -83,7 +83,7 @@ export class ProductsSection {
     this.pagedResult.reload();
   }
 
-  private productService = inject(ProductService);
+  private productService = inject(CatalogApi);
 
   constructor() {
     this.breakpointObserver

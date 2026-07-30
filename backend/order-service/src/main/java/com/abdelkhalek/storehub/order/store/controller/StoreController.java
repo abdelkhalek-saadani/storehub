@@ -1,28 +1,26 @@
 package com.abdelkhalek.storehub.order.store.controller;
 
 import com.abdelkhalek.storehub.order.common.identity.KeycloakAdminService;
-import com.abdelkhalek.storehub.order.store.StoreEventPublisher;
+import com.abdelkhalek.storehub.order.store.dto.StoreDto;
 import com.abdelkhalek.storehub.order.store.model.CreateStoreRequest;
 import com.abdelkhalek.storehub.order.store.model.MembershipRole;
 import com.abdelkhalek.storehub.order.store.model.Store;
-import com.abdelkhalek.storehub.order.store.model.StoreMembership;
 import com.abdelkhalek.storehub.order.store.repository.StoreMembershipRepository;
 import com.abdelkhalek.storehub.order.store.repository.StoreRepository;
-import com.abdelkhalek.storehub.order.user.model.User;
+import com.abdelkhalek.storehub.order.store.service.StoreService;
 import com.abdelkhalek.storehub.order.user.repository.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/stores")
 @RequiredArgsConstructor
@@ -32,7 +30,7 @@ public class StoreController {
     private final StoreMembershipRepository membershipRepository;
     private final UserRepository userRepository;
     private final KeycloakAdminService keycloakAdminService;
-    private final StoreEventPublisher storeEventPublisher;
+    private final StoreService storeService;
 
 
     @PostMapping
@@ -48,35 +46,18 @@ public class StoreController {
                                 return Mono.error(new ResponseStatusException(
                                         HttpStatus.CONFLICT, "User already owns a store"));
                             }
-                            return createStoreForUser(req, user, keycloakId);
+                            return storeService.createStoreForUser(req, user, keycloakId);
                         })
                 );
     }
 
-    private Mono<ResponseEntity<Store>> createStoreForUser(CreateStoreRequest req, User user, String keycloakId) {
-        Store store = new Store();
-        store.setName(req.getName());
-        store.setDescription(req.getDescription());
-        store.setAddress(req.getAddress());
-
-        return storeRepository.save(store)
-                .flatMap(savedStore ->
-                        membershipRepository.save(new StoreMembership(user.getId(), savedStore.getId(), MembershipRole.STORE_OWNER))
-                                .then(keycloakAdminService.addRealmRole(keycloakId, MembershipRole.STORE_OWNER.name()))
-                                .then(storeEventPublisher.storeCreated(user,savedStore))
-                                .thenReturn(ResponseEntity.status(HttpStatus.CREATED)
-                                        .body(savedStore))
-                                .onErrorResume(err -> rollback(savedStore, user, keycloakId, err))
-                );
+    @GetMapping("by-slug/{slug}")
+    public Mono<ResponseEntity<StoreDto>> findBySlug(@PathVariable String slug) {
+        return storeRepository.findBySlug(slug)
+                .doOnNext(s -> log.debug("found store {}", s))
+                .map(s -> ResponseEntity.ok(new StoreDto(s.getId(), s.getSlug())))
+                .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
     }
 
-    private Mono<ResponseEntity<Store>> rollback(Store savedStore, User user, String keycloakId, Throwable err) {
-        // Best-effort cleanup: remove DB rows + revoke role if anything failed mid-chain.
-        return membershipRepository.deleteAll(
-                        membershipRepository.findByUserIdAndRole(user.getId(), MembershipRole.STORE_OWNER))
-                .then(storeRepository.delete(savedStore))
-                .then(keycloakAdminService.removeRealmRole(keycloakId, MembershipRole.STORE_OWNER.name()))
-                .then(Mono.error(new ResponseStatusException(
-                        HttpStatus.INTERNAL_SERVER_ERROR, "Store creation failed, please retry")));
-    }
+
 }

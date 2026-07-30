@@ -47,11 +47,7 @@ export const routes: Routes = [
         path: 'wishlist',
         loadComponent: () => import('./pages/wishlist/wishlist'),
       },
-      {
-        path: 'checkout',
-        canActivate: [authGuard],
-        loadComponent: () => import('./pages/checkout/checkout'),
-      },
+
       {
         path: 'track-order',
         loadComponent: () => import('./pages/track-order/track-order'),
@@ -65,7 +61,7 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/payment-failed/payment-failed'),
       },
       {
-        path: 'store/:storeId',
+        path: 'store/:storeSlug',
         resolve: { storeId: storeResolver },
         children: [
           {
@@ -75,6 +71,11 @@ export const routes: Routes = [
           {
             path: 'products-explorer',
             loadComponent: () => import('./products/product-explorer/product-explorer'),
+          },
+          {
+            path: 'checkout',
+            canActivate: [authGuard],
+            loadComponent: () => import('./checkout/checkout'),
           },
         ],
       },

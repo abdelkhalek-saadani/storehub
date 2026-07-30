@@ -4,7 +4,7 @@ import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { OffersMasonry } from './offers-masonry';
 import { OffersSlider } from './offers-slider';
 import { Offer } from '../../shared/models/Offer';
-import { ProductService } from '../../products/service/catalog-api';
+import { CatalogApi } from '@shared/service/catalog-api';
 
 @Component({
   selector: 'app-offers-section',
@@ -20,7 +20,7 @@ import { ProductService } from '../../products/service/catalog-api';
 })
 export class OffersSection {
   private breakpointObserver = inject(BreakpointObserver);
-  private catalogApi = inject(ProductService);
+  private catalogApi = inject(CatalogApi);
   isMobile = signal(false);
 
   constructor() {

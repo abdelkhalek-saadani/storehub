@@ -40,6 +40,7 @@ public class SecurityConfig {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable) // stateless JWT API, no cookies
                 .authorizeExchange(exchange -> exchange
+                        .pathMatchers("/api/stores/by-slug/**").permitAll()
                         .pathMatchers("/api/auth/**").permitAll()
                         .pathMatchers("/api/cart/quote/**").permitAll()
                         .pathMatchers("/internal/**").hasRole("SERVICE") // service-to-service

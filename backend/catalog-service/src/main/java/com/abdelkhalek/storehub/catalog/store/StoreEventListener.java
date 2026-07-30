@@ -14,6 +14,7 @@ public class StoreEventListener {
 
     @RabbitListener(queues = "store.created.queue")
     public void handleStoreCreated(StoreCreatedEvent event) {
-        storeShadowRepository.upsert(event.storeId(), event.ownerId(), event.status(), Instant.now());
+        storeShadowRepository.upsert(event.storeId(), event.slug(), event.ownerId(), event.status(),
+                Instant.now());
     }
 }

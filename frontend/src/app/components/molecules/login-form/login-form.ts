@@ -4,10 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatInput, MatLabel } from '@angular/material/input';
 import { MatTab, MatTabGroup } from '@angular/material/tabs';
-import { PhoneInput } from '../../atoms/phone-input/phone-input';
 import { MatFormField } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatSuffix } from '@angular/material/form-field';
+import { PhoneInput } from '../../../checkout/phone-input/phone-input';
 
 @Component({
   selector: 'app-login-form',

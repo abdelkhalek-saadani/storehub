@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { StoreApi } from '../store-api';
+import { StoreApi } from '@shared/service/store-api';
 import { PendingStoreStorage } from '../pending-store-storage';
 import { lastValueFrom } from 'rxjs';
 

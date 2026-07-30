@@ -23,7 +23,6 @@ import { OffersSection } from '../components/molecules/offers-section';
 import { MatChipsModule } from '@angular/material/chips';
 import { Divider } from '../components/atoms/divider/divider';
 import { MatTabsModule } from '@angular/material/tabs';
-import { PhoneInput } from '../components/atoms/phone-input/phone-input';
 import { LoginForm } from '../components/molecules/login-form/login-form';
 import { MatSelectModule } from '@angular/material/select';
 import { PickStoreLocationForm } from '../components/molecules/pick-store-location-form/pick-store-location-form';
@@ -33,14 +32,14 @@ import { DeliveryAddressForm } from '@components/molecules/delivery-address-form
 import { CategorySquaredButton } from '@components/atoms/category-squared-button/category-squared-button';
 import { CategoryBar } from '@components/molecules/category-bar/category-bar';
 import { Breakpoints } from '@core/constants/breakpoints';
-import { CheckoutForm } from '@components/molecules/checkout-form/checkout-form';
-import { ReviewOrder } from '../components/molecules/review-order/review-order';
-import { CheckoutDetails } from '@components/molecules/checkout-details/checkout-details';
 import { WishlistProductCard } from '@components/molecules/wishlist-product-card/wishlist-product-card';
 import { OrderConfirmation } from '../components/molecules/order-confirmation/order-confirmation';
 import { OrderTracking } from '../components/molecules/order-tracking/order-tracking';
 import { Gallery } from '../components/molecules/gallery/gallery';
 import Keycloak from 'keycloak-js';
+import { CheckoutForm } from '../checkout/checkout-form/checkout-form';
+import { ReviewOrder } from '@shared/components/review-order/review-order';
+import { CheckoutDetails } from '../checkout/checkout-details/checkout-details';
 @Component({
   selector: 'app-dev',
   imports: [

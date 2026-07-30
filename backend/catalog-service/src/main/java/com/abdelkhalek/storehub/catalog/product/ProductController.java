@@ -10,6 +10,7 @@ import com.abdelkhalek.storehub.catalog.product.repository.SubCategoryRepository
 import com.abdelkhalek.storehub.catalog.product.service.CategoryService;
 import com.abdelkhalek.storehub.catalog.product.service.ProductService;
 import com.abdelkhalek.storehub.catalog.product.service.SaleEventService;
+import com.abdelkhalek.storehub.catalog.store.StoreService;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -36,9 +37,9 @@ public class ProductController {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
     private final CategoryService categoryService;
-    private final SubCategoryRepository subCategoryRepository;
     private final ProductService productService;
     private final SaleEventService saleEventService;
+    private final StoreService storeService;
 
 
     @GetMapping("products")
@@ -80,6 +81,7 @@ public class ProductController {
     @GetMapping("categories/subcategories")
     public ResponseEntity<List<SubCategoryDTO>> getSubCategories(@RequestParam UUID storeId,
                                                                  @RequestParam(required = false) @Min(1) Integer count) {
+
 
         List<SubCategoryDTO> subCategories = count != null ?
                 categoryService.getSubCategories(storeId, count) : categoryService.getSubCategories(storeId);

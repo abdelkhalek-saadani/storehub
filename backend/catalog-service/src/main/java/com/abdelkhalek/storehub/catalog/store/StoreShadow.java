@@ -18,6 +18,7 @@ public class StoreShadow {
 
     @Id
     private UUID id;
+    private String slug;
     private UUID ownerId;
     private String status;
     private Instant syncedAt;

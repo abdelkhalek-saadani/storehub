@@ -53,7 +53,9 @@ public class QuantityDiscount implements DiscountStrategy {
         cart.getItems().forEach(item -> {
             boolean applies = (productIds == null || productIds.contains(item.getProductId())) &&
                     item.getQuantity() >= minimumQuantity;
-
+            log.debug("The selected item quantity {}: ", item.getQuantity());
+            log.debug("The minimum quantity {}: ", minimumQuantity);
+            log.debug("The item.getQuantity() >= minimumQuantity {}", item.getQuantity() >= minimumQuantity);
             if (applies) {
                 BigDecimal discountAmount =
                         (item.getOriginalUnitPrice().multiply(percentage))

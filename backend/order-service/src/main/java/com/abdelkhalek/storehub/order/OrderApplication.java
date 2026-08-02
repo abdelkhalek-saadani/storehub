@@ -50,7 +50,7 @@ public class OrderApplication {
         UUID idemKey = UUID.fromString("9bec2ffb-5d51-4e46-bc27-0a1117acf7ab");
         OrderRequest orderRequest = new OrderRequest(slotId, storeId, cartId,
                 null, null, null,
-                null, null,idemKey);
+                null, null);
 
         // testuser@example.com:testuser
         String rawToken = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJKbmx6OFVuTXFrQ1YwS3BDaXNpazI0T0dmYnFpdHE3UTNmMFRtTDAzRXowIn0.eyJleHAiOjE3ODUyNjg2NjAsImlhdCI6MTc4NTI1MDY2MCwianRpIjoiMzdkNDczOTMtMGM2OC00MmU0LTk3YzMtMWNhYTdmNTRiNmNjIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgxL3JlYWxtcy9zdG9yZWh1YiIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiI3NWE3NDEyZi1mMjYzLTQ0ZjEtOTdhYi1hZWY4Zjc1YWZjMTMiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJvcmRlciIsInNpZCI6IjY4YjZkODUzLTEzMWEtNDMwNy04YmI2LTFlOGFmOWIyNjA2MCIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiLyoiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwiQ1VTVE9NRVIiLCJ1bWFfYXV0aG9yaXphdGlvbiIsImRlZmF1bHQtcm9sZXMtc3RvcmVodWIiXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6InByb2ZpbGUgc3RvcmVJZCBlbWFpbCIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwibmFtZSI6InRlc3QgdXNlciIsInByZWZlcnJlZF91c2VybmFtZSI6InRlc3R1c2VyQGV4YW1wbGUuY29tIiwiZ2l2ZW5fbmFtZSI6InRlc3QiLCJmYW1pbHlfbmFtZSI6InVzZXIiLCJlbWFpbCI6InRlc3R1c2VyQGV4YW1wbGUuY29tIn0.bJQPkgrKTv0XQz0Mw3x7o-R6kWvp0hPI3vK58zC2rlJADSODhZCwRgq8V-kgvqthwLCU_J2xFoV6RjpZ1RVOCyNO3Pfffm-ljxA8kQtlEdUVdnGQxqEJthcj999nfz6piBMCCLgyee-IeYbRRUdoCZiow_yiHLsFp7UwDPiSAcgO8JIeKge1cDUodsDplBAkg4L21E4uISwgJ2V-QnrR74RKmfFH9v212kzQimtUaAA4sT1PuC4eb6fECtThgZzp9-lFDarncR9uTIupXv_pYU3arGQLzPCi7u3HIjXv7BrFbkA5elJaSo2mnx0DfTGfRPjRH2fKcdt67qT72ESTaw";
@@ -59,7 +59,7 @@ public class OrderApplication {
 
         JwtAuthenticationToken authToken = new JwtAuthenticationToken(jwt);
 
-        OrderCreatedResponse order = orderService.placeOrderWithOnlinePayment(orderRequest)
+        OrderCreatedResponse order = orderService.placeOrderWithOnlinePayment(idemKey,orderRequest)
                 .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authToken))
                 .block();;
 

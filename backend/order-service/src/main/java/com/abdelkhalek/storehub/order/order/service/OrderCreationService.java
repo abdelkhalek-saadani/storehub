@@ -48,9 +48,11 @@ public class OrderCreationService {
     }
 
     public Mono<Order> createOrder(UUID userId, OrderRequest orderRequest,
-                                   ResourceRetentionService.RetentionResult retention) {
+                                   ResourceRetentionService.RetentionResult retention,
+                                   UUID idemKey) {
         return cartRepository.findById(orderRequest.cartId())
-                .map(cartEntity -> assembleOrder(userId, orderRequest, cartEntity, retention))
+                .map(cartEntity -> assembleOrder(userId, orderRequest, cartEntity, retention,
+                        idemKey))
                 .flatMap(this::calculateOrderTotals)
                 .flatMap(orderRepository::save)
                 .flatMap(this::publishAndReturn)
@@ -58,7 +60,8 @@ public class OrderCreationService {
     }
 
     private Order assembleOrder(UUID userId, OrderRequest orderRequest, CartEntity cartEntity,
-                                ResourceRetentionService.RetentionResult retention) {
+                                ResourceRetentionService.RetentionResult retention,
+                                UUID idemKey) {
         List<OrderItem> items = orderMapper.fromCartItemEntities(cartEntity.getItems());
         Order order = Order.builder()
                 .userId(userId)
@@ -70,7 +73,7 @@ public class OrderCreationService {
                 .billingAddress(orderRequest.billingAddress())
                 .deliveryAddress(orderRequest.deliveryAddress())
                 .status(OrderStatus.CREATED)
-                .idempotencyKey(orderRequest.idempotencyKey())
+                .idempotencyKey(idemKey)
                 .build();
         log.debug("Initializing order {}", order);
         return order;

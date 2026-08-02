@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { OrderConfirmation } from '@components/molecules/order-confirmation/order-confirmation';
+import { OrderConfirmation } from '../../checkout/order-confirmation/order-confirmation';
 
 @Component({
   selector: 'app-payment-failed',

@@ -4,6 +4,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatProgressBar } from '@angular/material/progress-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { CouponDialog } from '@components/molecules/coupon-dialog/coupon-dialog';
+import { CheckoutFormService } from '../checkout-form.service';
 
 @Component({
   selector: 'app-checkout-details',
@@ -50,11 +51,16 @@ import { CouponDialog } from '@components/molecules/coupon-dialog/coupon-dialog'
           By placing this order, you are agreeing to Terms and Conditions.
         </div>
       </div>
-      <button matButton="filled" class="w-full btn-pill space-between">
+      <button
+        matButton="filled"
+        class="w-full btn-pill space-between"
+        [disabled]="formService.form.invalid || formService.submitting()"
+        (click)="formService.submit()"
+      >
         <!--<span style="display:flex; align-items:center; gap:8px;">-->
         <span class="flex items-center gap-2">
           <mat-icon>payment</mat-icon>
-          Checkout
+          {{ formService.submitting() ? 'Placing order...' : 'Checkout' }}
         </span>
         <span>$120.00</span>
       </button>
@@ -64,7 +70,7 @@ import { CouponDialog } from '@components/molecules/coupon-dialog/coupon-dialog'
 })
 export class CheckoutDetails {
   dialog = inject(MatDialog);
-
+  formService = inject(CheckoutFormService);
   addCoupon() {
     this.dialog.open(CouponDialog);
   }

@@ -19,7 +19,7 @@ import {
   MatTimepickerInput,
   MatTimepickerToggle,
 } from '@angular/material/timepicker';
-import { OffersSection } from '../components/molecules/offers-section';
+import { OffersSection } from '../products/offers-section';
 import { MatChipsModule } from '@angular/material/chips';
 import { Divider } from '../components/atoms/divider/divider';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -33,13 +33,13 @@ import { CategorySquaredButton } from '@components/atoms/category-squared-button
 import { CategoryBar } from '@components/molecules/category-bar/category-bar';
 import { Breakpoints } from '@core/constants/breakpoints';
 import { WishlistProductCard } from '@components/molecules/wishlist-product-card/wishlist-product-card';
-import { OrderConfirmation } from '../components/molecules/order-confirmation/order-confirmation';
 import { OrderTracking } from '../components/molecules/order-tracking/order-tracking';
 import { Gallery } from '../components/molecules/gallery/gallery';
 import Keycloak from 'keycloak-js';
 import { CheckoutForm } from '../checkout/checkout-form/checkout-form';
 import { ReviewOrder } from '@shared/components/review-order/review-order';
 import { CheckoutDetails } from '../checkout/checkout-details/checkout-details';
+import { OrderConfirmation } from '../checkout/order-confirmation/order-confirmation';
 @Component({
   selector: 'app-dev',
   imports: [

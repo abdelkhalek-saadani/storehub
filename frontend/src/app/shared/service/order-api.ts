@@ -1,14 +1,31 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '@environments/environment';
-import { StoreContext } from '../products/service/store-context';
-import { UpdateCartItem } from './model/update-cart-request';
-import { CartResponse } from './model/cart-response';
-import { tap } from 'rxjs';
+import { StoreContext } from '../../products/service/store-context';
+import { UpdateCartItem } from '../../cart/model/update-cart-request';
+import { CartResponse } from '../../cart/model/cart-response';
+
+export interface OrderRequest {
+  slotId: string;
+  storeId: string;
+  cartId: string;
+
+  billingAddress?: string;
+  deliveryAddress?: string;
+  firstName?: string;
+  lastName?: string;
+  phoneNumber?: string;
+}
+
+export interface OrderResponse {
+  orderId: string;
+  paymentId: string;
+  paymentApprovalUrl: string;
+}
 
 @Injectable({ providedIn: 'root' })
-export class CartApi {
+export class OrderApi {
   private http = inject(HttpClient);
   private cartUrl = `${environment.orderApiUrl}/api/cart`;
   private storeContext = inject(StoreContext);
@@ -16,9 +33,19 @@ export class CartApi {
   private getStoreId(): string {
     const storeId = this.storeContext.storeId();
     if (!storeId) {
-      throw new Error('CartApi called before storeId is available');
+      throw new Error('OrderApi called before storeId is available');
     }
     return storeId;
+  }
+
+  placeOrder(idemKey: string, request: Omit<OrderRequest, 'storeId'>): Observable<OrderResponse> {
+    let headers = new HttpHeaders({ 'Idempotency-Key': idemKey });
+    const response = this.http.post<OrderResponse>(
+      `${environment.orderApiUrl}/api/orders`,
+      { ...request, storeId: this.getStoreId() },
+      { headers },
+    );
+    return response;
   }
 
   getCart(): Observable<CartResponse> {

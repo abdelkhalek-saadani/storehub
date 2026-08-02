@@ -3,7 +3,7 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { computed, inject } from '@angular/core';
 import { pipe, switchMap, tap, debounceTime } from 'rxjs';
 import { CartResponse } from './model/cart-response';
-import { CartApi } from './cart-api';
+import { OrderApi } from '@shared/service/order-api';
 import { UpdateCartItem } from './model/update-cart-request';
 import { tapResponse } from '@ngrx/operators';
 
@@ -38,7 +38,7 @@ export const CartStore = signalStore(
     isEmpty: computed(() => items().length === 0),
   })),
 
-  withMethods((store, api = inject(CartApi)) => ({
+  withMethods((store, api = inject(OrderApi)) => ({
     loadCart: rxMethod<void>(
       pipe(
         tap(() => patchState(store, { loading: true, error: null })),

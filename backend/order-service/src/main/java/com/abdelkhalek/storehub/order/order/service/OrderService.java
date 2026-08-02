@@ -27,7 +27,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
 
-    public Mono<Order> placeOrder(OrderRequest orderRequest) {
+    public Mono<Order> placeOrder(OrderRequest orderRequest, UUID idempotencyKey) {
         return orderCreationService.checkAvailability(orderRequest.storeId(), orderRequest.cartId(), orderRequest.slotId())
                 .flatMap(isAvailable -> {
                     if (!isAvailable) {
@@ -36,16 +36,17 @@ public class OrderService {
                     return userService.getCurrentUser()
                             .flatMap(user -> retentionService.retainAll(
                                             orderRequest.storeId(), orderRequest.cartId(), orderRequest.slotId())
-                                    .flatMap(retention -> orderCreationService.createOrder(user.getId(), orderRequest, retention)));
+                                    .flatMap(retention -> orderCreationService.createOrder(user.getId(), orderRequest, retention, idempotencyKey)));
                 });
     }
 
-    public Mono<OrderCreatedResponse> placeOrderWithOnlinePayment(OrderRequest orderRequest) {
+    public Mono<OrderCreatedResponse> placeOrderWithOnlinePayment(UUID idempotencyKey,
+                                                                  OrderRequest orderRequest) {
         return orderCreationService
-                .findExistingByIdempotencyKey(orderRequest.idempotencyKey())
+                .findExistingByIdempotencyKey(idempotencyKey)
                 .map(OrderCreatedResponse::from)
                 .switchIfEmpty(
-                        placeOrder(orderRequest).flatMap(orderPaymentService::attachPaymentAndSave));
+                        placeOrder(orderRequest, idempotencyKey).flatMap(orderPaymentService::attachPaymentAndSave));
     }
 
     public Mono<OrderDto> getOrder(UUID orderId) {

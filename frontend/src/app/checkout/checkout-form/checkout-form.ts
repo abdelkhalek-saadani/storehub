@@ -1,18 +1,28 @@
 import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { MatDivider } from '@angular/material/divider';
-import { MatInput, MatLabel } from '@angular/material/input';
+import { MatError, MatInput, MatLabel } from '@angular/material/input';
 import { MatFormField } from '@angular/material/form-field';
 import { PhoneInput } from '../phone-input/phone-input';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import { PagedResponse } from '../../products/models/page-response';
-import { Product } from '../../products/models/product';
+import { v4 as uuidv4 } from 'uuid';
 import { ProductQuery, CatalogApi } from '@shared/service/catalog-api';
 import { Slot } from '@shared/models/Slot';
 import { DayOfWeek, LocalDate } from '@js-joda/core';
 import { tap } from 'rxjs';
 import { DateAndDay } from '@shared/models/DateAndDay';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { OrderApi } from '@shared/service/order-api';
+import { subscribe } from 'node:diagnostics_channel';
+import { CartStore } from '../../cart/cart-store';
+import { CheckoutFormService } from '../checkout-form.service';
+
+interface CheckoutFormValue {
+  firstName: string;
+  lastName: string;
+  email: string;
+  slotId: string;
+}
 
 @Component({
   selector: 'app-checkout-form',
@@ -25,6 +35,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
     MatOption,
     MatSelect,
     ReactiveFormsModule,
+    MatError,
   ],
   template: `
     <form [formGroup]="checkoutForm">
@@ -41,7 +52,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
           <mat-form-field>
             <mat-label>Time Slot</mat-label>
-            <mat-select formControlName="timeSlot">
+            <mat-select formControlName="slotId">
               @for (slot of slotsResult.value(); track slot.slotId) {
                 <mat-option [value]="slot.slotId">{{ slot.slotLabel }}</mat-option>
               }
@@ -51,16 +62,28 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
         <div class="font-semibold text-lg">Your Details</div>
         <mat-form-field>
           <mat-label>Email Address</mat-label>
-          <input matInput />
+          <input matInput formControlName="email" />
+          @if (checkoutForm.controls.email.hasError('required') && isTouched('email')) {
+            <mat-error>Email is required.</mat-error>
+          }
+          @if (checkoutForm.controls.email.hasError('email') && isTouched('email')) {
+            <mat-error>Enter a valid email.</mat-error>
+          }
         </mat-form-field>
         <mat-divider />
         <mat-form-field>
           <mat-label>First Name</mat-label>
-          <input matInput />
+          <input matInput formControlName="firstName" />
+          @if (isInvalid('firstName')) {
+            <mat-error>First name is required.</mat-error>
+          }
         </mat-form-field>
         <mat-form-field>
           <mat-label>Last Name</mat-label>
-          <input matInput />
+          <input matInput formControlName="lastName" />
+          @if (isInvalid('lastName')) {
+            <mat-error>Last name is required.</mat-error>
+          }
         </mat-form-field>
         <app-phone-input />
       </div>
@@ -70,14 +93,22 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 })
 export class CheckoutForm {
   productService = inject(CatalogApi);
+  formService = inject(CheckoutFormService);
+  checkoutForm = this.formService.form;
 
-  checkoutForm = new FormGroup({
-    deliveryDay: new FormControl<LocalDate | null>(null),
-    timeSlot: new FormControl(''),
-  });
+  error = signal<string | null>(null);
 
   private deliveryDayCtrl = this.checkoutForm.controls.deliveryDay;
-  private timeSlotCtrl = this.checkoutForm.controls.timeSlot;
+  private timeSlotCtrl = this.checkoutForm.controls.slotId;
+
+  isInvalid(field: keyof CheckoutFormValue): boolean {
+    const control = this.checkoutForm.controls[field];
+    return control.invalid && control.touched;
+  }
+
+  isTouched(field: keyof CheckoutFormValue): boolean {
+    return this.checkoutForm.controls[field].touched;
+  }
 
   week = toSignal(
     this.productService.getDays().pipe(

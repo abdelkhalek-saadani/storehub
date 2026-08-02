@@ -4,11 +4,13 @@ import com.abdelkhalek.storehub.order.order.dto.OrderCreatedResponse;
 import com.abdelkhalek.storehub.order.order.dto.OrderDto;
 import com.abdelkhalek.storehub.order.order.dto.OrderRequest;
 import com.abdelkhalek.storehub.order.order.service.OrderService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
+@Slf4j
 @RestController
 @RequestMapping("api/orders")
 public class OrderController {
@@ -20,8 +22,10 @@ public class OrderController {
     }
 
     @PostMapping
-    Mono<OrderCreatedResponse> placeOrder(@RequestBody OrderRequest orderRequest) {
-        return orderService.placeOrderWithOnlinePayment(orderRequest);
+    Mono<OrderCreatedResponse> placeOrder(@RequestHeader("Idempotency-Key") UUID idempotencyKey,
+                                          @RequestBody OrderRequest orderRequest) {
+        log.debug("idem key: {}", idempotencyKey);
+        return orderService.placeOrderWithOnlinePayment(idempotencyKey,orderRequest);
     }
 
     @GetMapping("/{orderId}")

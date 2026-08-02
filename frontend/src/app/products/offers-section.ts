@@ -3,7 +3,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { OffersMasonry } from './offers-masonry';
 import { OffersSlider } from './offers-slider';
-import { Offer } from '../../shared/models/Offer';
+import { Offer } from '@shared/models/Offer';
 import { CatalogApi } from '@shared/service/catalog-api';
 
 @Component({

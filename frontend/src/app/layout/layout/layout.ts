@@ -1,10 +1,9 @@
 import { AfterViewInit, Component, inject, input, signal, ViewChild } from '@angular/core';
 import { MatDivider, MatListItem, MatNavList } from '@angular/material/list';
 import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
-import { TitleCasePipe } from '@angular/common';
 import { ProductStore } from '../../product-store';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { SidenavService } from '../../services/Sidenav';
+import { RouterLink, RouterOutlet } from '@angular/router';
+import { SidenavService } from '../sidenav.service';
 import { Header } from '../header/header';
 import {
   MatExpansionPanel,
@@ -14,9 +13,7 @@ import {
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatDialogClose } from '@angular/material/dialog';
-import { CartSidenav } from '../../services/cart-sidenav';
-import { CartItem } from '@components/molecules/cart-item/cart-item';
-import { MatIcon } from '@angular/material/icon';
+import { CartSidenav } from '@shared/service/cart-sidenav';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Cart } from '../../cart/cart/cart';

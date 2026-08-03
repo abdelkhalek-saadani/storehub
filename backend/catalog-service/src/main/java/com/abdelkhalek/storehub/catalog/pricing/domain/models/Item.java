@@ -18,6 +18,7 @@ public class Item {
     private UUID id;
     private UUID productId;
     private String productName;
+    private String productImageUrl;
     private int quantity;
     private BigDecimal originalUnitPrice = BigDecimal.ZERO;
     private BigDecimal finalUnitPrice = BigDecimal.ZERO;

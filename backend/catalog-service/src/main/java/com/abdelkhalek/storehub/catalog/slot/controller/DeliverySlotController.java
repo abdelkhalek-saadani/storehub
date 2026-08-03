@@ -22,6 +22,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -39,8 +40,13 @@ public class DeliverySlotController {
     public ResponseEntity<List<SlotDto>> getAvailableSlots(
             @RequestParam UUID storeId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        Optional<List<DeliverySlot>> slots =
+        Optional<List<DeliverySlot>> slots;
+        if (!date.isEqual(LocalDate.now())) slots =
                 deliverySlotRepository.findByStoreIdAndSlotDate(storeId, date);
+        else slots = deliverySlotRepository.findByStoreIdAndSlotDateAndStartTimeAfter(
+                storeId,
+                date,
+                LocalDateTime.now());
         if (slots.isEmpty()) return ResponseEntity.notFound().build();
         List<SlotDto> slotDtos = slots.get().stream()
                 .sorted(Comparator.comparing(DeliverySlot::getStartTime))

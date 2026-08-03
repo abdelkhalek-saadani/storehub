@@ -28,6 +28,8 @@ public class ProductEntity {
     @Column(nullable = false)
     private String name;
 
+    private String imageUrl;
+
     private String description;
 
     // Cached current price. Source of truth for *history* is UnitPriceHistory;

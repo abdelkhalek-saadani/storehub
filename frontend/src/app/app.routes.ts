@@ -40,6 +40,20 @@ export const routes: Routes = [
   },
 
   {
+    path: 'checkout/return',
+    canActivate: [authGuard],
+    loadComponent: () => import('./checkout/return/return'),
+  },
+  {
+    path: 'checkout/cancel',
+    canActivate: [authGuard],
+    loadComponent: () => import('./checkout/cancel/cancel'),
+  },
+  {
+    path: 'checkout/return/success',
+    loadComponent: () => import('./checkout/return/success/success'),
+  },
+  {
     path: '',
     loadComponent: () => import('./layout/layout/layout'),
     children: [
@@ -48,18 +62,6 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/wishlist/wishlist'),
       },
 
-      {
-        path: 'track-order',
-        loadComponent: () => import('./pages/track-order/track-order'),
-      },
-      {
-        path: 'payment-success',
-        loadComponent: () => import('./pages/payment-success/payment-success'),
-      },
-      {
-        path: 'payment-failure',
-        loadComponent: () => import('./pages/payment-failed/payment-failed'),
-      },
       {
         path: 'store/:storeSlug',
         resolve: { storeId: storeResolver },
@@ -77,15 +79,10 @@ export const routes: Routes = [
             canActivate: [authGuard],
             loadComponent: () => import('./checkout/checkout'),
           },
+
           {
-            path: 'checkout/return',
-            canActivate: [authGuard],
-            loadComponent: () => import('./checkout/return/return'),
-          },
-          {
-            path: 'checkout/cancel',
-            canActivate: [authGuard],
-            loadComponent: () => import('./checkout/cancel/cancel'),
+            path: 'track-order',
+            loadComponent: () => import('./track-order/track-order'),
           },
         ],
       },

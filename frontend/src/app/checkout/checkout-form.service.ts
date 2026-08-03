@@ -8,6 +8,7 @@ import { CartStore } from '../cart/cart-store';
 @Injectable({ providedIn: 'root' })
 export class CheckoutFormService {
   form = new FormGroup({
+    phone: new FormControl<string>('23725059', [Validators.required]),
     deliveryDay: new FormControl<LocalDate | null>(null),
     firstName: new FormControl('Abdelkhalek', {
       nonNullable: true,

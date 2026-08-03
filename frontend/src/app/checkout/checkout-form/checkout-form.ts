@@ -1,20 +1,15 @@
-import { Component, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { MatDivider } from '@angular/material/divider';
 import { MatError, MatInput, MatLabel } from '@angular/material/input';
 import { MatFormField } from '@angular/material/form-field';
 import { PhoneInput } from '../phone-input/phone-input';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import { v4 as uuidv4 } from 'uuid';
-import { ProductQuery, CatalogApi } from '@shared/service/catalog-api';
-import { Slot } from '@shared/models/Slot';
-import { DayOfWeek, LocalDate } from '@js-joda/core';
+import { CatalogApi } from '@shared/service/catalog-api';
+
 import { tap } from 'rxjs';
-import { DateAndDay } from '@shared/models/DateAndDay';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { OrderApi } from '@shared/service/order-api';
-import { subscribe } from 'node:diagnostics_channel';
-import { CartStore } from '../../cart/cart-store';
+import { ReactiveFormsModule } from '@angular/forms';
+
 import { CheckoutFormService } from '../checkout-form.service';
 
 interface CheckoutFormValue {
@@ -95,8 +90,6 @@ export class CheckoutForm {
   productService = inject(CatalogApi);
   formService = inject(CheckoutFormService);
   checkoutForm = this.formService.form;
-
-  error = signal<string | null>(null);
 
   private deliveryDayCtrl = this.checkoutForm.controls.deliveryDay;
   private timeSlotCtrl = this.checkoutForm.controls.slotId;

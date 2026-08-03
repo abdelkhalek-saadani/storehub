@@ -1,10 +1,12 @@
-import { Component, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
+import { Router, RouterLink } from '@angular/router';
+import { StoreContext } from '../../products/service/store-context';
 
 @Component({
   selector: 'app-order-confirmation',
-  imports: [MatButton, MatIcon],
+  imports: [MatButton, MatIcon, RouterLink],
   template: `
     <div class="flex flex-col w-fit items-center">
       @if (state() == 'success') {
@@ -26,7 +28,7 @@ import { MatIcon } from '@angular/material/icon';
           >Go back home and try again</span
         >
       }
-      <button matButton="outlined" class="w-52">
+      <button matButton="outlined" class="w-52" (click)="goBackHome()">
         Go back home
         <mat-icon iconPositionEnd>arrow_forward</mat-icon>
       </button>
@@ -36,4 +38,16 @@ import { MatIcon } from '@angular/material/icon';
 })
 export class OrderConfirmation {
   state = input<'fail' | 'success'>('success');
+  storeContext = inject(StoreContext);
+  router = inject(Router);
+
+  goBackHome() {
+    const currentStore = this.storeContext.getCurrentStore();
+    if (currentStore) {
+      this.router.navigate(['/store', currentStore.slug, 'products']);
+      return;
+    }
+    // TODO: implement store pick page
+    this.router.navigate(['store']);
+  }
 }

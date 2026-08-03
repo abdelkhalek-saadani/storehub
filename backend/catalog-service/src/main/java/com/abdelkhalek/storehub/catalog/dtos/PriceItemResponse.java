@@ -15,6 +15,7 @@ import java.util.UUID;
 public class PriceItemResponse {
     UUID productId;
     String productName;
+    String productImageUrl;
     int quantity;
     BigDecimal unitPrice;
     BigDecimal originalLineTotal;

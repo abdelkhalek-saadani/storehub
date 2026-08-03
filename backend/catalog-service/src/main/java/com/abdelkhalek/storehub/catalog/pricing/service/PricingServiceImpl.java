@@ -22,6 +22,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Primary
+
 public class PricingServiceImpl implements PricingService {
 
     private final ProductRepository productRepository;
@@ -54,6 +55,7 @@ public class PricingServiceImpl implements PricingService {
             Item item = new Item();
             item.setProductId(productEntity.getId());
             item.setProductName(productEntity.getName());
+            item.setProductImageUrl(productEntity.getImageUrl());
             item.setQuantity(qty);
             item.setUnitPrice(productEntity.getUnitPrice());
             return item;

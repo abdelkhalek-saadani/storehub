@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { OrderConfirmation } from '../../checkout/order-confirmation/order-confirmation';
+import { OrderConfirmation } from '../../order-confirmation/order-confirmation';
 
 @Component({
-  selector: 'app-payment-success',
+  selector: 'app-return-success',
   imports: [OrderConfirmation],
   host: {
     class: 'min-h-screen flex items-center justify-center ',
@@ -13,4 +13,4 @@ import { OrderConfirmation } from '../../checkout/order-confirmation/order-confi
     </div>
   `,
 })
-export default class PaymentSuccessPage {}
+export default class ReturnSuccessPage {}

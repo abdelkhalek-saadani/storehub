@@ -1,18 +1,19 @@
 import { UUID } from 'node:crypto';
 
 export interface CartResponse {
-  cartId: UUID;
+  cartId: string;
   items: CartItemResponse[];
   originalTotal: number;
   finalTotal: number;
   totalDiscount: number;
-  storeId: UUID;
+  storeId: string;
 }
 
 export interface CartItemResponse {
   itemId: UUID;
   productId: UUID;
   productName: string;
+  productImageUrl: string;
   quantity: number;
   unitPrice: number;
   originalLineTotal: number;

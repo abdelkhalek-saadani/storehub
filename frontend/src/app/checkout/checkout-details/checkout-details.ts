@@ -5,6 +5,7 @@ import { MatProgressBar } from '@angular/material/progress-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { CouponDialog } from '@components/molecules/coupon-dialog/coupon-dialog';
 import { CheckoutFormService } from '../checkout-form.service';
+import { CartStore } from '../../cart/cart-store';
 
 @Component({
   selector: 'app-checkout-details',
@@ -25,7 +26,7 @@ import { CheckoutFormService } from '../checkout-form.service';
             </div>
             <div class="flex flex-row justify-between">
               <span class="font-normal text-base text-[#686069]">Items total</span
-              ><span class="font-medium text-base text-black-900">17.00TND</span>
+              ><span class="font-medium text-base text-black-900">{{ finalTotal() }}TND</span>
             </div>
           </div>
         </div>
@@ -38,14 +39,14 @@ import { CheckoutFormService } from '../checkout-form.service';
         </div>
         <div class="py-4 flex border-b border-t border-[#F8F7F8] justify-between items-center">
           <div class="font-medium text-base text-black-900">Coupon</div>
-          <button matButton="text" (click)="addCoupon()">
+          <button [disabled]="true" matButton="text" (click)="addCoupon()">
             <mat-icon>add</mat-icon>
             Add Coupon
           </button>
         </div>
         <div class="flex flex-row justify-between font-semibold text-xl text-black-900">
           <span>Total</span>
-          <span>17.00TND</span>
+          <span>{{ finalTotal() }}TND</span>
         </div>
         <div class="text-[#807681] font-normal text-sm">
           By placing this order, you are agreeing to Terms and Conditions.
@@ -62,8 +63,11 @@ import { CheckoutFormService } from '../checkout-form.service';
           <mat-icon>payment</mat-icon>
           {{ formService.submitting() ? 'Placing order...' : 'Checkout' }}
         </span>
-        <span>$120.00</span>
+        <span>{{ finalTotal() }}TND</span>
       </button>
+      @if (!formService.submitting && formService.submitError()) {
+        <p class="text-red-500">{{ formService.submitError() }}</p>
+      }
     </div>
   `,
   styles: ``,
@@ -71,6 +75,9 @@ import { CheckoutFormService } from '../checkout-form.service';
 export class CheckoutDetails {
   dialog = inject(MatDialog);
   formService = inject(CheckoutFormService);
+  store = inject(CartStore);
+
+  finalTotal = this.store.finalTotal;
   addCoupon() {
     this.dialog.open(CouponDialog);
   }

@@ -4,12 +4,14 @@ import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { CartSidenav } from '../../services/cart-sidenav';
+import { CartSidenav } from '@shared/service/cart-sidenav';
 import { CartStore } from '../cart-store';
+import { RouterLink } from '@angular/router';
+import { StoreContext } from '../../products/service/store-context';
 
 @Component({
   selector: 'app-cart',
-  imports: [CartItem, MatButton, MatIcon, MatIconButton],
+  imports: [CartItem, MatButton, MatIcon, MatIconButton, RouterLink],
   template: `
     <div class="p-4 flex flex-col gap-5">
       <div class="flex justify-between">
@@ -49,7 +51,11 @@ import { CartStore } from '../cart-store';
           <mat-icon iconPositionEnd>arrow_forward</mat-icon>
         </button>
       } @else {
-        <button matButton="filled" class="btn-lg">
+        <button
+          matButton="filled"
+          class="btn-lg"
+          [routerLink]="['/store', this.storeContext.storeSlug(), 'checkout']"
+        >
           Continue Checkout
           <mat-icon iconPositionEnd>arrow_forward</mat-icon>
         </button>
@@ -61,6 +67,7 @@ import { CartStore } from '../cart-store';
 export class Cart implements OnInit {
   isMobile = signal(false);
   cartSidenavService = inject(CartSidenav);
+  storeContext = inject(StoreContext);
   protected store = inject(CartStore);
 
   items = this.store.items;

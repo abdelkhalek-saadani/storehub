@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { OrderTracking } from '@components/molecules/order-tracking/order-tracking';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -9,6 +9,8 @@ import { InvoiceDownload } from './invoice-download/invoice-download';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReviewOrder } from '@shared/components/review-order/review-order';
+import { HttpParams } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-track-order',
@@ -68,13 +70,22 @@ import { ReviewOrder } from '@shared/components/review-order/review-order';
     </div>
   `,
 })
-export default class TrackOrderPage {
+export default class TrackOrderPage implements OnInit {
   isMobile = signal(false);
+  private route = inject(ActivatedRoute);
+  token: string | null = null;
 
   constructor(bpo: BreakpointObserver) {
     bpo
       .observe('(max-width: 768px)')
       .pipe(takeUntilDestroyed())
       .subscribe((res) => this.isMobile.set(res.matches));
+  }
+
+  ngOnInit() {
+    this.route.queryParamMap.subscribe((paramMap) => {
+      this.token = paramMap.get('token');
+    });
+    console.log('the token: ' + this.token);
   }
 }

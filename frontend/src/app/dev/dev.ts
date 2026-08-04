@@ -33,7 +33,7 @@ import { CategorySquaredButton } from '@components/atoms/category-squared-button
 import { CategoryBar } from '@components/molecules/category-bar/category-bar';
 import { Breakpoints } from '@core/constants/breakpoints';
 import { WishlistProductCard } from '@components/molecules/wishlist-product-card/wishlist-product-card';
-import { OrderTracking } from '../components/molecules/order-tracking/order-tracking';
+import { OrderTracking } from '../track-order/order-tracking/order-tracking';
 import { Gallery } from '../components/molecules/gallery/gallery';
 import Keycloak from 'keycloak-js';
 import { CheckoutForm } from '../checkout/checkout-form/checkout-form';
@@ -90,9 +90,6 @@ import { OrderConfirmation } from '../checkout/order-confirmation/order-confirma
         <div class="rows">
           <span class="label">Product Images Gallery</span>
           <app-gallery />
-
-          <span class="label">Order Tracking</span>
-          <app-order-tracking />
 
           <span class="label">Order Confirmation Component</span>
 
@@ -645,4 +642,6 @@ export default class Dev {
     }
     this.activeTab.update((at) => 'phone');
   }
+
+  protected readonly Date = Date;
 }

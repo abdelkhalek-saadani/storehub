@@ -36,6 +36,16 @@ public class DeliverySlotController {
     private final StoreService storeService;
     private final SlotService slotService;
 
+    @GetMapping("{slotId}")
+    public ResponseEntity<DeliverySlot> get(@PathVariable UUID slotId) {
+        DeliverySlot s = slotService.getById(slotId);
+        if (s == null) {
+            return ResponseEntity.notFound().build();
+        }
+        log.debug("Get delivery slot {}", s);
+        return ResponseEntity.ok(s);
+    }
+
     @GetMapping
     public ResponseEntity<List<SlotDto>> getAvailableSlots(
             @RequestParam UUID storeId,

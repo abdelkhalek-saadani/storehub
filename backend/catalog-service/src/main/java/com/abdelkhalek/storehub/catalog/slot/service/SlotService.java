@@ -1,5 +1,6 @@
 package com.abdelkhalek.storehub.catalog.slot.service;
 
+import com.abdelkhalek.storehub.catalog.slot.entity.DeliverySlot;
 import com.abdelkhalek.storehub.catalog.slot.repository.DeliverySlotRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,10 @@ import java.util.UUID;
 public class SlotService {
 
     private final DeliverySlotRepository deliverySlotRepository;
+
+    public DeliverySlot getById(UUID id) {
+        return deliverySlotRepository.findById(id).orElse(null);
+    }
 
     public String extractSlotLabel(LocalDateTime startTime, LocalDateTime endTime) {
         if (startTime == null || endTime == null) return null;

@@ -38,7 +38,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // stateless JWT API, no cookies
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/api/delivery-slots/check-days").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/delivery-slots/check-days", "/api" +
+                                "/delivery-slots/**").permitAll()
                         .requestMatchers("/api/admin/slot-configs").hasRole("STORE_OWNER")
                         .requestMatchers(HttpMethod.POST,
                                 "/api/delivery-slots/reserve",

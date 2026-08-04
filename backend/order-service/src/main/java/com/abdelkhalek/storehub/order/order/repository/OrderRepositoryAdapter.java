@@ -43,4 +43,11 @@ public class OrderRepositoryAdapter implements OrderRepository {
                 .map(orderMapper::fromEntity);
     }
 
+    @Override
+    public Mono<Order> findByPaymentOrderId(String paymentOrderId) {
+        log.debug("Getting Order with id: {}", paymentOrderId);
+        return orderReactiveRepository.findByPaymentOrderId(paymentOrderId)
+                .map(orderMapper::fromEntity);
+    }
+
 }

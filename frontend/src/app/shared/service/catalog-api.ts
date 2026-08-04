@@ -7,9 +7,10 @@ import { Product } from '../../products/models/product';
 import { StoreContext } from '../../products/service/store-context';
 import { map } from 'rxjs';
 import { Offer } from '@shared/models/Offer';
-import { LocalDate } from '@js-joda/core';
-import { Slot } from '@shared/models/Slot';
+import { LocalDate, LocalDateTime } from '@js-joda/core';
+import { SlotSummary } from '@shared/models/SlotSummary';
 import { DateAndDay } from '@shared/models/DateAndDay';
+import { Slot } from '../../track-order/track-order';
 
 export interface ProductQuery {
   page: number;
@@ -25,6 +26,11 @@ export interface CategoryResponse {
   id: string;
   name: string;
   imageUrl: string;
+}
+
+export interface SlotDto {
+  startTime: string;
+  endTime: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -90,9 +96,13 @@ export class CatalogApi {
     return this.http.get<CategoryResponse[]>(this.categoriesUrl, { params });
   }
 
-  getSlots(date: LocalDate): Observable<Slot[]> {
+  getSlots(date: LocalDate): Observable<SlotSummary[]> {
     const params = new HttpParams().set('storeId', this.getStoreId()).set('date', date.toString());
-    return this.http.get<Slot[]>(this.slotsUrl, { params });
+    return this.http.get<SlotSummary[]>(this.slotsUrl, { params });
+  }
+
+  getSlotById(id: string): Observable<SlotDto> {
+    return this.http.get<SlotDto>(`${this.slotsUrl}/${id}`);
   }
 
   getDays(from?: LocalDate, to?: LocalDate): Observable<DateAndDay[]> {

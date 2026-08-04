@@ -32,4 +32,11 @@ public class OrderController {
     Mono<OrderDto> getOrder(@PathVariable UUID orderId) {
         return orderService.getOrder(orderId);
     }
+
+    @GetMapping
+    Mono<OrderDto> getOrderByToken(@RequestParam String paymentOrderId) {
+        // Get the order with payment order id
+        log.debug("paymentOrderId: {}", paymentOrderId);
+        return orderService.getOrderByToken(paymentOrderId);
+    }
 }

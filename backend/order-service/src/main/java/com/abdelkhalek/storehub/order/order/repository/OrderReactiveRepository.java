@@ -8,4 +8,6 @@ import java.util.UUID;
 
 public interface OrderReactiveRepository extends ReactiveCrudRepository<OrderEntity, UUID> {
     Mono<OrderEntity> findByIdempotencyKey(UUID idempotencyKey);
+
+    Mono<OrderEntity> findByPaymentOrderId(String paymentOrderId);
 }

@@ -14,7 +14,7 @@ import { Clipboard } from '@angular/cdk/clipboard';
       [matTooltip]="copied() ? 'Copied!' : 'Copy'"
     >
       <mat-icon [inline]="true">{{ copied() ? 'check' : 'content_copy' }}</mat-icon>
-      <span (click)="copy()" class="">{{ text() }}</span>
+      <span (click)="copy()" class="">#{{ text().slice(0, 8) }}...</span>
     </div>
   `,
 })

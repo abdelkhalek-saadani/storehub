@@ -1,10 +1,11 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { environment } from '@environments/environment';
 import { StoreContext } from '../../products/service/store-context';
 import { UpdateCartItem } from '../../cart/model/update-cart-request';
-import { CartResponse } from '../../cart/model/cart-response';
+import { CartItemResponse, CartResponse } from '../../cart/model/cart-response';
+import { LocalDateTime } from '@js-joda/core';
 
 export interface OrderRequest {
   slotId: string;
@@ -18,10 +19,41 @@ export interface OrderRequest {
   phoneNumber?: string;
 }
 
-export interface OrderResponse {
+export interface OrderCreatedResponse {
   orderId: string;
   paymentId: string;
   paymentApprovalUrl: string;
+}
+
+export interface OrderStatusDto {
+  code: string;
+  label: string;
+}
+
+export interface OrderResponse {
+  orderId: string;
+  userId: string;
+  storeId: string;
+  originalTotal: number;
+  finalTotal: number;
+  totalDiscount: number;
+
+  items: (Omit<CartItemResponse, 'itemId'> & { orderItemId: string })[];
+
+  deliveryAddress: string;
+  billingAddress: string;
+
+  slotId: string;
+
+  deliveryFee: string;
+
+  status: OrderStatusDto;
+
+  paymentId: string;
+
+  paymentApprovalLink: string;
+
+  createdAt: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -38,13 +70,24 @@ export class OrderApi {
     return storeId;
   }
 
-  placeOrder(idemKey: string, request: Omit<OrderRequest, 'storeId'>): Observable<OrderResponse> {
+  placeOrder(
+    idemKey: string,
+    request: Omit<OrderRequest, 'storeId'>,
+  ): Observable<OrderCreatedResponse> {
     let headers = new HttpHeaders({ 'Idempotency-Key': idemKey });
-    const response = this.http.post<OrderResponse>(
+    const response = this.http.post<OrderCreatedResponse>(
       `${environment.orderApiUrl}/api/orders`,
       { ...request, storeId: this.getStoreId() },
       { headers },
     );
+    return response;
+  }
+
+  getOrder(token: string): Observable<OrderResponse> {
+    const params = new HttpParams().set('paymentOrderId', token);
+    const response = this.http.get<OrderResponse>(`${environment.orderApiUrl}/api/orders`, {
+      params,
+    });
     return response;
   }
 

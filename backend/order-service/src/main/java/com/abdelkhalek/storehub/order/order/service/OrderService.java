@@ -3,6 +3,8 @@ package com.abdelkhalek.storehub.order.order.service;
 import com.abdelkhalek.storehub.order.order.dto.OrderCreatedResponse;
 import com.abdelkhalek.storehub.order.order.dto.OrderDto;
 import com.abdelkhalek.storehub.order.order.dto.OrderRequest;
+import com.abdelkhalek.storehub.order.order.exceptions.OrderNotFoundException;
+import com.abdelkhalek.storehub.order.order.exceptions.UnauthorizedAccessException;
 import com.abdelkhalek.storehub.order.order.exceptions.UnavailableException;
 import com.abdelkhalek.storehub.order.order.mapper.OrderMapper;
 import com.abdelkhalek.storehub.order.order.models.Order;
@@ -51,5 +53,24 @@ public class OrderService {
 
     public Mono<OrderDto> getOrder(UUID orderId) {
         return orderRepository.findById(orderId).map(orderMapper::toOrderDto);
+    }
+
+    public Mono<OrderDto> getOrderByToken(String paymentOrderId) {
+        log.debug("paymentOrderId from service: {}", paymentOrderId);
+        return orderRepository.findByPaymentOrderId(paymentOrderId)
+                .switchIfEmpty(Mono.error(new OrderNotFoundException("Order with payment order " +
+                        "id "+ paymentOrderId+ "is not found")))
+                .flatMap(order -> userService.getCurrentUser()
+                        .flatMap(user -> {
+                            log.debug("user: {}", user);
+                            log.debug("order: {}", order);
+                            if (user.getId().equals(order.getUserId())) {
+                                log.debug("returning order: {}", order);
+                                return Mono.just(orderMapper.toOrderDto(order));
+                            }
+                            return Mono.error(new UnauthorizedAccessException(
+                                    "User " + user.getId() + " is not authorized to see order " + order.getId()
+                                            + " with user id " + order.getUserId()));
+                        }));
     }
 }

@@ -82,6 +82,7 @@ export const routes: Routes = [
 
           {
             path: 'track-order',
+            canActivate: [authGuard],
             loadComponent: () => import('./track-order/track-order'),
           },
         ],

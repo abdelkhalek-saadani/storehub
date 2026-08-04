@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input, Input, OnInit } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 
 @Component({
@@ -9,10 +9,14 @@ import { MatIcon } from '@angular/material/icon';
       <span class="text-base font-semibold">Delivery Address</span>
       <div class="text-primary text-[12px] flex items-center gap-1">
         <mat-icon>location_on</mat-icon>
-        <span class="font-medium">some random location</span>
+        <span class="font-medium">{{ deliveryAddress() }}</span>
       </div>
     </div>
   `,
   styles: ``,
 })
-export class LocationSummary {}
+export class LocationSummary implements OnInit {
+  deliveryAddress = input<string | null>();
+
+  ngOnInit() {}
+}

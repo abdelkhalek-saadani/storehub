@@ -3,6 +3,8 @@ package com.abdelkhalek.storehub.order.common.exception;
 import com.abdelkhalek.storehub.order.cart.exception.CartItemNotFoundException;
 import com.abdelkhalek.storehub.order.cart.exception.CatalogServiceException;
 import com.abdelkhalek.storehub.order.cart.exception.ProductNotFoundException;
+import com.abdelkhalek.storehub.order.order.exceptions.OrderNotFoundException;
+import com.abdelkhalek.storehub.order.order.exceptions.UnauthorizedAccessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,6 +58,19 @@ public class GlobalExceptionHandler {
         log.error("Unhandled exception", ex);
         return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(Map.of("message", ex.getMessage())));
+    }
+
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public Mono<ResponseEntity<Map<String, String>>> handleUnauthorizedAccess(UnauthorizedAccessException ex) {
+        log.error("Unauthorized access {}", ex.getMessage());
+        return Mono.just(ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", ex.getMessage())));
+    }
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    public Mono<ResponseEntity<Map<String, String>>> handleOrderNotFound(OrderNotFoundException ex) {
+        log.error("Order Not found {}", ex.getMessage());
+        return Mono.just(ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message",
+                ex.getMessage())));
     }
 
     @ExceptionHandler(CartItemNotFoundException.class)

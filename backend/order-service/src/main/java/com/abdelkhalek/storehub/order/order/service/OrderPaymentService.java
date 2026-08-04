@@ -24,6 +24,7 @@ public class OrderPaymentService {
                 .flatMap(paymentResponse -> {
                     order.setPaymentId(paymentResponse.paymentId());
                     order.setPaymentApprovalLink(paymentResponse.approvalUrl());
+                    order.setPaymentOrderId(paymentResponse.paymentOrderId());
                     return orderRepository.save(order);
                 })
                 .map(OrderCreatedResponse::from)

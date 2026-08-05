@@ -12,6 +12,7 @@ public enum OrderStatus {
     PAYMENT_AUTHORIZED("Paid"),
     PAYMENT_CAPTURED("Paid"),
     PAYMENT_FAILED("Payment failed"),
+    VOID_REQUESTED("Cancel Request Sent"), //When a void request is sent to payment svc
     PAYMENT_VOIDED("Cancelled"),
     PAYMENT_REFUNDED("Refunded"),
     SHIPPED("Shipped"),

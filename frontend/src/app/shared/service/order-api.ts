@@ -6,6 +6,7 @@ import { StoreContext } from '../../products/service/store-context';
 import { UpdateCartItem } from '../../cart/model/update-cart-request';
 import { CartItemResponse, CartResponse } from '../../cart/model/cart-response';
 import { LocalDateTime } from '@js-joda/core';
+import { Order } from '../../models/Order';
 
 export interface OrderRequest {
   slotId: string;
@@ -28,6 +29,13 @@ export interface OrderCreatedResponse {
 export interface OrderStatusDto {
   code: string;
   label: string;
+}
+
+export interface OrderCancelResponse {
+  orderId: string;
+  paymentId: string;
+  orderStatus: OrderStatusDto;
+  message: string;
 }
 
 export interface OrderResponse {
@@ -88,6 +96,14 @@ export class OrderApi {
     const response = this.http.get<OrderResponse>(`${environment.orderApiUrl}/api/orders`, {
       params,
     });
+    return response;
+  }
+
+  cancelOrder(id: string): Observable<OrderCancelResponse> {
+    const response = this.http.post<OrderCancelResponse>(
+      `${environment.orderApiUrl}/api/orders/${id}/void`,
+      {},
+    );
     return response;
   }
 

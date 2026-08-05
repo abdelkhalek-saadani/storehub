@@ -3,10 +3,12 @@ package com.abdelkhalek.storehub.order.order.mapper;
 import com.abdelkhalek.storehub.order.cart.entities.CartItemEntity;
 import com.abdelkhalek.storehub.order.order.dto.OrderDto;
 import com.abdelkhalek.storehub.order.order.dto.OrderItemDto;
+import com.abdelkhalek.storehub.order.order.dto.OrderStatusDto;
 import com.abdelkhalek.storehub.order.order.entity.OrderEntity;
 import com.abdelkhalek.storehub.order.order.entity.OrderItemEntity;
 import com.abdelkhalek.storehub.order.order.models.Order;
 import com.abdelkhalek.storehub.order.order.models.OrderItem;
+import com.abdelkhalek.storehub.order.order.models.OrderStatus;
 import com.abdelkhalek.storehub.order.shared.dto.PriceItemResponse;
 import com.abdelkhalek.storehub.order.shared.dto.PricesRequest;
 import com.abdelkhalek.storehub.order.shared.model.AppliedOffer;
@@ -21,6 +23,8 @@ import java.util.List;
 )
 public interface OrderMapper {
     List<OrderItem> fromPriceItemsResponse(List<PriceItemResponse> priceItemsResponse);
+
+    OrderStatusDto toDto(OrderStatus status);
 
     @Mapping(source = "id", target = "orderItemId")
     @Mapping(target = "appliedOfferLabel", source = "appliedOffer", qualifiedByName = "offerLabel")

@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 @Slf4j
 @Service
@@ -36,4 +38,8 @@ public class OrderPaymentService {
         return paymentService.getPaymentApprovalLink(order);
     }
 
+
+    public Mono<PaymentResponse> voidAuthorizedPayment(UUID orderId) {
+        return paymentService.voidAuthorizedPayment(orderId);
+    }
 }

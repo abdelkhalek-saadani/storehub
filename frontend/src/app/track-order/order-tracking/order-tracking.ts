@@ -14,11 +14,16 @@ import { LocalDateTime } from '@js-joda/core';
     <div class="border border-[#F8F7F8] rounded-2xl p-4 flex flex-col gap-4">
       <div class="flex items-center justify-between">
         <div class="flex flex-col gap-1">
-          <span class="text-lg md:text-[22px] font-semibold text-black-900">Order in Progress</span>
-          <span class="text-sm font-medium text-primary">Order {{ orderArriveIn() }}</span>
+          <span class="text-lg md:text-[22px] font-semibold text-black-900"
+            >Order {{ status().label }}</span
+          >
+          @if (!isOrderFailed() && status().code != 'DELIVERED') {
+            <span class="text-sm font-medium text-primary">Order {{ orderArriveIn() }}</span>
+          }
         </div>
         <div
-          class="bg-primary/6 py-1 px-2 md:py-2 md:px-3 flex align-center justify-center font-medium text-sm text-primary border border-primary rounded-3xl"
+          [ngClass]="isOrderFailed() ? 'bg-red-500/6 text-red-500' : 'bg-primary/6 text-primary'"
+          class="py-1 px-2 md:py-2 md:px-3 flex align-center justify-center font-medium text-sm border border-primary rounded-3xl"
         >
           {{ status().label }}
         </div>

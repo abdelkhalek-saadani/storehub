@@ -1,5 +1,6 @@
 package com.abdelkhalek.storehub.order.order;
 
+import com.abdelkhalek.storehub.order.order.dto.OrderCancelResponse;
 import com.abdelkhalek.storehub.order.order.dto.OrderCreatedResponse;
 import com.abdelkhalek.storehub.order.order.dto.OrderDto;
 import com.abdelkhalek.storehub.order.order.dto.OrderRequest;
@@ -26,6 +27,13 @@ public class OrderController {
                                           @RequestBody OrderRequest orderRequest) {
         log.debug("idem key: {}", idempotencyKey);
         return orderService.placeOrderWithOnlinePayment(idempotencyKey,orderRequest);
+    }
+
+    @PostMapping("/{orderId}/void")
+    Mono<OrderCancelResponse> cancelOrder(
+            @PathVariable UUID orderId
+    ){
+        return orderService.cancelOrder(orderId);
     }
 
     @GetMapping("/{orderId}")

@@ -17,6 +17,8 @@ import { CatalogApi } from '@shared/service/catalog-api';
 import { raw } from 'express';
 import { HttpErrorResponse } from '@angular/common/http';
 import { mapHttpError } from './error-mapping';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Toaster } from '../services/Toaster';
 
 export interface Slot {
   startTime: LocalDateTime;
@@ -85,9 +87,16 @@ export interface Slot {
           class=" md:mt-8 p-6 md:p-8 flex flex-col md:flex-row md:justify-between items-center gap-4 border-[#F8F7F8] rounded-2xl bg-white"
         >
           <span class="font-medium text-[14px] md:text-base"
-            >You can can your order before its prepared</span
+            >You can cancel your order before its prepared</span
           >
-          <button matButton="filled" class="danger w-full md:w-auto">Cancel Order</button>
+          <button
+            matButton="filled"
+            class="danger w-full md:w-auto"
+            (click)="cancelOrder()"
+            [disabled]="isCancelling()"
+          >
+            {{ isCancelling() ? 'Cancelling...' : 'Cancel Order' }}
+          </button>
         </div>
       }
     </div>
@@ -213,4 +222,31 @@ export default class TrackOrderPage implements OnInit {
     if (!err) return null;
     return mapHttpError(err);
   });
+
+  isCancelling = signal(false);
+
+  private snackBar = inject(MatSnackBar);
+  private hotToaster = inject(Toaster);
+
+  cancelOrder() {
+    const id = this.orderResult.value().orderId;
+    if (!id || this.isCancelling()) return;
+
+    this.isCancelling.set(true);
+    this.orderApi.cancelOrder(id).subscribe({
+      next: () => {
+        this.isCancelling.set(false);
+        this.snackBar.open('Order cancelled successfully', 'Close', { duration: 3000 });
+        this.orderResult.reload();
+      },
+      error: (err) => {
+        this.isCancelling.set(false);
+        /*this.snackBar.open('Failed to cancel order. Please try again.', 'Close', {
+          duration: 3000,
+        });*/
+        this.hotToaster.error('Failed to cancel order. Please try again.');
+        console.error('Failed to cancel order', err);
+      },
+    });
+  }
 }

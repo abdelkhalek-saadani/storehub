@@ -83,6 +83,8 @@ public class PayPalService {
             throw new PayPalApiException(("PayPal returned an empty response body on " +
                     "/v2/payments/authorizations/%s/void").formatted(authorizationId));
         }
+
+        // status from the void endpoint always set to VOIDED, see https://developer.paypal.com/api/payments/v2/authorizations-void
         return response.status();
 
 

@@ -12,6 +12,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
@@ -22,6 +23,13 @@ import java.util.stream.Collectors;
 @Slf4j
 public class GlobalExceptionHandler {
 
+
+    @ExceptionHandler(WebClientResponseException.class)
+    public ResponseEntity<?> handleUpstreamError(WebClientResponseException ex) {
+        log.error("Handled WebClientResponseException {}", ex.getMessage());
+        return ResponseEntity.status(ex.getStatusCode())
+                .body(ex.getResponseBodyAsString());
+    }
 
     @ExceptionHandler(ProductNotFoundException.class)
     public Mono<ResponseEntity<Map<String, String>>> handleResponseStatus(ProductNotFoundException ex) {

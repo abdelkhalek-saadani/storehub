@@ -19,7 +19,7 @@ import { CartStore } from '../../../cart/cart-store';
       <div class="font-semibold text-lg">Review Order</div>
 
       <mat-expansion-panel
-        [expanded]="true"
+        [expanded]="false"
         (opened)="isOpen.set(true)"
         (closed)="isOpen.set(false)"
         class="p-3 bg-black"

@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @Service
 @Slf4j
 public class PaymentServiceImpl implements PaymentService {
@@ -34,5 +36,18 @@ public class PaymentServiceImpl implements PaymentService {
                     log.debug("{}", e.getMessage());
                     return Mono.empty();
                 });
+    }
+
+    @Override
+    public Mono<PaymentResponse> voidAuthorizedPayment(UUID orderId) {
+        return paymentWebClient.post()
+                .uri(ub -> ub.path("/api/payments/paypal/{orderId}/void").build(orderId))
+                .retrieve()
+                .bodyToMono(PaymentResponse.class)
+                .onErrorResume(e -> {
+                    log.warn("Error sending void request for order {}", orderId);
+                    return Mono.error(e);
+                });
+
     }
 }

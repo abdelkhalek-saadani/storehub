@@ -1,4 +1,13 @@
-import { Component, computed, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  OnInit,
+  Signal,
+  signal,
+} from '@angular/core';
 import { OrderTracking } from './order-tracking/order-tracking';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -10,7 +19,7 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReviewOrder } from '@shared/components/review-order/review-order';
 import { ActivatedRoute } from '@angular/router';
-import { OrderApi } from '@shared/service/order-api';
+import { OrderApi, OrderStatusDto } from '@shared/service/order-api';
 
 import { Duration, LocalDateTime } from '@js-joda/core';
 import { CatalogApi } from '@shared/service/catalog-api';
@@ -19,6 +28,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { mapHttpError } from './error-mapping';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Toaster } from '../services/Toaster';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 export interface Slot {
   startTime: LocalDateTime;
@@ -37,6 +47,7 @@ export interface Slot {
     OrderSummary,
     InvoiceDownload,
     MatIconButton,
+    MatProgressSpinner,
   ],
   host: {
     class: 'min-h-screen flex flex-col px-4 pb-10 bg-[#FEFCFE] ',
@@ -54,11 +65,15 @@ export interface Slot {
         {{ orderErrorMessage() }}
       } @else {
         @if (isMobile()) {
-          <app-order-tracking
-            [status]="status()"
-            [createdAt]="createdAt()"
-            [orderArriveIn]="orderArriveIn()"
-          />
+          @if (status(); as s) {
+            <app-order-tracking
+              [status]="s"
+              [createdAt]="createdAt()"
+              [orderArriveIn]="orderArriveIn()"
+            />
+          } @else {
+            <mat-spinner></mat-spinner>
+          }
           <app-payment-summary />
           <app-location-summary [deliveryAddress]="deliveryAddress()" />
           <app-order-summary [orderNumber]="orderNumber()" [itemsTotal]="itemsTotal()" />
@@ -67,11 +82,15 @@ export interface Slot {
         } @else {
           <div class="flex gap-5">
             <div class="flex flex-col gap-6 w-2/3">
-              <app-order-tracking
-                [status]="status()"
-                [createdAt]="createdAt()"
-                [orderArriveIn]="orderArriveIn()"
-              />
+              @if (status(); as s) {
+                <app-order-tracking
+                  [status]="s"
+                  [createdAt]="createdAt()"
+                  [orderArriveIn]="orderArriveIn()"
+                />
+              } @else {
+                <mat-spinner></mat-spinner>
+              }
               <app-review-order />
             </div>
             <div class="flex flex-col gap-4 w-1/3">
@@ -134,8 +153,6 @@ export default class TrackOrderPage implements OnInit {
     return this.orderResult.value().items;
   });
 
-  status = computed(() => this.orderResult.value().status);
-
   createdAt = computed(() => {
     const caString = this.orderResult.value().createdAt;
     if (!caString) {
@@ -186,6 +203,16 @@ export default class TrackOrderPage implements OnInit {
     return order ? order.orderId : "Can't get order number";
   });
 
+  trackingResult = rxResource({
+    params: () => {
+      const id = this.orderId();
+      return id ? { orderId: id } : undefined;
+    },
+    stream: ({ params }) => this.orderApi.trackOrderStatus(params.orderId),
+  });
+
+  status: Signal<OrderStatusDto | null> = computed(() => this.trackingResult.value() ?? null);
+
   orderResult = rxResource({
     params: () => {
       const t = this.token();
@@ -210,6 +237,8 @@ export default class TrackOrderPage implements OnInit {
       createdAt: '',
     },
   });
+
+  orderId = computed(() => this.orderResult.value().orderId);
 
   ngOnInit() {
     this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((paramMap) => {

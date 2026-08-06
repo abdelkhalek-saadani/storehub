@@ -14,9 +14,9 @@ import { LocalDateTime } from '@js-joda/core';
     <div class="border border-[#F8F7F8] rounded-2xl p-4 flex flex-col gap-4">
       <div class="flex items-center justify-between">
         <div class="flex flex-col gap-1">
-          <span class="text-lg md:text-[22px] font-semibold text-black-900"
-            >Order {{ status().label }}</span
-          >
+          <span class="text-lg md:text-[22px] font-semibold text-black-900">{{
+            status().label
+          }}</span>
           @if (!isOrderFailed() && status().code != 'DELIVERED') {
             <span class="text-sm font-medium text-primary">Order {{ orderArriveIn() }}</span>
           }
@@ -43,7 +43,7 @@ import { LocalDateTime } from '@js-joda/core';
             </div>
           </div>
         </div>
-        <span class="text-base md:text-xl font-semibold pb-1">Order is {{ status().label }}</span>
+        <span class="text-base md:text-xl font-semibold pb-1">{{ status().label }}</span>
         <span class="text-sm font-normal text-[#807681] pb-6">
           {{ createdAt() | date: 'MMM d, y, h:mm a' }}</span
         >
@@ -127,26 +127,33 @@ export class OrderTracking {
   createdAt = input.required<Date>();
   orderArriveIn = input.required();
 
-  isOrderFailed = computed(
-    () =>
-      this.status().code == 'PAYMENT_FAILED' ||
-      this.status().code == 'PAYMENT_VOIDED' ||
-      this.status().code == 'PAYMENT_REFUNDED',
-  );
+  isOrderFailed = computed(() => {
+    const s = this.status();
+    return (
+      !s || s.code == 'PAYMENT_FAILED' || s.code == 'PAYMENT_VOIDED' || s.code == 'PAYMENT_REFUNDED'
+    );
+  });
 
-  isFirstStepChecked = computed(
-    () =>
-      this.status().code == 'PAYMENT_AUTHORIZED' ||
-      this.status().code == 'PAYMENT_CAPTURED' ||
-      this.status().code == 'SHIPPED' ||
-      this.status().code == 'DELIVERED',
-  );
+  isFirstStepChecked = computed(() => {
+    const s = this.status();
+    return (
+      !s ||
+      s.code == 'PAYMENT_AUTHORIZED' ||
+      s.code == 'PAYMENT_CAPTURED' ||
+      s.code == 'SHIPPED' ||
+      s.code == 'DELIVERED'
+    );
+  });
 
-  isSecondStepChecked = computed(
-    () => this.status().code == 'SHIPPED' || this.isThirdStepChecked(),
-  );
+  isSecondStepChecked = computed(() => {
+    const s = this.status();
+    return !s || s.code == 'SHIPPED' || this.isThirdStepChecked();
+  });
 
-  isThirdStepChecked = computed(() => this.status().code == 'DELIVERED');
+  isThirdStepChecked = computed(() => {
+    const s = this.status();
+    return !s || s.code == 'DELIVERED';
+  });
 
   constructor(bpo: BreakpointObserver) {
     bpo

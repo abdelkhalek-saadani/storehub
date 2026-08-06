@@ -1,12 +1,15 @@
 package com.abdelkhalek.storehub.order.order;
 
-import com.abdelkhalek.storehub.order.order.dto.OrderCancelResponse;
-import com.abdelkhalek.storehub.order.order.dto.OrderCreatedResponse;
-import com.abdelkhalek.storehub.order.order.dto.OrderDto;
-import com.abdelkhalek.storehub.order.order.dto.OrderRequest;
+import com.abdelkhalek.storehub.order.order.dto.*;
+import com.abdelkhalek.storehub.order.order.mapper.OrderMapper;
 import com.abdelkhalek.storehub.order.order.service.OrderService;
+import com.abdelkhalek.storehub.order.order.service.OrderStatusService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
@@ -14,25 +17,36 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequestMapping("api/orders")
+@RequiredArgsConstructor
 public class OrderController {
 
     private final OrderService orderService;
+    private final OrderStatusService orderStatusService;
+    private final OrderMapper orderMapper;
 
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
-    }
 
     @PostMapping
     Mono<OrderCreatedResponse> placeOrder(@RequestHeader("Idempotency-Key") UUID idempotencyKey,
                                           @RequestBody OrderRequest orderRequest) {
         log.debug("idem key: {}", idempotencyKey);
-        return orderService.placeOrderWithOnlinePayment(idempotencyKey,orderRequest);
+        return orderService.placeOrderWithOnlinePayment(idempotencyKey, orderRequest);
+    }
+
+    @GetMapping(value = "/{orderId}/track", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<ServerSentEvent<OrderStatusDto>> track(@PathVariable UUID orderId) {
+        log.debug("orderId: {}", orderId);
+        log.debug("tracking orderId: {}", orderId);
+        Mono<ServerSentEvent<OrderStatusDto>> current = orderStatusService.getById(orderId)
+                .map(status -> ServerSentEvent.builder(orderMapper.toDto(status)).build());
+        Flux<ServerSentEvent<OrderStatusDto>>  live = orderStatusService.orderStatusStream(orderId)
+                .map(status -> ServerSentEvent.builder(orderMapper.toDto(status)).build());
+        return Flux.concat(current, live);
     }
 
     @PostMapping("/{orderId}/void")
     Mono<OrderCancelResponse> cancelOrder(
             @PathVariable UUID orderId
-    ){
+    ) {
         return orderService.cancelOrder(orderId);
     }
 

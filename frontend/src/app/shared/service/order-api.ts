@@ -78,6 +78,15 @@ export class OrderApi {
     return storeId;
   }
 
+  trackOrderStatus(orderId: string): Observable<OrderStatusDto> {
+    return new Observable((subscriber) => {
+      const es = new EventSource(`${environment.orderApiUrl}/api/orders/${orderId}/track`);
+      es.onmessage = (event) => subscriber.next(JSON.parse(event.data));
+      es.onerror = (err) => subscriber.error(err);
+      return () => es.close();
+    });
+  }
+
   placeOrder(
     idemKey: string,
     request: Omit<OrderRequest, 'storeId'>,

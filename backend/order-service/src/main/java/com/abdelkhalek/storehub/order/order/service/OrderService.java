@@ -27,6 +27,7 @@ public class OrderService {
     private final OrderPaymentService orderPaymentService;
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
+    private final OrderStatusService orderStatusService;
 
     public Mono<Order> placeOrder(OrderRequest orderRequest, UUID idempotencyKey) {
         return orderCreationService.checkAvailability(orderRequest.storeId(), orderRequest.cartId(), orderRequest.slotId())
@@ -97,13 +98,11 @@ public class OrderService {
                 .flatMap((order -> {
                     Mono<PaymentResponse> prMono =
                             orderPaymentService.voidAuthorizedPayment(orderId);
-                    return prMono.flatMap((pr) -> {
-                        order.setStatus(OrderStatus.VOID_REQUESTED);
-                        return orderRepository.save(order)
-                                .map((order1 -> new OrderCancelResponse(order1.getId(),
-                                        order1.getPaymentId(),
-                                        orderMapper.toDto(order1.getStatus()), pr.message())));
-                    });
+                    return prMono.flatMap((pr) ->
+                            orderStatusService.updateStatus(order, OrderStatus.VOID_REQUESTED)
+                                    .map((order1 -> new OrderCancelResponse(order1.getId(),
+                                            order1.getPaymentId(),
+                                            orderMapper.toDto(order1.getStatus()), pr.message()))));
                 }));
     }
 }

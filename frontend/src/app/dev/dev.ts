@@ -19,7 +19,7 @@ import {
   MatTimepickerInput,
   MatTimepickerToggle,
 } from '@angular/material/timepicker';
-import { OffersSection } from '../products/offers-section';
+import { OffersSection } from '../products/product-explorer/offers-section/offers-section';
 import { MatChipsModule } from '@angular/material/chips';
 import { Divider } from '../components/atoms/divider/divider';
 import { MatTabsModule } from '@angular/material/tabs';

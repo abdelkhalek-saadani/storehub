@@ -27,12 +27,14 @@ import {
 } from 'keycloak-angular';
 import { keycloakProvider } from '@core/auth/keycloak-config';
 import { bearerInterceptorProvider } from './config/http/bearer-interceptor-config';
+import { guestIdInterceptor } from './config/http/guest-id-interceptor';
+import { CartMergeService } from '@shared/service/cart-merge.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     bearerInterceptorProvider,
     keycloakProvider,
-    provideHttpClient(withInterceptors([includeBearerTokenInterceptor])),
+    provideHttpClient(withInterceptors([includeBearerTokenInterceptor, guestIdInterceptor])),
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes, withComponentInputBinding(), withViewTransitions()),
@@ -58,6 +60,8 @@ export const appConfig: ApplicationConfig = {
       icons.forEach(([name, path]) => {
         registry.addSvgIcon(name, sanitizer.bypassSecurityTrustResourceUrl(path));
       });
+
+      inject(CartMergeService);
     }),
     provideNativeDateAdapter(),
   ],

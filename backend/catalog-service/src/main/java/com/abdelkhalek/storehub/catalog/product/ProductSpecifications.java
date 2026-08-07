@@ -1,9 +1,12 @@
 package com.abdelkhalek.storehub.catalog.product;
 
+import com.abdelkhalek.storehub.catalog.inventory.entity.StockEntity;
 import com.abdelkhalek.storehub.catalog.product.entity.ProductEntity;
 import com.abdelkhalek.storehub.catalog.product.entity.SaleEvent;
 import com.abdelkhalek.storehub.catalog.product.entity.SubCategory;
 import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
@@ -50,6 +53,15 @@ public class ProductSpecifications {
                 predicates.add(cb.lessThanOrEqualTo(root.get("unitPrice"), maxPrice));
             }
 
+            // To check that the product has a stock row
+            if (query != null) {
+                Subquery<Integer> stockSubquery = query.subquery(Integer.class);
+                Root<StockEntity> stockRoot = stockSubquery.from(StockEntity.class);
+                stockSubquery.select(cb.literal(1))
+                        .where(cb.equal(stockRoot.get("productId"), root.get("id")));
+
+                predicates.add(cb.exists(stockSubquery));
+            }
 
             return cb.and(predicates.toArray(new Predicate[0]));
         };

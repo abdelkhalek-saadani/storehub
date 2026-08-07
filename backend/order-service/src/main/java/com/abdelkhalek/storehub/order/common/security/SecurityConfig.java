@@ -46,7 +46,7 @@ public class SecurityConfig {
                         .pathMatchers("/api/cart/quote/**").permitAll()
                         .pathMatchers("/internal/**").hasRole("SERVICE") // service-to-service
                         .pathMatchers("/api/orders/**").hasRole("CUSTOMER")
-                        .pathMatchers("/api/cart/**").hasRole("CUSTOMER")
+                        .pathMatchers("/api/cart/**").permitAll()
                         .pathMatchers("/api/stores/*/employees/**").hasRole(MembershipRole.STORE_OWNER.name())
                         .anyExchange().authenticated()
                 )
@@ -92,7 +92,8 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(allowedOrigins);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Idempotency-Key"));
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Idempotency-Key", "X-Guest-Id"));
+        config.setExposedHeaders(List.of("X-Guest-Id"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/api/**", config);

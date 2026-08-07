@@ -132,6 +132,12 @@ export class OrderApi {
     return response;
   }
 
+  mergeCart() {
+    let params = new HttpParams().set('storeId', this.getStoreId());
+    const response = this.http.get<CartResponse>(`${this.cartUrl}/merge`, { params });
+    return response;
+  }
+
   clearCart(): Observable<CartResponse> {
     let params = new HttpParams().set('storeId', this.getStoreId());
     const response = this.http.delete<CartResponse>(this.cartUrl, { params });

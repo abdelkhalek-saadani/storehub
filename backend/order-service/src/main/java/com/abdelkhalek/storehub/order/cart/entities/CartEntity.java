@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.math.BigDecimal;
@@ -25,6 +27,8 @@ public class CartEntity {
 
     UUID userId;
 
+    UUID guestId;
+
     UUID storeId;
 
 
@@ -35,7 +39,8 @@ public class CartEntity {
     @OneToMany(mappedBy = "cart_id")
     List<CartItemEntity> items;
 
-
+    @CreatedDate
     LocalDateTime createdAt;
+    @LastModifiedDate
     LocalDateTime updatedAt;
 }

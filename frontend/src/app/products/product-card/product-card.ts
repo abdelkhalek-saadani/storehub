@@ -1,7 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, computed, inject, Input } from '@angular/core';
 import { MatCard, MatCardContent, MatCardImage } from '@angular/material/card';
 import { AddToCartButton } from '@components/atoms/add-to-cart-button/add-to-cart-button';
 import { Product } from '../models/product';
+import { CartStore } from '../../cart/cart-store';
+import { UpdateNature } from '@components/qty-selector/qty-selector';
 
 @Component({
   selector: 'app-product-card',
@@ -9,7 +11,11 @@ import { Product } from '../models/product';
   host: { class: 'block min-w-40 md:min-w-60 max-w-40 md:max-w-60' },
   template: `
     <mat-card class="relative rounded-2xl overflow-hidden h-full">
-      <app-add-to-cart-button class="!absolute top-3 right-3 z-10" [quantity]="0" />
+      <app-add-to-cart-button
+        class="!absolute top-3 right-3 z-10"
+        [quantity]="quantity()"
+        (qtyUpdated)="onQuantityUpdate($event)"
+      />
 
       <img
         mat-card-image
@@ -38,4 +44,16 @@ import { Product } from '../models/product';
 })
 export class ProductCard {
   @Input({ required: true }) product!: Product;
+  cartStore = inject(CartStore);
+
+  quantity = computed(() => {
+    const i = this.cartStore.items().find((item) => item.productId === this.product.id);
+    return i ? i.quantity : 0;
+  });
+
+  onQuantityUpdate(event: UpdateNature) {
+    event === 'increment'
+      ? this.cartStore.upsertItems([{ productId: this.product.id, quantity: this.quantity() + 1 }])
+      : this.cartStore.upsertItems([{ productId: this.product.id, quantity: this.quantity() - 1 }]);
+  }
 }

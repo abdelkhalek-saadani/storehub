@@ -15,6 +15,6 @@ export const bearerInterceptorProvider = {
   useValue: [apiBearerCondition],
 };
 
-function escapeRegex(str: string): string {
+export function escapeRegex(str: string): string {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

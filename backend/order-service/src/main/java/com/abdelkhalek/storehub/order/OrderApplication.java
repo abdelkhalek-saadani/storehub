@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.data.r2dbc.config.EnableR2dbcAuditing;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
@@ -29,6 +30,7 @@ import java.util.UUID;
         }
 )
 @Slf4j
+@EnableR2dbcAuditing
 @SpringBootApplication
 public class OrderApplication {
 

@@ -1,8 +1,6 @@
 import { Component, signal } from '@angular/core';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { OffersSection } from '../offers-section';
-import { CategoryBar } from '../../components/molecules/category-bar/category-bar';
+import { OffersSection } from './offers-section/offers-section';
+import { CategoryBar } from '@components/molecules/category-bar/category-bar';
 import { BestSellerSection } from './best-seller-section/best-seller-section';
 import { ProductsSection } from './products-section/products-section';
 

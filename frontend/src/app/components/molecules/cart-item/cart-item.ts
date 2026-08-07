@@ -46,7 +46,12 @@ import { DecimalPipe } from '@angular/common';
               <mat-icon>remove</mat-icon>
             </button>
             <div class="text-sm font-medium px-1">{{ item().quantity }}</div>
-            <button matIconButton class="sidecart-button" (click)="onAddItem(item().productId)" )>
+            <button
+              matIconButton
+              class="sidecart-button"
+              (click)="onIncrementQty(item().productId)"
+              )
+            >
               <mat-icon>add</mat-icon>
             </button>
           </div>
@@ -64,18 +69,18 @@ export class CartItem {
   originalLineTotal = computed(() => this.item().originalLineTotal.toPrecision(2));
   finalLineTotal = computed(() => this.item().finalLineTotal.toPrecision(2));
 
-  onAddItem(productId: string): void {
+  onIncrementQty(productId: string): void {
     const current = this.store.items().find((i) => i.productId === productId);
     const newQty = (current?.quantity ?? 0) + 1;
     this.store.upsertItems([{ productId, quantity: newQty }]);
   }
 
-  onRemoveItem(productId: string): void {
-    this.store.upsertItems([{ productId, quantity: 0 }]);
-  }
-
   onDecrementQty(productId: string): void {
     this.onQuantityChange(productId, this.item().quantity - 1);
+  }
+
+  onRemoveItem(productId: string): void {
+    this.store.upsertItems([{ productId, quantity: 0 }]);
   }
 
   onQuantityChange(productId: string, quantity: number): void {

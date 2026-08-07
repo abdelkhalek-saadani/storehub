@@ -44,9 +44,11 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,
                                 "/api/delivery-slots/reserve",
                                 "/api/delivery-slots/reservations/**").hasRole("SERVICE")
-                        .requestMatchers(HttpMethod.PATCH,"/api/delivery-slots/*/override").hasRole("STORE_OWNER")
+                        .requestMatchers(HttpMethod.PATCH, "/api/delivery-slots/*/override")
+                        .hasRole("STORE_OWNER")
                         .requestMatchers(HttpMethod.GET, "api/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/inventory/check-availability").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/inventory/check-availability")
+                        .permitAll()
                         .requestMatchers("/internal/**").hasRole("SERVICE")
                         .anyRequest().authenticated()
                 )

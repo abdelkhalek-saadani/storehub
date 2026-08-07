@@ -3,6 +3,7 @@ package com.abdelkhalek.storehub.order.cart.service;
 import com.abdelkhalek.storehub.order.cart.CartMapper;
 import com.abdelkhalek.storehub.order.cart.domain.Cart;
 import com.abdelkhalek.storehub.order.cart.domain.CartItem;
+import com.abdelkhalek.storehub.order.cart.domain.CartOwner;
 import com.abdelkhalek.storehub.order.cart.dtos.AddItemRequest;
 import com.abdelkhalek.storehub.order.cart.dtos.CartResponse;
 import com.abdelkhalek.storehub.order.cart.dtos.UpdateCartRequest;
@@ -30,14 +31,22 @@ public class CartService {
     private final PricesService pricesService;
 
 
-    public Mono<CartResponse> getCart(UUID userId, UUID storeId) {
-        return cartRepository.findByUserIdAndStoreId(userId, storeId)
-                .switchIfEmpty(createEmptyCart(userId, storeId))
+    public Mono<CartResponse> getCart(CartOwner owner, UUID storeId) {
+        Mono<CartEntity> cart = owner.isGuest()
+                ? cartRepository.findByGuestIdAndStoreId(owner.guestId(), storeId)
+                : cartRepository.findByUserIdAndStoreId(owner.userId(), storeId);
+
+        return cart.switchIfEmpty(createEmptyCart(owner, storeId))
                 .map(cartMapper::fromEntityToResponse);
     }
 
-    public Mono<CartResponse> upsertItems(UUID userId, UpdateCartRequest request) {
-        return getOrCreateCart(userId, request.storeId())
+    private Mono<CartResponse> getCart(UUID userId, UUID storeId) {
+        return getCart(CartOwner.ofUser(userId), storeId);
+    }
+
+    public Mono<CartResponse> upsertItems(CartOwner owner, UpdateCartRequest request) {
+        return getOrCreateCart(owner, request.storeId())
+                .doOnNext((c) -> log.debug("the looked up or created cart {}", c))
                 .map(cartMapper::fromEntityToDomain)
                 .map(cart -> {
                     List<CartItem> items =
@@ -50,8 +59,8 @@ public class CartService {
     }
 
 
-    public Mono<CartResponse> upsertItem(UUID userId, AddItemRequest request) {
-        return getOrCreateCart(userId, request.storeId())
+    public Mono<CartResponse> upsertItem(CartOwner owner, AddItemRequest request) {
+        return getOrCreateCart(owner, request.storeId())
                 .map(cartMapper::fromEntityToDomain)
                 .map(cart -> cart.upsert(new CartItem(request.productId(), request.quantity())))
                 .flatMap(this::repriceAndSave)
@@ -111,22 +120,33 @@ public class CartService {
     }
 
 
-    private Mono<CartEntity> getOrCreateCart(UUID userId, UUID storeId) {
-        return cartRepository.findByUserIdAndStoreId(userId, storeId)
-                .switchIfEmpty(createEmptyCart(userId, storeId));
+    private Mono<CartEntity> getOrCreateCart(CartOwner owner, UUID storeId) {
+        Mono<CartEntity> cartMono = owner.isGuest() ?
+                cartRepository.findByGuestIdAndStoreId(owner.guestId(), storeId) :
+                cartRepository.findByUserIdAndStoreId(owner.userId(), storeId);
+
+        return cartMono.switchIfEmpty(createEmptyCart(owner, storeId));
     }
 
-    private Mono<CartEntity> createEmptyCart(UUID userId, UUID storeId) {
+    private Mono<CartEntity> getOrCreateCart(UUID userId, UUID storeId) {
+        return getOrCreateCart(CartOwner.ofUser(userId), storeId);
+    }
+
+    private Mono<CartEntity> createEmptyCart(CartOwner owner, UUID storeId) {
         CartEntity cart = new CartEntity();
-        cart.setUserId(userId);
+        if (owner.isGuest()) {
+            cart.setGuestId(owner.guestId());
+        } else {
+            cart.setUserId(owner.userId());
+        }
         cart.setStoreId(storeId);
         cart.setItems(List.of());
         return cartRepository.save(cart);
     }
 
 
-    public Mono<CartResponse> clearCart(UUID userId, UUID storeId) {
-        return getOrCreateCart(userId, storeId)
+    public Mono<CartResponse> clearCart(CartOwner owner, UUID storeId) {
+        return getOrCreateCart(owner, storeId)
                 .map(this::clearCart)
                 .doOnNext(cartEntity -> log.debug("cart entity after clearing: {}", cartEntity))
                 .flatMap(cartRepository::save)
@@ -139,5 +159,25 @@ public class CartService {
         cart.setFinalTotal(BigDecimal.ZERO);
         cart.setTotalDiscount(BigDecimal.ZERO);
         return cart;
+    }
+
+    public Mono<CartResponse> mergeGuestCart(UUID userId, UUID guestId, UUID storeId) {
+        if (guestId == null) {
+            return getCart(userId, storeId);
+        }
+
+        return cartRepository.findByGuestIdAndStoreId(guestId, storeId)
+                .flatMap(guestCartEntity -> {
+                    Cart guestCart = cartMapper.fromEntityToDomain(guestCartEntity);
+
+                    return getOrCreateCart(userId, storeId)
+                            .map(cartMapper::fromEntityToDomain)
+                            .map(userCart -> userCart.merge(guestCart.getItems()))
+                            .flatMap(this::repriceAndSave)
+                            .flatMap(saved -> cartRepository.delete(guestCartEntity)
+                                    .thenReturn(saved));
+                })
+                .map(cartMapper::fromEntityToResponse)
+                .switchIfEmpty(getCart(userId, storeId));
     }
 }

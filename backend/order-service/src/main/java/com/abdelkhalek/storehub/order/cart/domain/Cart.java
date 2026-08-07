@@ -19,35 +19,37 @@ public class Cart {
 
     UUID id;
     UUID userId;
+    UUID guestId;
     UUID storeId;
     BigDecimal originalTotal;
     BigDecimal finalTotal;
     BigDecimal totalDiscount;
     List<CartItem> items;
-    LocalDateTime createdAt = LocalDateTime.now();
+    LocalDateTime createdAt;
     LocalDateTime updatedAt;
 
 
     public Cart clear() {
-        return new Cart(this.id, this.userId, this.storeId, BigDecimal.ZERO, BigDecimal.ZERO,
+        return new Cart(this.id, this.userId, this.guestId, this.storeId, BigDecimal.ZERO,
+                BigDecimal.ZERO,
                 BigDecimal.ZERO, List.of(), createdAt,
                 LocalDateTime.now());
     }
 
     public Cart upsert(List<CartItem> items) {
         List<UUID> productIds = items.stream().map(CartItem::getProductId).toList();
-        List<CartItem> updatedItems = this.items.stream()
+        List<CartItem> keptItems = this.items.stream()
                 .filter(it -> !productIds.contains(it.getProductId()))
                 .collect(Collectors.toCollection(ArrayList::new));
 
         items.forEach(item -> {
             if (item.getQuantity() > 0) {
-                updatedItems.add(item);
+                keptItems.add(item);
             }
         });
 
-        return new Cart(id, userId, storeId, originalTotal, finalTotal, totalDiscount,
-                updatedItems, createdAt,
+        return new Cart(id, userId, guestId, storeId, originalTotal, finalTotal, totalDiscount,
+                keptItems, createdAt,
                 LocalDateTime.now());
 
     }
@@ -61,7 +63,7 @@ public class Cart {
             updatedItems.add(item);
         }
 
-        return new Cart(id, userId, storeId, originalTotal, finalTotal, totalDiscount,
+        return new Cart(id, userId, guestId, storeId, originalTotal, finalTotal, totalDiscount,
                 updatedItems, createdAt,
                 LocalDateTime.now());
 
@@ -88,9 +90,25 @@ public class Cart {
             updatedItems.add(updated);
         }
 
-        return new Cart(id, userId, storeId, originalTotal, finalTotal, totalDiscount,
+        return new Cart(id, userId, guestId, storeId, originalTotal, finalTotal, totalDiscount,
                 updatedItems, createdAt,
                 LocalDateTime.now());
     }
 
+    public Cart merge(List<CartItem> guestItems) {
+        List<CartItem> mergedItems = new ArrayList<>(this.items);
+
+        guestItems.forEach(guestItem -> {
+            mergedItems.stream()
+                    .filter(it -> it.getProductId().equals(guestItem.getProductId()))
+                    .findFirst()
+                    .ifPresentOrElse(
+                            existing -> existing.setQuantity(existing.getQuantity() + guestItem.getQuantity()),
+                            () -> mergedItems.add(guestItem)
+                    );
+        });
+
+        return new Cart(id, userId, guestId, storeId, originalTotal, finalTotal, totalDiscount,
+                mergedItems, createdAt, LocalDateTime.now());
+    }
 }

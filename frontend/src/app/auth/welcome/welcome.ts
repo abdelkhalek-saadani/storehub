@@ -6,7 +6,6 @@ import { LogoText } from '@components/atoms/logo-text/logo-text';
 import { Divider } from '@components/atoms/divider/divider';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { StoreContext } from '../../products/service/store-context';
 
 @Component({
   selector: 'app-welcome',

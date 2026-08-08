@@ -1,5 +1,6 @@
 package com.abdelkhalek.storehub.order.order.service;
 
+import com.abdelkhalek.storehub.order.cart.domain.CartOwner;
 import com.abdelkhalek.storehub.order.cart.entities.CartEntity;
 import com.abdelkhalek.storehub.order.cart.service.CartRepository;
 import com.abdelkhalek.storehub.order.order.OrderEventPublisher;
@@ -47,11 +48,11 @@ public class OrderCreationService {
         ).map(t -> t.getT1() && t.getT2());
     }
 
-    public Mono<Order> createOrder(UUID userId, OrderRequest orderRequest,
+    public Mono<Order> createOrder(CartOwner owner, OrderRequest orderRequest,
                                    ResourceRetentionService.RetentionResult retention,
                                    UUID idemKey) {
         return cartRepository.findById(orderRequest.cartId())
-                .map(cartEntity -> assembleOrder(userId, orderRequest, cartEntity, retention,
+                .map(cartEntity -> assembleOrder(owner, orderRequest, cartEntity, retention,
                         idemKey))
                 .flatMap(this::calculateOrderTotals)
                 .flatMap(orderRepository::save)
@@ -59,12 +60,11 @@ public class OrderCreationService {
                 .onErrorResume(e -> retentionService.releaseAll(retention).then(Mono.error(e)));
     }
 
-    private Order assembleOrder(UUID userId, OrderRequest orderRequest, CartEntity cartEntity,
+    private Order assembleOrder(CartOwner owner, OrderRequest orderRequest, CartEntity cartEntity,
                                 ResourceRetentionService.RetentionResult retention,
                                 UUID idemKey) {
         List<OrderItem> items = orderMapper.fromCartItemEntities(cartEntity.getItems());
         Order order = Order.builder()
-                .userId(userId)
                 .items(items)
                 .inventoryRetainIds(retention.inventoryRetainIds())
                 .slotRetainId(retention.slotRetainId())
@@ -75,6 +75,8 @@ public class OrderCreationService {
                 .status(OrderStatus.CREATED)
                 .idempotencyKey(idemKey)
                 .build();
+        if (owner.isGuest()) order.setGuestId(owner.guestId());
+        else order.setUserId(owner.userId());
         log.debug("Initializing order {}", order);
         return order;
     }

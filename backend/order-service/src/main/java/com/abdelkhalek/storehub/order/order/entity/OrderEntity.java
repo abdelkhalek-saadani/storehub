@@ -31,6 +31,7 @@ public class OrderEntity {
     @Id
     UUID id;
     UUID userId;
+    UUID guestId;
     UUID storeId;
     BigDecimal originalTotal;
     BigDecimal finalTotal;

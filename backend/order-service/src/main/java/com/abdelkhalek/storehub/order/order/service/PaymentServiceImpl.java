@@ -23,7 +23,10 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Mono<PaymentResponse> getPaymentApprovalLink(Order order) {
-        PaymentRequest paymentRequest = new PaymentRequest(order.getId(), order.getUserId(),
+        boolean ownerIsGuest = order.getGuestId() != null;
+        PaymentRequest paymentRequest = new PaymentRequest(
+                order.getId(),
+                ownerIsGuest ? order.getGuestId() : order.getUserId(),
                 order.getFinalTotal());
         return paymentWebClient.post()
                 .uri("/api/payments/paypal")

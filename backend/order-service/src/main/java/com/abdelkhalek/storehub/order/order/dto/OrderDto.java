@@ -9,6 +9,7 @@ public record OrderDto
         (
                 UUID orderId,
                 UUID userId,
+                String email,
                 UUID storeId,
                 BigDecimal originalTotal,
                 BigDecimal finalTotal,

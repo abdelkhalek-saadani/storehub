@@ -5,7 +5,7 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { Breakpoints } from '@core/constants/breakpoints';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CatalogApi } from '@shared/service/catalog-api';
-import { OrderApi } from '@shared/service/order-api';
+import { OrderApi, OrderItemResponse } from '@shared/service/order-api';
 import { UUID } from 'node:crypto';
 import { CartItemResponse } from '../../../cart/model/cart-response';
 import { number } from 'zod';
@@ -38,7 +38,7 @@ import { CartStore } from '../../../cart/cart-store';
                   />
                 </div>
               }
-              @if (headerItems().length != items().length) {
+              @if (headerItems().length != orderedItems().length) {
                 <div class="w-16 rounded-2xl h-16 aspect-square flex items-center justify-center">
                   + {{ items().length - headerItems().length }}
                 </div>
@@ -47,7 +47,7 @@ import { CartStore } from '../../../cart/cart-store';
           }
         </mat-expansion-panel-header>
         <div class="flex flex-col gap-4">
-          @for (item of items(); track item.itemId) {
+          @for (item of orderedItems(); track item.itemId) {
             <div
               class="p-3 flex flex-row justify-between items-center bg-white rounded-2xl border-b border-b-[#F0EEF0]"
             >
@@ -87,7 +87,7 @@ import { CartStore } from '../../../cart/cart-store';
 export class ReviewOrder implements OnInit {
   isOpen = signal(false);
 
-  orderItems = input<CartItemResponse[]>();
+  items = input.required<CartItemResponse[] | OrderItemResponse[]>();
 
   isXSMobile = signal(false);
 
@@ -98,12 +98,8 @@ export class ReviewOrder implements OnInit {
       .subscribe((result) => this.isXSMobile.set(result.matches));
   }
 
-  cartStore = inject(CartStore);
-
-  items = computed(() => {
-    let items = this.orderItems();
-    if (!items) items = this.cartStore.items();
-    return [...items].sort((a, b) => a.productId.localeCompare(b.productId));
+  orderedItems = computed(() => {
+    return [...this.items()].sort((a, b) => a.productId.localeCompare(b.productId));
   });
 
   headerItems = computed(() => {

@@ -8,6 +8,7 @@ public record OrderRequest (
         @NotBlank  UUID slotId,
         @NotBlank  UUID storeId,
         @NotBlank  UUID cartId,
+        String email,
         // These fields are optional
         String billingAddress,
         String deliveryAddress,

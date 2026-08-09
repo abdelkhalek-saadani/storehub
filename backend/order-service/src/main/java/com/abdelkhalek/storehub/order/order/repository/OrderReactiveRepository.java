@@ -10,4 +10,7 @@ public interface OrderReactiveRepository extends ReactiveCrudRepository<OrderEnt
     Mono<OrderEntity> findByIdempotencyKey(UUID idempotencyKey);
 
     Mono<OrderEntity> findByPaymentOrderId(String paymentOrderId);
+
+
+    Mono<OrderEntity> findByIdAndEmail(UUID orderId, String email);
 }

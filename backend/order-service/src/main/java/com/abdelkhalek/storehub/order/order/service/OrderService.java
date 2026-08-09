@@ -110,4 +110,11 @@ public class OrderService {
                                             orderMapper.toDto(order1.getStatus()), pr.message()))));
                 }));
     }
+
+    public Mono<OrderDto> getOrderByIdAndEmail(UUID orderId, String email) {
+        return orderRepository.findByIdAndEmail(orderId, email)
+                .switchIfEmpty(Mono.error(new OrderNotFoundException("Order with id " +
+                        orderId + "is not found")))
+                .map((orderMapper::toOrderDto));
+    }
 }

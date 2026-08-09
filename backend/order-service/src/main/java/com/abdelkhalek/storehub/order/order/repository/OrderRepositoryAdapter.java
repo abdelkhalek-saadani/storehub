@@ -50,4 +50,14 @@ public class OrderRepositoryAdapter implements OrderRepository {
                 .map(orderMapper::fromEntity);
     }
 
+    @Override
+    public Mono<Order> findByIdAndEmail(UUID orderId, String email) {
+        log.debug("Getting order with id {} and email {}", orderId, email);
+        return orderReactiveRepository.findByIdAndEmail(orderId, email)
+                .doOnNext((order -> {
+                    log.debug("found this order {}", order);
+                }))
+                .map(orderMapper::fromEntity);
+    }
+
 }

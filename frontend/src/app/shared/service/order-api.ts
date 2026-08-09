@@ -38,6 +38,8 @@ export interface OrderCancelResponse {
   message: string;
 }
 
+export interface OrderItemResponse extends CartItemResponse {}
+
 export interface OrderResponse {
   orderId: string;
   userId: string;
@@ -46,7 +48,7 @@ export interface OrderResponse {
   finalTotal: number;
   totalDiscount: number;
 
-  items: (Omit<CartItemResponse, 'itemId'> & { orderItemId: string })[];
+  items: OrderItemResponse[];
 
   deliveryAddress: string;
   billingAddress: string;
@@ -105,6 +107,16 @@ export class OrderApi {
     const response = this.http.get<OrderResponse>(`${environment.orderApiUrl}/api/orders`, {
       params,
     });
+    return response;
+  }
+
+  getGuestOrder(orderId: string, email: string): Observable<OrderResponse> {
+    const body = { orderId, email };
+    const response = this.http.post<OrderResponse>(
+      `${environment.orderApiUrl}/api/orders/guest`,
+      body,
+      {},
+    );
     return response;
   }
 

@@ -103,7 +103,6 @@ import { OrderConfirmation } from '../checkout/order-confirmation/order-confirma
           <app-checkout-details />
 
           <span class="label">Order Expansion Panel</span>
-          <app-review-order />
 
           <span class="label">Checkout Form</span>
 

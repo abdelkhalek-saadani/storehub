@@ -26,7 +26,7 @@ public interface OrderMapper {
 
     OrderStatusDto toDto(OrderStatus status);
 
-    @Mapping(source = "id", target = "orderItemId")
+    @Mapping(source = "id", target = "itemId")
     @Mapping(target = "appliedOfferLabel", source = "appliedOffer", qualifiedByName = "offerLabel")
     OrderItemDto toOrderItemDto(OrderItem orderItem);
 

@@ -63,4 +63,12 @@ public class OrderController {
         log.debug("paymentOrderId: {}", paymentOrderId);
         return orderService.getOrderByToken(paymentOrderId);
     }
+
+    @PostMapping("/guest")
+    Mono<OrderDto> getGuestOrder(@RequestBody TrackOrderRequest trackOrderRequest) {
+        //Do the same reactive pipeline as the getOrderByToken, just change the check from userId
+        // to email
+        log.debug("track order request: {}", trackOrderRequest);
+        return orderService.getOrderByIdAndEmail(trackOrderRequest.orderId(), trackOrderRequest.email());
+    }
 }

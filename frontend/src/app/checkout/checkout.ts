@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import {
   MatDatepicker,
   MatDatepickerInput,
@@ -20,6 +20,7 @@ import { CheckoutForm } from './checkout-form/checkout-form';
 import { CheckoutDetails } from './checkout-details/checkout-details';
 import { ReviewOrder } from '@shared/components/review-order/review-order';
 import { MatOption, MatSelect } from '@angular/material/select';
+import { CartStore } from '../cart/cart-store';
 
 @Component({
   selector: 'app-checkout',
@@ -60,7 +61,7 @@ import { MatOption, MatSelect } from '@angular/material/select';
 
       <app-checkout-form />
 
-      <app-review-order />
+      <app-review-order [items]="cartItems()" />
     </div>
     <app-checkout-details class="md:w-1/3" />
   `,
@@ -68,6 +69,9 @@ import { MatOption, MatSelect } from '@angular/material/select';
 export default class CheckoutPage {
   value!: Date;
   isMobile = signal(false);
+  cartStore = inject(CartStore);
+
+  cartItems = computed(() => this.cartStore.items());
 
   constructor(bpo: BreakpointObserver) {
     bpo

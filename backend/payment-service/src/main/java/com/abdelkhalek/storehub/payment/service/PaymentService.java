@@ -82,7 +82,7 @@ public class PaymentService {
         }
 
         try {
-            CreatePaypalOrderResponse paypalOrder = payPalService.createOrder(amount);
+            CreatePaypalOrderResponse paypalOrder = payPalService.createOrder(amount,orderId);
 
             PaymentEntity paymentEntity = PaymentEntity.builder()
                     .orderId(orderId)

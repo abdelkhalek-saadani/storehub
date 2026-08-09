@@ -32,6 +32,7 @@ public class OrderEntity {
     UUID id;
     UUID userId;
     UUID guestId;
+    String email;
     UUID storeId;
     BigDecimal originalTotal;
     BigDecimal finalTotal;

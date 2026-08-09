@@ -41,12 +41,10 @@ export const routes: Routes = [
 
   {
     path: 'checkout/return',
-    canActivate: [authGuard],
     loadComponent: () => import('./checkout/return/return'),
   },
   {
     path: 'checkout/cancel',
-    canActivate: [authGuard],
     loadComponent: () => import('./checkout/cancel/cancel'),
   },
   {
@@ -83,6 +81,10 @@ export const routes: Routes = [
             path: 'track-order',
             canActivate: [authGuard],
             loadComponent: () => import('./track-order/track-order'),
+          },
+          {
+            path: 'guest-track-order',
+            loadComponent: () => import('./track-order/guest-track-order'),
           },
         ],
       },

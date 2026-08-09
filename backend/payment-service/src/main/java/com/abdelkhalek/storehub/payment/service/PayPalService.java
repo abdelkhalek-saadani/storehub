@@ -18,6 +18,7 @@ import org.springframework.web.client.RestClient;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.UUID;
 
 
 @Service
@@ -31,8 +32,8 @@ public class PayPalService {
     private final PaypalProperties props;
 
 
-    public CreatePaypalOrderResponse createOrder(BigDecimal amount) {
-        PayPalOrderRequest orderRequest = createOrderPayload(amount);
+    public CreatePaypalOrderResponse createOrder(BigDecimal amount, UUID orderId) {
+        PayPalOrderRequest orderRequest = createOrderPayload(amount, orderId);
 
         PayPalOrderResponse response = restClient.post()
                 .uri("/v2/checkout/orders")
@@ -183,7 +184,7 @@ public class PayPalService {
     }
 
 
-    private PayPalOrderRequest createOrderPayload(BigDecimal amount) {
+    private PayPalOrderRequest createOrderPayload(BigDecimal amount, UUID orderId) {
         log.debug("the amount: {}", amount.setScale(2, RoundingMode.HALF_UP));
         log.debug("using USD instead of TND, PayPal doesn't support TND");
 
@@ -195,7 +196,9 @@ public class PayPalService {
                                 .PayPalAmount("USD", amount.setScale(2, RoundingMode.HALF_UP)),
                         "Order Payment testing"
                 )),
-                new PayPalOrderRequest.PayPalApplicationContext(props.returnUrl(), props.cancelUrl())
+                new PayPalOrderRequest.PayPalApplicationContext(
+                        props.returnUrl()+"?orderId="+orderId ,
+                        props.cancelUrl())
         );
     }
 

@@ -13,4 +13,5 @@ public interface OrderRepository {
     Mono<Order> findByPaymentOrderId(String paymentOrderId);
 
 
+    Mono<Order> findByIdAndEmail(UUID orderId, String email);
 }

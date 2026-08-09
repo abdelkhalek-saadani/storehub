@@ -48,6 +48,7 @@ public class SecurityConfig {
                         .pathMatchers("/internal/**").hasRole("SERVICE") // service-to-service
                         // Guest checkout
                         .pathMatchers(HttpMethod.POST,"/api/orders").permitAll()
+                        .pathMatchers(HttpMethod.POST,"/api/orders/guest").permitAll()
                         .pathMatchers("/api/orders/**").hasRole("CUSTOMER")
                         .pathMatchers("/api/cart/**").permitAll()
                         .pathMatchers("/api/stores/*/employees/**").hasRole(MembershipRole.STORE_OWNER.name())

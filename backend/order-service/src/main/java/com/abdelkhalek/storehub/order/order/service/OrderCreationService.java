@@ -74,6 +74,7 @@ public class OrderCreationService {
                 .deliveryAddress(orderRequest.deliveryAddress())
                 .status(OrderStatus.CREATED)
                 .idempotencyKey(idemKey)
+                .email(orderRequest.email())
                 .build();
         if (owner.isGuest()) order.setGuestId(owner.guestId());
         else order.setUserId(owner.userId());

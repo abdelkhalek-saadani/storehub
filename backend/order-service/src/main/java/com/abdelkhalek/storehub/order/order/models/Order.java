@@ -15,6 +15,7 @@ public class Order {
     UUID id;
     UUID userId;
     UUID guestId;
+    String email;
     UUID storeId;
     BigDecimal originalTotal;
     BigDecimal finalTotal;

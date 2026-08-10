@@ -5,8 +5,8 @@ import com.abdelkhalek.storehub.catalog.slot.entity.DeliverySlot;
 import com.abdelkhalek.storehub.catalog.slot.entity.SlotConfig;
 import com.abdelkhalek.storehub.catalog.slot.repository.DeliverySlotRepository;
 import com.abdelkhalek.storehub.catalog.slot.repository.SlotConfigRepository;
-import com.abdelkhalek.storehub.catalog.store.StoreShadow;
-import com.abdelkhalek.storehub.catalog.store.StoreShadowRepository;
+import com.abdelkhalek.storehub.catalog.store.entity.StoreShadow;
+import com.abdelkhalek.storehub.catalog.store.repository.StoreShadowRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -90,13 +89,25 @@ public class SlotGenerationService {
     }
 
     /**
-     * Create concrete slots for a given configuration at a specific Date
+     * Create concrete slots for a given configuration at a specific Date without touching
+     * existing slots, to use for updating (syncing) we need to delete the slots we want to sync
+     * then use this method.
+     * Example:
+     * {@snippet :
+     * // 10:20-10:40 --(changed duration from 20min to 30min)--> 10:20-10:40 10:50-11:20 11:20-11:50
+     *}
      *
      * @param config
      * @param date
      * @return the number of generated slots
      */
     private Integer materializeSlotsForConfig(SlotConfig config, LocalDate date) {
+        if (date.getDayOfWeek().getValue() % 7 != config.getDayOfWeek())
+            throw new IllegalArgumentException(
+                    "Config day of week (" + config.getDayOfWeek() +
+                            ") must match the provided date day of week (" + date.getDayOfWeek() + ")."
+            );
+
         LocalDateTime cursor = LocalDateTime.of(date, config.getStartTime());
         LocalDateTime dayEnd = LocalDateTime.of(date, config.getEndTime());
         int counter = 0;
@@ -140,8 +151,17 @@ public class SlotGenerationService {
     }
 
     /**
+     * <b>Note: </b> Kept for convenience, not used yet in the codebase.
+     * <p>
      * Create concrete slots for a given configuration at a specific Date
      * the same as materializeSlotsForConfig just with dynamic slot end value assignment
+     * <p>Example:
+     * <p>
+     * {@snippet :
+     *  // 10:20-10:40 --(changed duration from 20min to 30min)--> 10:20-10:40 10:40-11:10
+     *  // 11:10-11:40
+     *}
+     * <p>
      *
      * @param config
      * @param date

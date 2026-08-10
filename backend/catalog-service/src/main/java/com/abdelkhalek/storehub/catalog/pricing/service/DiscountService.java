@@ -6,7 +6,7 @@ import com.abdelkhalek.storehub.catalog.pricing.domain.models.DiscountWithProduc
 import com.abdelkhalek.storehub.catalog.pricing.domain.models.discountrule.DiscountRule;
 import com.abdelkhalek.storehub.catalog.pricing.entity.DiscountEntity;
 import com.abdelkhalek.storehub.catalog.product.entity.ProductEntity;
-import com.abdelkhalek.storehub.catalog.pricing.exceptions.DiscountOverlapException;
+import com.abdelkhalek.storehub.catalog.pricing.exception.DiscountOverlapException;
 import com.abdelkhalek.storehub.catalog.pricing.repository.DiscountRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

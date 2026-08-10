@@ -1,9 +1,9 @@
 package com.abdelkhalek.storehub.catalog.inventory;
 
-import com.abdelkhalek.storehub.catalog.dtos.AvailabilityResponse;
+import com.abdelkhalek.storehub.catalog.shared.dto.AvailabilityResponse;
 import com.abdelkhalek.storehub.catalog.inventory.dto.Item;
 import com.abdelkhalek.storehub.catalog.inventory.dto.ReservationResponse;
-import com.abdelkhalek.storehub.catalog.inventory.service.ReservationItem;
+import com.abdelkhalek.storehub.catalog.inventory.dto.ReservationItem;
 import com.abdelkhalek.storehub.catalog.inventory.service.StockService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

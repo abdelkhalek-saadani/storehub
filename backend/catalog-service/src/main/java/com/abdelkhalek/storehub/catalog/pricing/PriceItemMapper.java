@@ -1,7 +1,7 @@
 package com.abdelkhalek.storehub.catalog.pricing;
 
-import com.abdelkhalek.storehub.catalog.dtos.AppliedOffer;
-import com.abdelkhalek.storehub.catalog.dtos.PriceItemResponse;
+import com.abdelkhalek.storehub.catalog.pricing.dto.AppliedOffer;
+import com.abdelkhalek.storehub.catalog.pricing.dto.PriceItemResponse;
 import com.abdelkhalek.storehub.catalog.pricing.domain.models.Item;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

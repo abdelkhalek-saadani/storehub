@@ -1,6 +1,6 @@
 package com.abdelkhalek.storehub.catalog.inventory;
 
-import com.abdelkhalek.storehub.catalog.inventory.dto.ItemsReleaseEvent;
+import com.abdelkhalek.storehub.catalog.inventory.event.ItemsReleaseEvent;
 import com.abdelkhalek.storehub.catalog.shared.event.OrderCreateEvent;
 import com.abdelkhalek.storehub.catalog.inventory.service.ReservationService;
 import com.abdelkhalek.storehub.catalog.inventory.service.StockService;

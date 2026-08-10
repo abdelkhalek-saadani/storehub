@@ -1,7 +1,7 @@
 package com.abdelkhalek.storehub.catalog.slot.controller;
 
 
-import com.abdelkhalek.storehub.catalog.dtos.AvailabilityResponse;
+import com.abdelkhalek.storehub.catalog.shared.dto.AvailabilityResponse;
 import com.abdelkhalek.storehub.catalog.slot.dto.ReserveSlotRequest;
 import com.abdelkhalek.storehub.catalog.slot.dto.ReserveSlotResponse;
 import com.abdelkhalek.storehub.catalog.slot.dto.SlotDto;
@@ -10,7 +10,7 @@ import com.abdelkhalek.storehub.catalog.slot.entity.SlotReservation;
 import com.abdelkhalek.storehub.catalog.slot.repository.DeliverySlotRepository;
 import com.abdelkhalek.storehub.catalog.slot.service.SlotBookingService;
 import com.abdelkhalek.storehub.catalog.slot.service.SlotService;
-import com.abdelkhalek.storehub.catalog.store.StoreService;
+import com.abdelkhalek.storehub.catalog.store.service.StoreService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

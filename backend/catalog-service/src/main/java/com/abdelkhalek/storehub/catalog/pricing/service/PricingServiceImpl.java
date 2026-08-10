@@ -1,7 +1,10 @@
 package com.abdelkhalek.storehub.catalog.pricing.service;
 
-import com.abdelkhalek.storehub.catalog.dtos.*;
 import com.abdelkhalek.storehub.catalog.pricing.PriceItemMapper;
+import com.abdelkhalek.storehub.catalog.pricing.dto.PriceItemRequest;
+import com.abdelkhalek.storehub.catalog.pricing.dto.PriceItemResponse;
+import com.abdelkhalek.storehub.catalog.pricing.dto.PricesRequest;
+import com.abdelkhalek.storehub.catalog.pricing.dto.PricesResponse;
 import com.abdelkhalek.storehub.catalog.product.entity.ProductEntity;
 import com.abdelkhalek.storehub.catalog.product.repository.ProductRepository;
 import com.abdelkhalek.storehub.catalog.pricing.domain.factories.DiscountStrategyFactory;

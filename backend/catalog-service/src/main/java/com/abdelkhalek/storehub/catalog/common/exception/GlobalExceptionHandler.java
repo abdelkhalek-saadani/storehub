@@ -1,8 +1,8 @@
 package com.abdelkhalek.storehub.catalog.common.exception;
 
 import com.abdelkhalek.storehub.catalog.inventory.exception.InsufficientStockException;
-import com.abdelkhalek.storehub.catalog.pricing.exceptions.StockNotFoundException;
-import com.abdelkhalek.storehub.catalog.store.StoreNotFoundException;
+import com.abdelkhalek.storehub.catalog.pricing.exception.StockNotFoundException;
+import com.abdelkhalek.storehub.catalog.store.exception.StoreNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

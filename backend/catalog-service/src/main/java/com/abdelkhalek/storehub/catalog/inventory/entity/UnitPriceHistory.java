@@ -3,12 +3,19 @@ package com.abdelkhalek.storehub.catalog.inventory.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.aspectj.weaver.ast.Not;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
-/** Append-only, same pattern as StockMovement, applied to price changes. */
+
+/**
+ * <b>Note: </b>Placeholder for future unit price history feature.
+ * Not currently used/imported anywhere in the codebase.
+ * <p>
+ * Append-only, same pattern as StockMovement, applied to price changes.
+ */
 @Entity
 @Table(name = "unit_price_history")
 @Getter
@@ -34,11 +41,4 @@ public class UnitPriceHistory {
     @Column(nullable = false)
     private Instant changedAt;
 
-    public UnitPriceHistory(UUID storeId, UUID productId, BigDecimal oldPrice, BigDecimal newPrice) {
-        this.storeId = storeId;
-        this.productId = productId;
-        this.oldPrice = oldPrice;
-        this.newPrice = newPrice;
-        this.changedAt = Instant.now();
-    }
 }

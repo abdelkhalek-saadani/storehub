@@ -8,7 +8,9 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-/* Used to construct concrete discount strategies, it holds data related to the discount rule */
+/**
+ *  Used to construct concrete discount strategies, it holds data related to the discount rule
+ */
 @Data
 @AllArgsConstructor
 public class DiscountWithProductIds{

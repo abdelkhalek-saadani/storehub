@@ -64,6 +64,16 @@ public class SlotConfigService {
         return existing;
     }
 
+    /**
+     * Sync future slots by first deleting the safe to delete slots (not overriden by owner and
+     * not booked) and then creating the concrete slot for the config. It has two steps and start
+     * by deleting the safe to delete slot because {@code generateForConfigAcrossWindow} doesn't
+     * touch existing slot, meaning if the config want to create a concrete slot for Sunday 5
+     * July 10:00 and there is already a slot with that characteristics, It ignores it silently and
+     * pass to next slot (e.g creating Sunday, 5 July 10:30)
+     * @param config
+     * @param oldStartTime
+     */
     private void syncFutureSlots(SlotConfig config, LocalTime oldStartTime) {
         List<DeliverySlot> safeToUpdate = deliverySlotRepository
                 .findBySlotConfigIdAndStoreIdAndSlotDateGreaterThanEqualAndManualOverrideFalseAndBookedCount(
@@ -73,40 +83,10 @@ public class SlotConfigService {
 
         int generatedSlotsCount = slotGenerationService.generateForConfigAcrossWindow(config);
 
-        // No longer Needed
-/*        int durationMin = config.getSlotDurationMin();
-
-        for (DeliverySlot slot : safeToUpdate) {
-            // Re-derive this slot's position within the day rather than assuming
-            // slot index alignment, safest for simple 1:1 rebuild after edits.
-            slot.setStartTime(recalculateStart(slot, config, oldStartTime));
-            slot.setEndTime(slot.getStartTime().plusMinutes(durationMin));
-            slot.setMaxCapacity(config.getMaxCapacity());
-        }
-        deliverySlotRepository.saveAll(safeToUpdate);*/
-
         log.info("Deleted {} slot(s) out of sync for config {} and added {} slot(s) after update",
                 safeToUpdate.size(),
                 config.getId(),
                 generatedSlotsCount);
     }
 
-    // No longer needed
-    // Keeps the slot's relative position in the day if duration changed,
-    // otherwise this is a straightforward same-slot-index recompute.
-    private LocalDateTime recalculateStart(DeliverySlot slot, SlotConfig config, LocalTime oldStartTime) {
-        log.debug("Recalculating start time for slot {} for config {}", slot, config);
-        LocalDateTime dayStart = LocalDateTime.of(slot.getSlotDate(), config.getStartTime());
-        LocalDateTime oldDayStart = LocalDateTime.of(slot.getSlotDate(), oldStartTime);
-        log.debug("Day start: {}", dayStart);
-        long originalDurationMin = Duration.between(slot.getStartTime(), slot.getEndTime())
-                .toMinutes();
-        if (originalDurationMin <= 0) originalDurationMin = config.getSlotDurationMin();
-        long minutesFromDayStart = Duration.between(oldDayStart, slot.getStartTime()).toMinutes();
-        log.debug("Minutes from day start: {}", minutesFromDayStart);
-        long index = minutesFromDayStart / Math.max(originalDurationMin, 1);
-        LocalDateTime startTime = dayStart.plusMinutes(index * config.getSlotDurationMin());
-        log.debug("New index {}, new start time {}", index, startTime);
-        return startTime;
-    }
 }

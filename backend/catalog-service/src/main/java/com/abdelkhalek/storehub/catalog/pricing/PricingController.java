@@ -1,8 +1,8 @@
 package com.abdelkhalek.storehub.catalog.pricing;
 
-import com.abdelkhalek.storehub.catalog.PricesService;
-import com.abdelkhalek.storehub.catalog.dtos.PricesRequest;
-import com.abdelkhalek.storehub.catalog.dtos.PricesResponse;
+import com.abdelkhalek.storehub.catalog.pricing.dto.PricesRequest;
+import com.abdelkhalek.storehub.catalog.pricing.dto.PricesResponse;
+import com.abdelkhalek.storehub.catalog.pricing.service.PricesService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

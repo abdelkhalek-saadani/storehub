@@ -20,21 +20,12 @@ public interface DeliverySlotRepository extends JpaRepository<DeliverySlot, UUID
 
     Optional<List<DeliverySlot>> findByStoreIdAndSlotDateAndStartTimeAfter(UUID storeId, LocalDate slotDate, LocalDateTime startTimeAfter);
 
-    Optional<List<DeliverySlot>> findByStoreIdAndSlotDateAndStartTimeIsAfter(UUID storeId, LocalDate slotDate, LocalDateTime startTimeAfter);
-
-    
-    
-    Boolean existsByIdAndStoreId(UUID id, UUID storeId);
-
-    Boolean existsByStoreIdAndIdAndStatus(UUID storeId, UUID slotId,
-                                                 DeliverySlot.Status status);
 
     Boolean existsByStoreIdAndSlotDate(UUID storeId, LocalDate date);
 
     Boolean existsByStoreIdAndSlotDateAndStartTimeAfter(UUID storeId, LocalDate slotDate, LocalDateTime startTimeAfter);
 
-    List<DeliverySlot> findByStoreIdAndSlotDateBetweenAndStatus(
-            UUID storeId, LocalDate from, LocalDate to, DeliverySlot.Status status);
+
 
     Boolean existsByStoreIdAndSlotDateAndStartTime(UUID storeId, LocalDate slotDate,
                                                    LocalDateTime startTime);
@@ -73,7 +64,7 @@ public interface DeliverySlotRepository extends JpaRepository<DeliverySlot, UUID
             """)
     int decrementBooking(@Param("slotId") UUID slotId, @Param("storeId") UUID storeId);
 
-    // Candidates safe for config-sync: future, untouched by owner, no bookings yet.
+    // Candidates safe for config-sync: future, untouched by owner and no bookings yet.
     List<DeliverySlot> findBySlotConfigIdAndStoreIdAndSlotDateGreaterThanEqualAndManualOverrideFalseAndBookedCount(
             UUID slotConfigId, UUID storeId, LocalDate fromDate, Integer bookedCount);
 }

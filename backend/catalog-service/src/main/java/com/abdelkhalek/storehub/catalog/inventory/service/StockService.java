@@ -1,6 +1,7 @@
 package com.abdelkhalek.storehub.catalog.inventory.service;
 
 
+import com.abdelkhalek.storehub.catalog.inventory.dto.ReservationItem;
 import com.abdelkhalek.storehub.catalog.inventory.entity.Reservation;
 import com.abdelkhalek.storehub.catalog.inventory.entity.StockEntity;
 import com.abdelkhalek.storehub.catalog.inventory.dto.Item;
@@ -12,7 +13,7 @@ import com.abdelkhalek.storehub.catalog.inventory.enums.ReservationStatus;
 import com.abdelkhalek.storehub.catalog.inventory.repository.ReservationRepository;
 import com.abdelkhalek.storehub.catalog.inventory.repository.StockMovementRepository;
 import com.abdelkhalek.storehub.catalog.inventory.repository.StockRepository;
-import com.abdelkhalek.storehub.catalog.pricing.exceptions.StockNotFoundException;
+import com.abdelkhalek.storehub.catalog.pricing.exception.StockNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,7 +96,7 @@ public class StockService {
 
     @Transactional
     protected List<UUID> reserveForOrderTx(UUID storeId, UUID orderId, List<ReservationItem> items) {
-        Instant expiresAt = Instant.now().plus(Duration.ofMinutes(15)); // checkout hold TTL
+        Instant expiresAt = Instant.now().plus(Duration.ofMinutes(15)); // payment hold TTL
 
         List<UUID> reservationIds = new ArrayList<>();
         for (ReservationItem item : items) {
@@ -109,7 +110,7 @@ public class StockService {
             stock.reserve(item.quantity()); // throws InsufficientStockException if short
             stockMapper.applyTo(stock, stockEntity);
 
-            //stockRepository.save(stockEntity);
+            stockRepository.save(stockEntity);
 
             Reservation reservation = new Reservation(
                     storeId, orderId, item.productId(), item.quantity(), expiresAt);
@@ -120,6 +121,8 @@ public class StockService {
     }
 
     /**
+     * <b>Note: </b>Not used in the codebase yet, will be wired to order shipped event
+     * <p>
      * Called when order-service consumes PaymentSucceeded.
      */
     @Transactional
@@ -134,19 +137,20 @@ public class StockService {
             Stock stock = stockMapper.toDomain(stockEntity);
             stock.confirmDeduction(reservation.getQuantity());
             stockMapper.applyTo(stock, stockEntity);
-            // stockRepository.save(stock);
+            stockRepository.save(stockEntity);
 
             stockMovementRepository.save(new StockMovement(
                     storeId, reservation.getProductId(), MovementType.DEDUCT,
                     -reservation.getQuantity(), orderId, "payment succeeded"));
 
             reservation.confirm();
-            //reservationRepository.save(reservation);
+            reservationRepository.save(reservation);
         }
     }
 
     /**
-     * Release items reservations by their reservation ids
+     * Release items reservations by their reservation ids (Called when payment failed is
+     * consumed or on explicit cancellation)
      */
     @Transactional
     public void releaseItems(List<UUID> reservationIds) {
@@ -154,30 +158,28 @@ public class StockService {
                 .findAllById(reservationIds);
 
         UUID storeId = active.getFirst().getStoreId();
-        for (Reservation reservation : active) {
-            StockEntity stockEntity = stockRepository
-                    .findByStoreIdAndProductId(storeId, reservation.getProductId())
-                    .orElseThrow();
 
-            Stock stock = stockMapper.toDomain(stockEntity);
-            stock.release(reservation.getQuantity());
-            stockMapper.applyTo(stock, stockEntity);
-            //stockRepository.save(stock);
-
-            reservation.release();
-            //reservationRepository.save(reservation);
-        }
+        releaseItems(active, storeId);
     }
 
     /**
+     * <b>Note:</b> Not used anywhere in the codebase, kept for convenience
+     * <p>
      * Called when order-service consumes PaymentFailed, or on explicit cancellation.
      */
     @Transactional
-    public void releaseForOrder(UUID storeId, UUID orderId) {
+    public void releaseItems(UUID storeId, UUID orderId) {
         List<Reservation> active = reservationRepository
                 .findByOrderIdAndStatus(orderId, ReservationStatus.ACTIVE);
 
-        for (Reservation reservation : active) {
+        releaseItems(active, storeId);
+    }
+
+    /**
+     * Helper method for releaseItems by reservationIds/orderId
+     */
+    private void releaseItems(List<Reservation> reservations, UUID storeId){
+        for (Reservation reservation : reservations) {
             StockEntity stockEntity = stockRepository
                     .findByStoreIdAndProductId(storeId, reservation.getProductId())
                     .orElseThrow();
@@ -185,17 +187,19 @@ public class StockService {
             Stock stock = stockMapper.toDomain(stockEntity);
             stock.release(reservation.getQuantity());
             stockMapper.applyTo(stock, stockEntity);
-            //stockRepository.save(stock);
+            stockRepository.save(stockEntity);
 
             reservation.release();
-            //reservationRepository.save(reservation);
+            reservationRepository.save(reservation);
         }
     }
 
     /**
+     * <b>Note:</b> Not used yet in the codebase, this will be wired to a @Scheduled
+     * method to handle dead reservations
+     * <p>
      * Scheduled sweep for reservations nobody explicitly resolved (abandoned
-     * checkout, lost PaymentFailed message, etc). Wire this to a @Scheduled
-     * method or a delayed-message consumer - either is defensible.
+     * payment, lost PaymentFailed message, etc.).
      */
     @Transactional
     public void expireAbandonedReservations() {
@@ -210,10 +214,10 @@ public class StockService {
             Stock stock = stockMapper.toDomain(stockEntity);
             stock.release(reservation.getQuantity());
             stockMapper.applyTo(stock, stockEntity);
-            //stockRepository.save(stock);
+            stockRepository.save(stockEntity);
 
             reservation.expire();
-            //reservationRepository.save(reservation);
+            reservationRepository.save(reservation);
         }
     }
 }

@@ -3,7 +3,7 @@ package com.abdelkhalek.storehub.catalog.slot.controller;
 
 import com.abdelkhalek.storehub.catalog.slot.entity.SlotConfig;
 import com.abdelkhalek.storehub.catalog.slot.service.SlotConfigService;
-import com.abdelkhalek.storehub.catalog.store.StoreService;
+import com.abdelkhalek.storehub.catalog.store.service.StoreService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

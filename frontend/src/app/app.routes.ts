@@ -53,6 +53,10 @@ export const routes: Routes = [
     loadComponent: () => import('./checkout/return/success/success'),
   },
   {
+    path: 'welcome-pick-store',
+    loadComponent: () => import('./store/welcome-pick-store'),
+  },
+  {
     path: '',
     loadComponent: () => import('./layout/layout/layout'),
     children: [

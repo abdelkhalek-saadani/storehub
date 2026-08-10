@@ -1,6 +1,5 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { map } from 'rxjs/operators';
 import { StoreContext } from '../service/store-context';
 import { StorePickerService } from '../service/store-picker';
 
@@ -14,7 +13,5 @@ export const storeRequiredGuard: CanActivateFn = (_route, state) => {
     return router.parseUrl(`/store/${cached.slug}${state.url}`);
   }
 
-  return picker
-    .pickStore()
-    .pipe(map((store) => router.parseUrl(`/store/${store.storeSlug}${state.url}`)));
+  return router.parseUrl(`/welcome-pick-store?returnUrl=${encodeURIComponent(state.url)}`);
 };

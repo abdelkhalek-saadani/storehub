@@ -8,12 +8,12 @@ import com.abdelkhalek.storehub.order.order.exceptions.UnavailableException;
 import com.abdelkhalek.storehub.order.order.mapper.OrderMapper;
 import com.abdelkhalek.storehub.order.order.models.Order;
 import com.abdelkhalek.storehub.order.order.models.OrderStatus;
+import com.abdelkhalek.storehub.order.order.models.ServiceResult;
 import com.abdelkhalek.storehub.order.order.spi.OrderRepository;
 import com.abdelkhalek.storehub.order.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
@@ -32,13 +32,13 @@ public class OrderService {
     private final OrderStatusService orderStatusService;
     private final OwnerResolver ownerResolver;
 
-    public Mono<Order> placeOrder(OrderRequest orderRequest, UUID idempotencyKey, ServerWebExchange exchange) {
+    public Mono<Order> placeOrder(OrderRequest orderRequest, UUID idempotencyKey, String guestId) {
         return orderCreationService.checkAvailability(orderRequest.storeId(), orderRequest.cartId(), orderRequest.slotId())
                 .flatMap(isAvailable -> {
                     if (!isAvailable) {
                         return Mono.error(new UnavailableException("Unavailable items or slot"));
                     }
-                    return  ownerResolver.resolveOwner(exchange)
+                    return ownerResolver.resolveOwner(guestId)
                             .flatMap(owner -> retentionService.retainAll(
                                             orderRequest.storeId(), orderRequest.cartId(), orderRequest.slotId())
                                     .flatMap(retention -> orderCreationService.createOrder(owner,
@@ -46,14 +46,18 @@ public class OrderService {
                 });
     }
 
-    public Mono<OrderCreatedResponse> placeOrderWithOnlinePayment(UUID idempotencyKey,
-                                                                  OrderRequest orderRequest,
-                                                                  ServerWebExchange exchange) {
+    public Mono<ServiceResult<OrderCreatedResponse>> placeOrderWithOnlinePayment(UUID idempotencyKey,
+                                                                                 OrderRequest orderRequest,
+                                                                                 String guestId) {
         return orderCreationService
                 .findExistingByIdempotencyKey(idempotencyKey)
                 .map(OrderCreatedResponse::from)
+                .map((ocr -> guestId != null ?
+                        ServiceResult.forGuest(ocr, UUID.fromString(guestId))
+                        : ServiceResult.forUser(ocr)))
                 .switchIfEmpty(
-                        placeOrder(orderRequest, idempotencyKey, exchange).flatMap(orderPaymentService::attachPaymentAndSave));
+                        placeOrder(orderRequest, idempotencyKey, guestId)
+                                .flatMap(orderPaymentService::attachPaymentAndSave));
     }
 
     public Mono<OrderDto> getOrder(UUID orderId) {

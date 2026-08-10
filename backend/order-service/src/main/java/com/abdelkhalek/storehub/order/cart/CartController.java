@@ -1,9 +1,10 @@
 package com.abdelkhalek.storehub.order.cart;
 
-import com.abdelkhalek.storehub.order.cart.dtos.CartResponse;
-import com.abdelkhalek.storehub.order.cart.dtos.UpdateCartRequest;
+import com.abdelkhalek.storehub.order.cart.dto.CartResponse;
+import com.abdelkhalek.storehub.order.cart.dto.UpdateCartRequest;
 import com.abdelkhalek.storehub.order.cart.service.CartService;
 import com.abdelkhalek.storehub.order.cart.service.OwnerResolver;
+import com.abdelkhalek.storehub.order.order.models.ServiceResult;
 import com.abdelkhalek.storehub.order.shared.dto.PricesResponse;
 import com.abdelkhalek.storehub.order.user.service.UserService;
 import jakarta.validation.Valid;
@@ -28,22 +29,45 @@ public class CartController {
 
     @GetMapping
     public Mono<CartResponse> getCart(@RequestParam @NotNull UUID storeId, ServerWebExchange exchange) {
-        return ownerResolver.resolveOwner(exchange)
-                .flatMap(owner -> cartService.getCart(owner, storeId));
-    }
+        String guestId = exchange.getRequest().getHeaders().getFirst("X-Guest-Id");
+        return ownerResolver.resolveOwner(guestId)
+                .flatMap(owner -> cartService.getCart(owner, storeId))
+                .doOnNext(result -> {
+                    if (result.isGuest())
+                        exchange.getResponse().getHeaders()
+                                .set("X-Guest-Id", result.guestId().toString()); // echo back if new
+                })
+                .map(ServiceResult::body);
 
+    }
 
 
     @PostMapping("items")
     public Mono<CartResponse> upsertItems(@RequestBody @Valid UpdateCartRequest request, ServerWebExchange exchange) {
-        return ownerResolver.resolveOwner(exchange)
-                .flatMap((owner) -> cartService.upsertItems(owner, request));
+        String guestId = exchange.getRequest().getHeaders().getFirst("X-Guest-Id");
+
+        return ownerResolver.resolveOwner(guestId)
+                .flatMap((owner) -> cartService.upsertItems(owner, request))
+                .doOnNext(result -> {
+                    if (result.isGuest())
+                        exchange.getResponse().getHeaders()
+                                .set("X-Guest-Id", result.guestId().toString()); // echo back if new
+                })
+                .map(ServiceResult::body);
     }
 
     @DeleteMapping
     public Mono<CartResponse> clearCart(@RequestParam @NotNull UUID storeId, ServerWebExchange exchange) {
-        return ownerResolver.resolveOwner(exchange)
-                .flatMap((owner) -> cartService.clearCart(owner, storeId));
+        String guestId = exchange.getRequest().getHeaders().getFirst("X-Guest-Id");
+
+        return ownerResolver.resolveOwner(guestId)
+                .flatMap((owner) -> cartService.clearCart(owner, storeId))
+                .doOnNext(result -> {
+                    if (result.isGuest())
+                        exchange.getResponse().getHeaders()
+                                .set("X-Guest-Id", result.guestId().toString()); // echo back if new
+                })
+                .map(ServiceResult::body);
     }
 
 

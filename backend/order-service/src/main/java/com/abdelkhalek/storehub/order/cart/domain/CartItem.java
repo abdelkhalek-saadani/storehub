@@ -1,6 +1,6 @@
 package com.abdelkhalek.storehub.order.cart.domain;
 
-import com.abdelkhalek.storehub.order.cart.entities.CartEntity;
+import com.abdelkhalek.storehub.order.cart.entity.CartEntity;
 import com.abdelkhalek.storehub.order.shared.model.AppliedOffer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,8 +29,6 @@ public class CartItem {
     CartEntity cart;
 
     LocalDateTime createdAt;
-
-
 
 
     public CartItem(UUID productId, int quantity) {

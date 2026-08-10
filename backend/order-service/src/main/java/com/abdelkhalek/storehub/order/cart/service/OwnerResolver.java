@@ -8,7 +8,6 @@ import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
@@ -19,7 +18,7 @@ public class OwnerResolver {
 
     private final UserRepository userRepository;
 
-    public Mono<CartOwner> resolveOwner(ServerWebExchange exchange) {
+    public Mono<CartOwner> resolveOwner(String guestId) {
         return ReactiveSecurityContextHolder.getContext()
                 .map(SecurityContext::getAuthentication)
                 .cast(JwtAuthenticationToken.class)
@@ -27,13 +26,11 @@ public class OwnerResolver {
                 .flatMap(userRepository::findByKeycloakId)
                 .map(User::getId)
                 .map(CartOwner::ofUser)
-                .switchIfEmpty(Mono.defer(() -> resolveGuest(exchange)));
+                .switchIfEmpty(Mono.defer(() -> resolveGuest(guestId)));
     }
 
-    private Mono<CartOwner> resolveGuest(ServerWebExchange exchange) {
-        String guestId = exchange.getRequest().getHeaders().getFirst("X-Guest-Id");
+    private Mono<CartOwner> resolveGuest(String guestId) {
         if (guestId == null) guestId = UUID.randomUUID().toString();
-        exchange.getResponse().getHeaders().add("X-Guest-Id", guestId); // echo back if new
         return Mono.just(CartOwner.ofGuest(UUID.fromString(guestId)));
     }
 }

@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.order.cart.dtos;
+package com.abdelkhalek.storehub.order.cart.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

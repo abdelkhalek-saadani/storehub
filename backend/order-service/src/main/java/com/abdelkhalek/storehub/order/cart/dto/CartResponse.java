@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.order.cart.dtos;
+package com.abdelkhalek.storehub.order.cart.dto;
 
 import java.math.BigDecimal;
 import java.util.List;

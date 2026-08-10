@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.order.cart.entities;
+package com.abdelkhalek.storehub.order.cart.entity;
 
 
 import io.github.joselion.springr2dbcrelationships.annotations.ManyToOne;

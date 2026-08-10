@@ -2,6 +2,7 @@ package com.abdelkhalek.storehub.order.order;
 
 import com.abdelkhalek.storehub.order.order.dto.*;
 import com.abdelkhalek.storehub.order.order.mapper.OrderMapper;
+import com.abdelkhalek.storehub.order.order.models.ServiceResult;
 import com.abdelkhalek.storehub.order.order.service.OrderService;
 import com.abdelkhalek.storehub.order.order.service.OrderStatusService;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,14 @@ public class OrderController {
                                           @RequestBody OrderRequest orderRequest,
                                           ServerWebExchange exchange) {
         log.debug("idem key: {}", idempotencyKey);
-        return orderService.placeOrderWithOnlinePayment(idempotencyKey, orderRequest, exchange);
+        String guestId = exchange.getRequest().getHeaders().getFirst("X-Guest-Id");
+        return orderService
+                .placeOrderWithOnlinePayment(idempotencyKey, orderRequest, guestId)
+                .doOnNext(result -> {
+                    if (result.isGuest()) exchange.getResponse().getHeaders().set("X-Guest-Id",
+                            result.guestId().toString());
+                })
+                .map(ServiceResult::body);
     }
 
     @GetMapping(value = "/{orderId}/track", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
@@ -40,7 +48,7 @@ public class OrderController {
         log.debug("tracking orderId: {}", orderId);
         Mono<ServerSentEvent<OrderStatusDto>> current = orderStatusService.getById(orderId)
                 .map(status -> ServerSentEvent.builder(orderMapper.toDto(status)).build());
-        Flux<ServerSentEvent<OrderStatusDto>>  live = orderStatusService.orderStatusStream(orderId)
+        Flux<ServerSentEvent<OrderStatusDto>> live = orderStatusService.orderStatusStream(orderId)
                 .map(status -> ServerSentEvent.builder(orderMapper.toDto(status)).build());
         return Flux.concat(current, live);
     }

@@ -1,6 +1,6 @@
 package com.abdelkhalek.storehub.order.shared.service;
 
-import com.abdelkhalek.storehub.order.cart.dtos.CatalogErrorResponse;
+import com.abdelkhalek.storehub.order.cart.dto.CatalogErrorResponse;
 import com.abdelkhalek.storehub.order.cart.exception.CatalogServiceException;
 import com.abdelkhalek.storehub.order.cart.exception.CatalogServiceUnavailableException;
 import com.abdelkhalek.storehub.order.cart.exception.ProductNotFoundException;

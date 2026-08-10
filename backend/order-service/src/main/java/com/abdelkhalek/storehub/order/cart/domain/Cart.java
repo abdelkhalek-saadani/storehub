@@ -1,6 +1,5 @@
 package com.abdelkhalek.storehub.order.cart.domain;
 
-import com.abdelkhalek.storehub.order.cart.exception.CartItemNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,12 +28,6 @@ public class Cart {
     LocalDateTime updatedAt;
 
 
-    public Cart clear() {
-        return new Cart(this.id, this.userId, this.guestId, this.storeId, BigDecimal.ZERO,
-                BigDecimal.ZERO,
-                BigDecimal.ZERO, List.of(), createdAt,
-                LocalDateTime.now());
-    }
 
     public Cart upsert(List<CartItem> items) {
         List<UUID> productIds = items.stream().map(CartItem::getProductId).toList();
@@ -69,31 +62,6 @@ public class Cart {
 
     }
 
-    public Cart updateItemQuantity(UUID itemId, int quantity) {
-        CartItem existing = this.items.stream()
-                .filter(it -> it.getId().equals(itemId))
-                .findFirst()
-                .orElseThrow(() -> new CartItemNotFoundException(itemId));
-
-        List<CartItem> updatedItems = this.items.stream()
-                .filter(it -> !it.getId().equals(itemId))
-                .collect(Collectors.toCollection(ArrayList::new));
-
-        if (quantity > 0) {
-            CartItem updated = new CartItem();
-            updated.setId(existing.getId());
-            updated.setProductId(existing.getProductId());
-            updated.setQuantity(quantity);
-            updated.setUnitPrice(existing.getUnitPrice());
-            updated.setUnitPrice(existing.getUnitPrice());
-            updated.setCreatedAt(existing.getCreatedAt());
-            updatedItems.add(updated);
-        }
-
-        return new Cart(id, userId, guestId, storeId, originalTotal, finalTotal, totalDiscount,
-                updatedItems, createdAt,
-                LocalDateTime.now());
-    }
 
     public Cart merge(List<CartItem> guestItems) {
         List<CartItem> mergedItems = new ArrayList<>(this.items);

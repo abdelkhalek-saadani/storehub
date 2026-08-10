@@ -1,7 +1,7 @@
-package com.abdelkhalek.storehub.order.cart.service;
+package com.abdelkhalek.storehub.order.cart.repository;
 
 
-import com.abdelkhalek.storehub.order.cart.entities.CartEntity;
+import com.abdelkhalek.storehub.order.cart.entity.CartEntity;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Mono;
 

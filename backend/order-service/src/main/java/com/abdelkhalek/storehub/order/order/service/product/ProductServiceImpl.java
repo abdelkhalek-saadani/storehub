@@ -1,7 +1,7 @@
 package com.abdelkhalek.storehub.order.order.service.product;
 
-import com.abdelkhalek.storehub.order.cart.entities.CartEntity;
-import com.abdelkhalek.storehub.order.cart.service.CartRepository;
+import com.abdelkhalek.storehub.order.cart.entity.CartEntity;
+import com.abdelkhalek.storehub.order.cart.repository.CartRepository;
 import com.abdelkhalek.storehub.order.order.OrderEventPublisher;
 import com.abdelkhalek.storehub.order.order.dto.product.AvailabilityRequest;
 import com.abdelkhalek.storehub.order.order.dto.product.CartItemRequest;

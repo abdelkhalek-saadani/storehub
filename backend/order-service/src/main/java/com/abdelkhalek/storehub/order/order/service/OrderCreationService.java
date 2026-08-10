@@ -1,8 +1,8 @@
 package com.abdelkhalek.storehub.order.order.service;
 
 import com.abdelkhalek.storehub.order.cart.domain.CartOwner;
-import com.abdelkhalek.storehub.order.cart.entities.CartEntity;
-import com.abdelkhalek.storehub.order.cart.service.CartRepository;
+import com.abdelkhalek.storehub.order.cart.entity.CartEntity;
+import com.abdelkhalek.storehub.order.cart.repository.CartRepository;
 import com.abdelkhalek.storehub.order.order.OrderEventPublisher;
 import com.abdelkhalek.storehub.order.order.dto.OrderRequest;
 import com.abdelkhalek.storehub.order.order.exceptions.OrderCalculationException;

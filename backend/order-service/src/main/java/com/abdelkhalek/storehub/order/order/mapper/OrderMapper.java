@@ -1,6 +1,6 @@
 package com.abdelkhalek.storehub.order.order.mapper;
 
-import com.abdelkhalek.storehub.order.cart.entities.CartItemEntity;
+import com.abdelkhalek.storehub.order.cart.entity.CartItemEntity;
 import com.abdelkhalek.storehub.order.order.dto.OrderDto;
 import com.abdelkhalek.storehub.order.order.dto.OrderItemDto;
 import com.abdelkhalek.storehub.order.order.dto.OrderStatusDto;

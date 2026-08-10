@@ -2,11 +2,11 @@ package com.abdelkhalek.storehub.order.cart;
 
 import com.abdelkhalek.storehub.order.cart.domain.Cart;
 import com.abdelkhalek.storehub.order.cart.domain.CartItem;
-import com.abdelkhalek.storehub.order.cart.dtos.CartItemResponse;
-import com.abdelkhalek.storehub.order.cart.dtos.UpdateCartRequest;
-import com.abdelkhalek.storehub.order.cart.dtos.CartResponse;
-import com.abdelkhalek.storehub.order.cart.entities.CartEntity;
-import com.abdelkhalek.storehub.order.cart.entities.CartItemEntity;
+import com.abdelkhalek.storehub.order.cart.dto.CartItemResponse;
+import com.abdelkhalek.storehub.order.cart.dto.UpdateCartRequest;
+import com.abdelkhalek.storehub.order.cart.dto.CartResponse;
+import com.abdelkhalek.storehub.order.cart.entity.CartEntity;
+import com.abdelkhalek.storehub.order.cart.entity.CartItemEntity;
 import com.abdelkhalek.storehub.order.shared.model.AppliedOffer;
 import com.abdelkhalek.storehub.order.shared.dto.PriceItemResponse;
 import com.abdelkhalek.storehub.order.shared.dto.PricesRequest;

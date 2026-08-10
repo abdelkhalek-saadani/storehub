@@ -9,7 +9,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { SearchBar } from './search-bar/search-bar';
 import { LogoText } from '@components/atoms/logo-text/logo-text';
-import { LocationButton } from './location-button/location-button';
+import { StoreButton } from './store-button/store-button';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatDivider } from '@angular/material/divider';
 import { Router, RouterLink } from '@angular/router';
@@ -17,6 +17,7 @@ import { CartSidenav } from '@shared/service/cart-sidenav';
 import Keycloak from 'keycloak-js';
 import { KEYCLOAK_EVENT_SIGNAL } from 'keycloak-angular';
 import { CartStore } from '../../cart/cart-store';
+import { MatBadge } from '@angular/material/badge';
 
 @Component({
   selector: 'app-header',
@@ -27,12 +28,13 @@ import { CartStore } from '../../cart/cart-store';
     MatFormFieldModule,
     SearchBar,
     LogoText,
-    LocationButton,
+    StoreButton,
     MatMenu,
     MatDivider,
     MatMenuTrigger,
     MatMenuItem,
     RouterLink,
+    MatBadge,
   ],
   template: `
     @if (isMobile()) {
@@ -42,8 +44,13 @@ import { CartStore } from '../../cart/cart-store';
             <mat-icon>menu</mat-icon>
           </button>
 
-          <app-location-button />
-          <button matIconButton class="background-primary" (click)="cartSidenavService.toggle()">
+          <app-store-button />
+          <button
+            matIconButton
+            class="background-primary"
+            (click)="cartSidenavService.toggle()"
+            [matBadge]="itemCount()"
+          >
             <mat-icon>shopping_cart</mat-icon>
           </button>
         </div>
@@ -61,7 +68,7 @@ import { CartStore } from '../../cart/cart-store';
               </button>
               <app-logo-text [width]="134" [height]="32" />
             </div>
-            <app-location-button />
+            <app-store-button />
           </div>
 
           <app-search-bar />

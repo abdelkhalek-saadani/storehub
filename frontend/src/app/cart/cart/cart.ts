@@ -7,7 +7,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CartSidenav } from '@shared/service/cart-sidenav';
 import { CartStore } from '../cart-store';
 import { RouterLink } from '@angular/router';
-import { StoreContext } from '../../products/service/store-context';
+import { StoreContext } from '../../store/service/store-context';
 
 @Component({
   selector: 'app-cart',

@@ -14,6 +14,10 @@ export interface CreateStorePayload {
 export class StoreApi {
   constructor(private http: HttpClient) {}
 
+  getAllStores(): Observable<Store[]> {
+    return this.http.get<Store[]>(`${environment.orderApiUrl}/api/stores`);
+  }
+
   createStore(data: CreateStorePayload) {
     return this.http.post(`${environment.orderApiUrl}/api/stores`, data);
   }

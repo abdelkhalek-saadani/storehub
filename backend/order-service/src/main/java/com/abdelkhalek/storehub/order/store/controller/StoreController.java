@@ -18,6 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -51,11 +52,19 @@ public class StoreController {
                 );
     }
 
+    @GetMapping()
+    public Flux<StoreDto> getStores() {
+        return storeRepository.findAll()
+                .doOnNext((store -> log.debug("find all store result {}", store)))
+                .map(StoreDto::from)
+                .switchIfEmpty(Flux.empty());
+    }
+
     @GetMapping("by-slug/{slug}")
     public Mono<ResponseEntity<StoreDto>> findBySlug(@PathVariable String slug) {
         return storeRepository.findBySlug(slug)
                 .doOnNext(s -> log.debug("found store {}", s))
-                .map(s -> ResponseEntity.ok(new StoreDto(s.getId(), s.getSlug())))
+                .map(s -> ResponseEntity.ok(new StoreDto(s.getId(), s.getSlug(), s.getName())))
                 .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
     }
 

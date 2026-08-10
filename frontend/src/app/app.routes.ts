@@ -2,13 +2,14 @@ import { Routes } from '@angular/router';
 import Layout from './layout/layout/layout';
 import { authGuard } from '@core/auth/auth-guard';
 import { guestOnlyGuard } from '@core/auth/guest-only.guard';
-import { storeResolver } from './products/store-resolver';
+import { storeResolver } from './store/store-resolver';
+import { storeRequiredGuard } from './store/guard/store-required.guard';
 
 export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'dev',
+    redirectTo: 'products-explorer',
   },
   {
     path: 'dev',
@@ -56,14 +57,13 @@ export const routes: Routes = [
     loadComponent: () => import('./layout/layout/layout'),
     children: [
       {
-        path: 'wishlist',
-        loadComponent: () => import('./pages/wishlist/wishlist'),
-      },
-
-      {
         path: 'store/:storeSlug',
         resolve: { storeId: storeResolver },
         children: [
+          {
+            path: 'wishlist',
+            loadComponent: () => import('./pages/wishlist/wishlist'),
+          },
           {
             path: 'products',
             loadComponent: () => import('./products/products/products'),
@@ -126,4 +126,5 @@ export const routes: Routes = [
       },
     ],
   },
+  { path: '**', canActivate: [storeRequiredGuard], children: [] },
 ];

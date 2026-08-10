@@ -23,7 +23,7 @@ public class StoreReconciliationJob {
     public void reconcile() {
         try {
             List<StoreSummary> stores = orderServiceClient.get()
-                    .uri("/api/stores")
+                    .uri("/internal/stores")
                     .retrieve()
                     .body(new ParameterizedTypeReference<List<StoreSummary>>() {
                     });

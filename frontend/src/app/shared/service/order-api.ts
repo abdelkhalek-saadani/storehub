@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { environment } from '@environments/environment';
-import { StoreContext } from '../../products/service/store-context';
+import { StoreContext } from '../../store/service/store-context';
 import { UpdateCartItem } from '../../cart/model/update-cart-request';
 import { CartItemResponse, CartResponse } from '../../cart/model/cart-response';
 import { LocalDateTime } from '@js-joda/core';

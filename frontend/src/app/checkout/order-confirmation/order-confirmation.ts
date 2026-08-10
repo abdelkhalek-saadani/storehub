@@ -2,7 +2,7 @@ import { Component, inject, input } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
-import { StoreContext } from '../../products/service/store-context';
+import { StoreContext } from '../../store/service/store-context';
 
 @Component({
   selector: 'app-order-confirmation',

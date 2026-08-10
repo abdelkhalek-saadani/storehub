@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '@environments/environment';
 import { PagedResponse } from '../../products/models/page-response';
 import { Product } from '../../products/models/product';
-import { StoreContext } from '../../products/service/store-context';
+import { StoreContext } from '../../store/service/store-context';
 import { map } from 'rxjs';
 import { Offer } from '@shared/models/Offer';
 import { LocalDate, LocalDateTime } from '@js-joda/core';

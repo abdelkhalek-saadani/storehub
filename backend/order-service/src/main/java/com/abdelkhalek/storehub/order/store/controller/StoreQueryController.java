@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
 @RestController
-@RequestMapping("/api/stores")
+@RequestMapping("/internal/stores")
 public class StoreQueryController {
 
     private final StoreRepository storeRepository;

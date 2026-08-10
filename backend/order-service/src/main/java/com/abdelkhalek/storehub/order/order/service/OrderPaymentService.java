@@ -4,7 +4,7 @@ import com.abdelkhalek.storehub.order.order.dto.OrderCreatedResponse;
 import com.abdelkhalek.storehub.order.order.dto.PaymentResponse;
 import com.abdelkhalek.storehub.order.order.exceptions.PaymentProcessingException;
 import com.abdelkhalek.storehub.order.order.models.Order;
-import com.abdelkhalek.storehub.order.order.models.ServiceResult;
+import com.abdelkhalek.storehub.order.shared.model.ServiceResult;
 import com.abdelkhalek.storehub.order.order.spi.OrderRepository;
 import com.abdelkhalek.storehub.order.order.spi.PaymentService;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.order.order.models;
+package com.abdelkhalek.storehub.order.shared.model;
 
 import java.util.UUID;
 

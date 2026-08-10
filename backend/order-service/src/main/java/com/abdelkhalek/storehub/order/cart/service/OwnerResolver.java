@@ -18,7 +18,7 @@ public class OwnerResolver {
 
     private final UserRepository userRepository;
 
-    public Mono<CartOwner> resolveOwner(String guestId) {
+    public Mono<CartOwner> resolveOwner(UUID guestId) {
         return ReactiveSecurityContextHolder.getContext()
                 .map(SecurityContext::getAuthentication)
                 .cast(JwtAuthenticationToken.class)
@@ -29,8 +29,8 @@ public class OwnerResolver {
                 .switchIfEmpty(Mono.defer(() -> resolveGuest(guestId)));
     }
 
-    private Mono<CartOwner> resolveGuest(String guestId) {
-        if (guestId == null) guestId = UUID.randomUUID().toString();
-        return Mono.just(CartOwner.ofGuest(UUID.fromString(guestId)));
+    private Mono<CartOwner> resolveGuest(UUID guestId) {
+        if (guestId == null) guestId = UUID.randomUUID();
+        return Mono.just(CartOwner.ofGuest(guestId));
     }
 }

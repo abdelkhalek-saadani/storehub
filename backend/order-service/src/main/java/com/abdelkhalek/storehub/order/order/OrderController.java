@@ -2,7 +2,7 @@ package com.abdelkhalek.storehub.order.order;
 
 import com.abdelkhalek.storehub.order.order.dto.*;
 import com.abdelkhalek.storehub.order.order.mapper.OrderMapper;
-import com.abdelkhalek.storehub.order.order.models.ServiceResult;
+import com.abdelkhalek.storehub.order.shared.model.ServiceResult;
 import com.abdelkhalek.storehub.order.order.service.OrderService;
 import com.abdelkhalek.storehub.order.order.service.OrderStatusService;
 import lombok.RequiredArgsConstructor;
@@ -29,10 +29,10 @@ public class OrderController {
 
     @PostMapping
     Mono<OrderCreatedResponse> placeOrder(@RequestHeader("Idempotency-Key") UUID idempotencyKey,
+                                          @RequestHeader(value = "X-Guest-Id", required = false) UUID guestId,
                                           @RequestBody OrderRequest orderRequest,
                                           ServerWebExchange exchange) {
         log.debug("idem key: {}", idempotencyKey);
-        String guestId = exchange.getRequest().getHeaders().getFirst("X-Guest-Id");
         return orderService
                 .placeOrderWithOnlinePayment(idempotencyKey, orderRequest, guestId)
                 .doOnNext(result -> {

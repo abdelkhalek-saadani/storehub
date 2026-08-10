@@ -8,7 +8,7 @@ import com.abdelkhalek.storehub.order.order.exceptions.UnavailableException;
 import com.abdelkhalek.storehub.order.order.mapper.OrderMapper;
 import com.abdelkhalek.storehub.order.order.models.Order;
 import com.abdelkhalek.storehub.order.order.models.OrderStatus;
-import com.abdelkhalek.storehub.order.order.models.ServiceResult;
+import com.abdelkhalek.storehub.order.shared.model.ServiceResult;
 import com.abdelkhalek.storehub.order.order.spi.OrderRepository;
 import com.abdelkhalek.storehub.order.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class OrderService {
     private final OrderStatusService orderStatusService;
     private final OwnerResolver ownerResolver;
 
-    public Mono<Order> placeOrder(OrderRequest orderRequest, UUID idempotencyKey, String guestId) {
+    public Mono<Order> placeOrder(OrderRequest orderRequest, UUID idempotencyKey, UUID guestId) {
         return orderCreationService.checkAvailability(orderRequest.storeId(), orderRequest.cartId(), orderRequest.slotId())
                 .flatMap(isAvailable -> {
                     if (!isAvailable) {
@@ -48,12 +48,12 @@ public class OrderService {
 
     public Mono<ServiceResult<OrderCreatedResponse>> placeOrderWithOnlinePayment(UUID idempotencyKey,
                                                                                  OrderRequest orderRequest,
-                                                                                 String guestId) {
+                                                                                 UUID guestId) {
         return orderCreationService
                 .findExistingByIdempotencyKey(idempotencyKey)
                 .map(OrderCreatedResponse::from)
                 .map((ocr -> guestId != null ?
-                        ServiceResult.forGuest(ocr, UUID.fromString(guestId))
+                        ServiceResult.forGuest(ocr, guestId)
                         : ServiceResult.forUser(ocr)))
                 .switchIfEmpty(
                         placeOrder(orderRequest, idempotencyKey, guestId)

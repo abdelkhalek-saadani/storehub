@@ -9,7 +9,7 @@ import com.abdelkhalek.storehub.order.cart.dto.CartResponse;
 import com.abdelkhalek.storehub.order.cart.dto.UpdateCartRequest;
 import com.abdelkhalek.storehub.order.cart.entity.CartEntity;
 import com.abdelkhalek.storehub.order.cart.repository.CartRepository;
-import com.abdelkhalek.storehub.order.order.models.ServiceResult;
+import com.abdelkhalek.storehub.order.shared.model.ServiceResult;
 import com.abdelkhalek.storehub.order.shared.dto.PriceItemResponse;
 import com.abdelkhalek.storehub.order.shared.dto.PricesRequest;
 import com.abdelkhalek.storehub.order.shared.dto.PricesResponse;

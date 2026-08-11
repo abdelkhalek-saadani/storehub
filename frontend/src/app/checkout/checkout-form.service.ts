@@ -20,6 +20,20 @@ export class CheckoutFormService {
       validators: [Validators.required, Validators.email],
     }),
     slotId: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
+    deliveryAddress: new FormGroup({
+      type: new FormControl('home', { nonNullable: true, validators: [Validators.required] }),
+      street: new FormControl('zuhur street', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+      city: new FormControl('zayatine city', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+      apartmentNumber: new FormControl('22'),
+      zipCode: new FormControl('8030'),
+      deliveryInstructions: new FormControl('Jawk behi'),
+    }),
   });
   idempotencyKey = uuidv4();
   cartStore = inject(CartStore);
@@ -44,12 +58,21 @@ export class CheckoutFormService {
       this.submitError.set('Your cart could not be found. Please refresh and try again.');
       return;
     }
+    const da = value.deliveryAddress;
     const body = {
       slotId: value.slotId,
       cartId,
       firstName: value.firstName,
       lastName: value.lastName,
       email: value.email,
+      deliveryAddress: {
+        type: da.type,
+        street: da.street,
+        city: da.city,
+        apartmentNumber: da.apartmentNumber ?? '',
+        zipCode: da.zipCode ?? '',
+        deliveryInstructions: da.deliveryInstructions ?? '',
+      },
     };
     this.orderApi.placeOrder(this.idempotencyKey, body).subscribe({
       next: (res) => {

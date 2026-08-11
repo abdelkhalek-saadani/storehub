@@ -45,7 +45,7 @@ export class CatalogApi {
   private getStoreId(): string {
     const storeId = this.storeContext.storeId();
     if (!storeId) {
-      throw new Error('ProductService called before storeId is available');
+      throw new Error('CatalogApi called before storeId is available');
     }
     return storeId;
   }

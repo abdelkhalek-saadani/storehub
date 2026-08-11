@@ -1,9 +1,9 @@
 import { Component, computed, inject, input } from '@angular/core';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { CartItemResponse } from '../../../cart/model/cart-response';
-import { CartStore } from '../../../cart/cart-store';
 import { DecimalPipe } from '@angular/common';
+import { CartItemResponse } from '../model/cart-response';
+import { CartStore } from '../cart-store';
 
 @Component({
   selector: 'app-cart-item',

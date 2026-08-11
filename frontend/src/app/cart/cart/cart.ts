@@ -1,5 +1,5 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { CartItem } from '@components/molecules/cart-item/cart-item';
+import { CartItem } from '../cart-item/cart-item';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { BreakpointObserver } from '@angular/cdk/layout';

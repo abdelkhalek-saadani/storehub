@@ -1,5 +1,5 @@
-import { Component, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject, signal } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 
 import { MatInput, MatLabel } from '@angular/material/input';
@@ -10,11 +10,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { Breakpoints } from '@core/constants/breakpoints';
+import { CheckoutFormService } from '../checkout-form.service';
 
 @Component({
   selector: 'app-delivery-address-form',
   imports: [
-    FormsModule,
     MatButton,
     MatInput,
     MatLabel,
@@ -22,16 +22,14 @@ import { Breakpoints } from '@core/constants/breakpoints';
     MatButtonToggle,
     MatIcon,
     MatFormFieldModule,
+    ReactiveFormsModule,
   ],
   template: `
-    <div class="items-center gap-6 bg-white rounded-b-xl flex flex-col max-w-2xl">
-      <div class="w-full max-w-[630px] max-h-[420px]">
-        <img src="map-placeholder.jpg" class="cover" alt="Map Placeholder" />
-      </div>
-      <form class="w-full flex flex-col gap-6">
+    <div [formGroup]="checkoutForm" class="items-center gap-6 bg-white rounded-b-xl flex flex-col">
+      <div formGroupName="deliveryAddress" class="w-full flex flex-col gap-6">
         <div>
           <h3 class="text-[#1a1b1f] font-medium mb-2 text-base">Select Address Type</h3>
-          <mat-button-toggle-group>
+          <mat-button-toggle-group formControlName="type">
             <mat-button-toggle value="home">
               <mat-icon>home</mat-icon>
               Home
@@ -52,40 +50,38 @@ import { Breakpoints } from '@core/constants/breakpoints';
         </div>
         <mat-form-field>
           <mat-label>Street Address</mat-label>
-          <input matInput />
+          <input matInput formControlName="street" />
         </mat-form-field>
 
         <div class="flex flex-col gap-6 md:flex-row md:gap-3">
           <mat-form-field>
             <mat-label>City</mat-label>
-            <input matInput />
+            <input matInput formControlName="city" />
           </mat-form-field>
 
           <mat-form-field>
             <mat-label>N.of Apartment</mat-label>
-            <input matInput />
+            <input matInput formControlName="apartmentNumber" />
           </mat-form-field>
 
           <mat-form-field>
             <mat-label>Zip Code</mat-label>
-            <input matInput type="number" />
+            <input matInput type="number" formControlName="zipCode" />
           </mat-form-field>
         </div>
         <mat-form-field>
           <mat-label>Delivery Instructions</mat-label>
-          <input matInput />
+          <input matInput formControlName="deliveryInstructions" />
         </mat-form-field>
-      </form>
-      <button matButton="filled" class="w-full btn-pill">
-        Save Changes
-        <mat-icon>location_on</mat-icon>
-      </button>
+      </div>
     </div>
   `,
   styles: ``,
 })
 export class DeliveryAddressForm {
   isXSMobile = signal(false);
+  formService = inject(CheckoutFormService);
+  checkoutForm = this.formService.form;
 
   constructor(bpo: BreakpointObserver) {
     bpo

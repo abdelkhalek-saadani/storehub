@@ -1,7 +1,7 @@
 import { Component, inject, input, output } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { ProductStore } from '../../../product-store';
+import { ProductStore } from '../../product-store';
 
 @Component({
   selector: 'app-add-to-cart-button',

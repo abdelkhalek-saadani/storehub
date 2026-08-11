@@ -10,14 +10,21 @@ import { Order } from '../../models/Order';
 
 export interface OrderRequest {
   slotId: string;
-  storeId: string;
   cartId: string;
 
   billingAddress?: string;
-  deliveryAddress?: string;
   firstName?: string;
   lastName?: string;
   phoneNumber?: string;
+
+  deliveryAddress?: {
+    type: string;
+    street: string;
+    city: string;
+    apartmentNumber?: string;
+    zipCode: string;
+    deliveryInstructions: string;
+  };
 }
 
 export interface OrderCreatedResponse {
@@ -89,10 +96,7 @@ export class OrderApi {
     });
   }
 
-  placeOrder(
-    idemKey: string,
-    request: Omit<OrderRequest, 'storeId'>,
-  ): Observable<OrderCreatedResponse> {
+  placeOrder(idemKey: string, request: OrderRequest): Observable<OrderCreatedResponse> {
     let headers = new HttpHeaders({ 'Idempotency-Key': idemKey });
     const response = this.http.post<OrderCreatedResponse>(
       `${environment.orderApiUrl}/api/orders`,

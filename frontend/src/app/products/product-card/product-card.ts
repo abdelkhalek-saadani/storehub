@@ -1,6 +1,6 @@
 import { Component, computed, inject, Input } from '@angular/core';
 import { MatCard, MatCardContent, MatCardImage } from '@angular/material/card';
-import { AddToCartButton } from '@components/atoms/add-to-cart-button/add-to-cart-button';
+import { AddToCartButton } from '../add-to-cart-button/add-to-cart-button';
 import { Product } from '../models/product';
 import { CartStore } from '../../cart/cart-store';
 import { UpdateNature } from '@components/qty-selector/qty-selector';

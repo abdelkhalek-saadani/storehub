@@ -11,6 +11,7 @@ import { tap } from 'rxjs';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { CheckoutFormService } from '../checkout-form.service';
+import { DeliveryAddressForm } from '../delivery-address-form/delivery-address-form';
 
 interface CheckoutFormValue {
   firstName: string;
@@ -31,6 +32,7 @@ interface CheckoutFormValue {
     MatSelect,
     ReactiveFormsModule,
     MatError,
+    DeliveryAddressForm,
   ],
   template: `
     <form [formGroup]="checkoutForm">
@@ -81,6 +83,8 @@ interface CheckoutFormValue {
           }
         </mat-form-field>
         <app-phone-input />
+        <div class="font-semibold text-lg">Delivery Address</div>
+        <app-delivery-address-form />
       </div>
     </form>
   `,

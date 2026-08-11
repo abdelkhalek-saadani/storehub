@@ -2,7 +2,6 @@ import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
-import { DeliveryAddressDialog } from '@components/molecules/delivery-address-dialog/delivery-address-dialog';
 import { StorePickerService } from '../../../store/service/store-picker';
 import { StoreContext } from '../../../store/service/store-context';
 import { Router } from '@angular/router';

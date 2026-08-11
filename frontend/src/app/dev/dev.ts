@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { MatButton, MatFabButton, MatIconButton, MatMiniFabButton } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -28,8 +28,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { PickStoreLocationForm } from '../components/molecules/pick-store-location-form/pick-store-location-form';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { DeliveryAddressForm } from '@components/molecules/delivery-address-form/delivery-address-form';
-import { CategorySquaredButton } from '@components/atoms/category-squared-button/category-squared-button';
 import { CategoryBar } from '@components/molecules/category-bar/category-bar';
 import { Breakpoints } from '@core/constants/breakpoints';
 import { WishlistProductCard } from '@components/molecules/wishlist-product-card/wishlist-product-card';
@@ -40,6 +38,8 @@ import { CheckoutForm } from '../checkout/checkout-form/checkout-form';
 import { ReviewOrder } from '@shared/components/review-order/review-order';
 import { CheckoutDetails } from '../checkout/checkout-details/checkout-details';
 import { OrderConfirmation } from '../checkout/order-confirmation/order-confirmation';
+import { StoreContext } from '../store/service/store-context';
+import { DeliveryAddressForm } from '../checkout/delivery-address-form/delivery-address-form';
 @Component({
   selector: 'app-dev',
   imports: [
@@ -73,11 +73,9 @@ import { OrderConfirmation } from '../checkout/order-confirmation/order-confirma
     DeliveryAddressForm,
     CategoryBar,
     CheckoutForm,
-    ReviewOrder,
     CheckoutDetails,
     WishlistProductCard,
     OrderConfirmation,
-    OrderTracking,
     Gallery,
   ],
   template: `
@@ -618,20 +616,26 @@ import { OrderConfirmation } from '../checkout/order-confirmation/order-confirma
     }
   `,
 })
-export default class Dev {
+export default class Dev implements OnInit {
   value!: Date;
 
   keycloak = inject(Keycloak);
   isMdDevice = signal(false);
   quantity = signal(5);
+  storeContext = inject(StoreContext);
 
   constructor(bpo: BreakpointObserver) {
     bpo
       .observe(Breakpoints.md)
       .pipe(takeUntilDestroyed())
       .subscribe((result) => this.isMdDevice.set(result.matches));
+    this.storeContext.setStore({
+      storeId: '7f76f5f6-0d95-4170-a719-365e9330fe64',
+      storeSlug: 'store-slug',
+      storeName: 'Store Slug',
+    });
   }
-
+  ngOnInit() {}
   activeTab = signal('email');
 
   toggleActiveTab() {

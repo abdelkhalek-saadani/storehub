@@ -3,9 +3,9 @@ import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatProgressBar } from '@angular/material/progress-bar';
 import { MatDialog } from '@angular/material/dialog';
-import { CouponDialog } from '@components/molecules/coupon-dialog/coupon-dialog';
 import { CheckoutFormService } from '../checkout-form.service';
 import { CartStore } from '../../cart/cart-store';
+import { CouponDialog } from '../coupon-dialog/coupon-dialog';
 
 @Component({
   selector: 'app-checkout-details',

@@ -2,8 +2,8 @@ package com.abdelkhalek.storehub.order.user.controller;
 
 import com.abdelkhalek.storehub.order.common.identity.KeycloakAdminService;
 import com.abdelkhalek.storehub.order.user.UserEventPublisher;
-import com.abdelkhalek.storehub.order.user.model.SignupRequest;
-import com.abdelkhalek.storehub.order.user.model.User;
+import com.abdelkhalek.storehub.order.user.dto.SignupRequest;
+import com.abdelkhalek.storehub.order.user.entity.User;
 import com.abdelkhalek.storehub.order.user.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

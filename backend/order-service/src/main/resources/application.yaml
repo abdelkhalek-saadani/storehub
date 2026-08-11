@@ -6,10 +6,6 @@ spring:
     url: r2dbc:postgresql://localhost:5432/order_db
     username: postgres
     password: postgres
-  flyway:
-    url: jdbc:postgresql://localhost:5432/order_db
-    locations: classpath:db/postgres/migration
-
 
   rabbitmq:
     host: localhost
@@ -54,14 +50,3 @@ storehub:
   payment-base-url: ${PAYMENT_BASE_URL}
 
 
-
-external:
-  product:
-    api:
-      base-url: http://localhost:3000
-  slot:
-    api:
-      base-url: http://localhost:3030
-  pricing:
-    api:
-      base-url: http://localhost:3060

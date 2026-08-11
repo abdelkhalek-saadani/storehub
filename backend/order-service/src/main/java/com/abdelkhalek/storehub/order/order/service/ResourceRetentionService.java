@@ -1,6 +1,5 @@
 package com.abdelkhalek.storehub.order.order.service;
 
-import com.abdelkhalek.storehub.order.order.models.Result;
 import com.abdelkhalek.storehub.order.order.spi.ProductService;
 import com.abdelkhalek.storehub.order.order.spi.SlotService;
 import lombok.RequiredArgsConstructor;
@@ -83,5 +82,16 @@ public class ResourceRetentionService {
                 .filter(r -> !r.isSuccess())
                 .map(Result::error)
                 .toList();
+    }
+
+    record Result<T> (T value, Throwable error, boolean isSuccess) {
+        public static <T> Result<T> success(T value) {
+            return new Result<>(value, null, true);
+        }
+
+        public static <T> Result<T> failure(Throwable error) {
+            return new Result<>(null, error, false);
+        }
+
     }
 }

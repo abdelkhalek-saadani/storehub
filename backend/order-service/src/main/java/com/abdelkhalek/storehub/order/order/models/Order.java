@@ -31,7 +31,7 @@ public class Order {
 
     UUID slotId;
 
-    BigDecimal deliveryFee = BigDecimal.TEN;
+    BigDecimal deliveryFee;
 
     UUID slotRetainId;
     List<UUID> inventoryRetainIds;

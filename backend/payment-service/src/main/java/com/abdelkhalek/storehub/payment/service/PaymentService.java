@@ -1,6 +1,6 @@
 package com.abdelkhalek.storehub.payment.service;
 
-import com.abdelkhalek.storehub.payment.controller.PaymentFilter;
+import com.abdelkhalek.storehub.payment.model.PaymentFilter;
 import com.abdelkhalek.storehub.payment.dto.AuthorizePaypalOrderResponse;
 import com.abdelkhalek.storehub.payment.dto.CreatePaypalOrderResponse;
 import com.abdelkhalek.storehub.payment.dto.PaymentResponse;
@@ -49,15 +49,9 @@ public class PaymentService {
         return findPaymentByResource(ResourceType.CAPTURE, captureId);
     }
 
-    public PaymentEntity getByPaypalOrderId(String paypalOrderId) {
-        return findPaymentByResource(ResourceType.CHECKOUT_ORDER, paypalOrderId);
-    }
 
-    public PaymentEntity getByOrderId(UUID orderId) {
-        return paymentRepository.findByOrderId(orderId)
-                .orElseThrow(() -> new PaymentNotFoundException(
-                        "Payment not found by order ID: " + orderId));
-    }
+
+
 
     public PaymentEntity getByCustomerId(UUID customerId) {
         return paymentRepository.findByCustomerId(customerId)

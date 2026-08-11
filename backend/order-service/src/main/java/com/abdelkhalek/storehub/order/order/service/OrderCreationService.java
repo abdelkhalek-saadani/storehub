@@ -27,7 +27,6 @@ import java.util.UUID;
 @Slf4j
 @Service
 public class OrderCreationService {
-
     private final SlotService slotService;
     private final ProductService productService;
     private final PricingService pricingService;

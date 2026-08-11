@@ -10,6 +10,9 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
+/**
+ * <b>Note: </b>This will be used when employee feature is added
+ */
 @Service
 public class StoreAuthorizationService {
 

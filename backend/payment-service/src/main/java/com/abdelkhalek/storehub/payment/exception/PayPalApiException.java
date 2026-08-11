@@ -5,7 +5,4 @@ public class PayPalApiException extends RuntimeException {
         super(message);
     }
 
-    public PayPalApiException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

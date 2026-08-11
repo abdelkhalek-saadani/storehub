@@ -1,7 +1,8 @@
 package com.abdelkhalek.storehub.order.common.identity;
 
 import com.abdelkhalek.storehub.order.common.config.StorehubProperties;
-import com.abdelkhalek.storehub.order.user.model.SignupRequest;
+import com.abdelkhalek.storehub.order.user.dto.SignupRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,24 +17,20 @@ import java.util.Map;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class KeycloakAdminService {
 
-    private final WebClient webClient;
+    private final WebClient keycloakWebClient;
     private final StorehubProperties props;
 
 
-    public KeycloakAdminService(StorehubProperties props, WebClient keycloakWebClient) {
-        this.webClient = keycloakWebClient;
-        this.props = props;
-    }
-
 
     public Mono<Void> addRealmRole(String keycloakUserId, String roleName) {
-        return webClient.get()
+        return keycloakWebClient.get()
                 .uri("/admin/realms/{realm}/roles/{roleName}", props.realm(), roleName)
                 .retrieve()
                 .bodyToMono(Map.class)
-                .flatMap(roleRepresentation -> webClient.post()
+                .flatMap(roleRepresentation -> keycloakWebClient.post()
                         .uri("/admin/realms/{realm}/users/{userId}/role-mappings/realm", props.realm(), keycloakUserId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(List.of(roleRepresentation))
@@ -44,11 +41,11 @@ public class KeycloakAdminService {
     }
 
     public Mono<Void> removeRealmRole(String keycloakUserId, String roleName) {
-        return webClient.get()
+        return keycloakWebClient.get()
                 .uri("/admin/realms/{realm}/roles/{roleName}", props.realm(), roleName)
                 .retrieve()
                 .bodyToMono(Map.class)
-                .flatMap(roleRepresentation -> webClient.method(org.springframework.http.HttpMethod.DELETE)
+                .flatMap(roleRepresentation -> keycloakWebClient.method(org.springframework.http.HttpMethod.DELETE)
                         .uri("/admin/realms/{realm}/users/{userId}/role-mappings/realm", props.realm(), keycloakUserId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(List.of(roleRepresentation))
@@ -67,7 +64,7 @@ public class KeycloakAdminService {
      * default 'customer' realm role. Returns the new Keycloak user ID.
      */
     public Mono<String> createUser(SignupRequest req) {
-        return webClient.post()
+        return keycloakWebClient.post()
                 .uri("/admin/realms/{realm}/users", props.realm())
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(buildUserPayload(req))
@@ -88,7 +85,7 @@ public class KeycloakAdminService {
      * leaves an orphaned KC user that needs alerting/manual cleanup.
      */
     public Mono<Void> deleteUser(String keycloakUserId) {
-        return webClient.delete()
+        return keycloakWebClient.delete()
                 .uri("/admin/realms/{realm}/users/{userId}", props.realm(), keycloakUserId)
                 .retrieve()
                 .toBodilessEntity()

@@ -1,6 +1,6 @@
 package com.abdelkhalek.storehub.order.store.repository;
 
-import com.abdelkhalek.storehub.order.store.model.Store;
+import com.abdelkhalek.storehub.order.store.entity.Store;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Mono;
 

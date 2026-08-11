@@ -1,10 +1,10 @@
 package com.abdelkhalek.storehub.order.store.employee;
 
 import com.abdelkhalek.storehub.order.common.identity.KeycloakAdminService;
-import com.abdelkhalek.storehub.order.user.model.User;
+import com.abdelkhalek.storehub.order.user.entity.User;
 import com.abdelkhalek.storehub.order.user.repository.UserRepository;
 import com.abdelkhalek.storehub.order.store.model.MembershipRole;
-import com.abdelkhalek.storehub.order.store.model.StoreMembership;
+import com.abdelkhalek.storehub.order.store.entity.StoreMembership;
 import com.abdelkhalek.storehub.order.store.repository.StoreMembershipRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -17,6 +17,9 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
+/**
+ * <b>Note: </b>This controller will be used when employee feature is added
+ */
 @RestController
 @RequestMapping("/api/stores/{storeId}/employees")
 public class EmployeeController {

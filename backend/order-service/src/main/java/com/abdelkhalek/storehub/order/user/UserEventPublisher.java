@@ -1,8 +1,8 @@
 package com.abdelkhalek.storehub.order.user;
 
 
-import com.abdelkhalek.storehub.order.user.model.User;
-import com.abdelkhalek.storehub.order.user.model.UserCreatedEvent;
+import com.abdelkhalek.storehub.order.user.entity.User;
+import com.abdelkhalek.storehub.order.user.event.UserCreatedEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,7 @@
 package com.abdelkhalek.storehub.order.store.controller;
 
 import com.abdelkhalek.storehub.order.store.model.MembershipRole;
-import com.abdelkhalek.storehub.order.store.model.StoreSummary;
+import com.abdelkhalek.storehub.order.store.dto.StoreSummary;
 import com.abdelkhalek.storehub.order.store.repository.StoreMembershipRepository;
 import com.abdelkhalek.storehub.order.store.repository.StoreRepository;
 import org.springframework.web.bind.annotation.GetMapping;

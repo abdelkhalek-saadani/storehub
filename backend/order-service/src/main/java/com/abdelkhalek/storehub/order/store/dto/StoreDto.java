@@ -1,6 +1,6 @@
 package com.abdelkhalek.storehub.order.store.dto;
 
-import com.abdelkhalek.storehub.order.store.model.Store;
+import com.abdelkhalek.storehub.order.store.entity.Store;
 
 import java.util.UUID;
 

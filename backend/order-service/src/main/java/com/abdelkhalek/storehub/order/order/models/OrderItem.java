@@ -29,13 +29,4 @@ public class OrderItem {
 
     LocalDateTime createdAt;
 
-
-
-
-    public OrderItem(UUID productId, int quantity) {
-        this.productId = productId;
-        this.quantity = quantity;
-    }
-
-
 }

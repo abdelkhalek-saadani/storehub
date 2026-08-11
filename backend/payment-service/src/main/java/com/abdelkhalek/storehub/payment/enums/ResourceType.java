@@ -24,9 +24,6 @@ public enum ResourceType {
     ResourceType(String value) {
         this.value = value;
     }
-    public String getValue() {
-        return value;
-    }
 
     public static ResourceType fromValue(String value) {
         ResourceType type = VALUE_MAP.get(value);

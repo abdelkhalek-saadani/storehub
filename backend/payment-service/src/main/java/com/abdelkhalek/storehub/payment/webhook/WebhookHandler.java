@@ -7,7 +7,7 @@ import com.abdelkhalek.storehub.payment.entity.PaymentEntity;
 import com.abdelkhalek.storehub.payment.entity.ProcessedWebhookEventEntity;
 import com.abdelkhalek.storehub.payment.enums.PaymentStatus;
 import com.abdelkhalek.storehub.payment.enums.ResourceType;
-import com.abdelkhalek.storehub.payment.event.EventPublisher;
+import com.abdelkhalek.storehub.payment.EventPublisher;
 import com.abdelkhalek.storehub.payment.event.PaymentStatusUpdateEvent;
 import com.abdelkhalek.storehub.payment.exception.WebhookProcessingException;
 import com.abdelkhalek.storehub.payment.exception.WebhookVerificationException;
@@ -59,7 +59,7 @@ public class WebhookHandler {
             );
             return true; // first time seeing this event
         } catch (DataIntegrityViolationException e) {
-            return false; // already processed — duplicate delivery
+            return false; // already processed, duplicate delivery
         }
     }
 

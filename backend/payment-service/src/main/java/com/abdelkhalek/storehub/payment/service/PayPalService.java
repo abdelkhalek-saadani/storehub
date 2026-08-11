@@ -123,6 +123,7 @@ public class PayPalService {
         return extractAuthorizationResponse(response);
     }
 
+    // TODO: Review this method
     public boolean verifyWebhook(String payload, String transmissionId, String certUrl,
                                  String authAlgo, String transmissionSig, String transmissionTime) {
         JsonNode webhookEvent;

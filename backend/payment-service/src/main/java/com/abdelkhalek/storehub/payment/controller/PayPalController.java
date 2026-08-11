@@ -4,6 +4,7 @@ import com.abdelkhalek.storehub.payment.dto.CreatePaymentRequest;
 import com.abdelkhalek.storehub.payment.dto.PaymentResponse;
 import com.abdelkhalek.storehub.payment.entity.PaymentEntity;
 import com.abdelkhalek.storehub.payment.exception.PaymentNotFoundException;
+import com.abdelkhalek.storehub.payment.model.PaymentFilter;
 import com.abdelkhalek.storehub.payment.service.PaymentService;
 import com.abdelkhalek.storehub.payment.webhook.WebhookHandler;
 import jakarta.validation.Valid;
@@ -33,70 +34,6 @@ public class PayPalController {
     private final PaymentService paymentService;
     private final WebhookHandler webhookHandler;
 
-
-    @GetMapping
-    public ResponseEntity<?> getPayments(
-            @RequestParam(required = false) String captureId,
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) String authorizationId,
-            @RequestParam(required = false) UUID customerId,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
-            @RequestParam(defaultValue = "createdAt") String sortBy,
-            @RequestParam(defaultValue = "desc") String sortDir,
-            @RequestParam(defaultValue = "1") @Min(1) int page,
-            @RequestParam(defaultValue = "20") @Min(1) @Max(100) int limit
-    ) {
-
-        if (captureId != null && !captureId.isEmpty()) {
-            PaymentEntity payment = paymentService.getByCaptureId(captureId);
-            if (payment == null) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.ok(Map.of("data", payment));
-        }
-
-        if (authorizationId != null && !authorizationId.isEmpty()) {
-            PaymentEntity payment = paymentService.getByAuthorizationId(authorizationId);
-            if (payment == null) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.ok(Map.of("data", payment));
-        }
-
-        if (customerId != null && !customerId.toString().isEmpty()) {
-            PaymentEntity payment = paymentService.getByCustomerId(customerId);
-            if (payment == null) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.ok(Map.of("data", payment));
-        }
-
-        PaymentFilter filter = PaymentFilter.builder()
-                .status(status)
-                .startDate(startDate)
-                .endDate(endDate)
-                .build();
-
-        Sort.Direction direction = sortDir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, sortBy);
-
-        Pageable pageable = PageRequest.of(page - 1, limit, sort);
-        Page<PaymentEntity> paymentsPage = paymentService.getPayments(filter, pageable);
-
-        Map<String, Object> response = Map.of(
-                "data", paymentsPage.getContent(),
-                "pagination", Map.of(
-                        "page", page,
-                        "limit", limit,
-                        "total", paymentsPage.getTotalElements(),
-                        "totalPages", paymentsPage.getTotalPages()
-                )
-        );
-
-        return ResponseEntity.ok(response);
-
-    }
 
 
     @GetMapping("/{paymentId}/status")
@@ -168,6 +105,7 @@ public class PayPalController {
     }
 
     // Testing endpoints - should be removed in production or protected with profiles
+
     @PostMapping("/{paymentId}/capture")
     public ResponseEntity<PaymentResponse> captureAuthorization(@PathVariable UUID paymentId) {
         PaymentEntity payment;
@@ -185,7 +123,6 @@ public class PayPalController {
         PaymentResponse response = paymentService.captureAuthorization(authorizationId);
         return ResponseEntity.ok(response);
     }
-
     @PostMapping("/{paymentId}/authorize")
     public ResponseEntity<PaymentResponse> authorizeOrder(@PathVariable UUID paymentId) {
         PaymentEntity payment;
@@ -215,5 +152,70 @@ public class PayPalController {
         log.debug("Received payload: {}", payload);
         webhookHandler.handleWebhook(payload, transmissionId, certUrl, authAlgo, transmissionSig, transmissionTime);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping
+    // TODO: Review this method
+    public ResponseEntity<?> getPayments(
+            @RequestParam(required = false) String captureId,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String authorizationId,
+            @RequestParam(required = false) UUID customerId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir,
+            @RequestParam(defaultValue = "1") @Min(1) int page,
+            @RequestParam(defaultValue = "20") @Min(1) @Max(100) int limit
+    ) {
+
+        if (captureId != null && !captureId.isEmpty()) {
+            PaymentEntity payment = paymentService.getByCaptureId(captureId);
+            if (payment == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(Map.of("data", payment));
+        }
+
+        if (authorizationId != null && !authorizationId.isEmpty()) {
+            PaymentEntity payment = paymentService.getByAuthorizationId(authorizationId);
+            if (payment == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(Map.of("data", payment));
+        }
+
+        if (customerId != null && !customerId.toString().isEmpty()) {
+            PaymentEntity payment = paymentService.getByCustomerId(customerId);
+            if (payment == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(Map.of("data", payment));
+        }
+
+        PaymentFilter filter = PaymentFilter.builder()
+                .status(status)
+                .startDate(startDate)
+                .endDate(endDate)
+                .build();
+
+        Sort.Direction direction = sortDir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, sortBy);
+
+        Pageable pageable = PageRequest.of(page - 1, limit, sort);
+        Page<PaymentEntity> paymentsPage = paymentService.getPayments(filter, pageable);
+
+        Map<String, Object> response = Map.of(
+                "data", paymentsPage.getContent(),
+                "pagination", Map.of(
+                        "page", page,
+                        "limit", limit,
+                        "total", paymentsPage.getTotalElements(),
+                        "totalPages", paymentsPage.getTotalPages()
+                )
+        );
+
+        return ResponseEntity.ok(response);
+
     }
 }

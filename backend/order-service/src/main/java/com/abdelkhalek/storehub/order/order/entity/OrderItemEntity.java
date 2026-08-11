@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.With;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.r2dbc.config.EnableR2dbcAuditing;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.math.BigDecimal;
@@ -22,7 +21,6 @@ import java.util.UUID;
 @Table(
         name = "order_item"
 )
-@EnableR2dbcAuditing
 public class OrderItemEntity {
 
 

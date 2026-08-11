@@ -5,22 +5,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/")
 public class Controller {
 
-    @GetMapping("/success")
-    public String success() {
-        //probably make it redirect to frontend
-        return "You have been redirected to return_url";
-    }
-
-    @GetMapping("/salemu-alaykom")
+    @GetMapping()
     public String salemuAlaykom() {
         return "Salemu Alaykom";
-    }
-    @GetMapping("/cancel")
-    public String cancel() {
-        //probably make it redirect to frontend
-        return "You have been redirected to cancel_url";
     }
 }

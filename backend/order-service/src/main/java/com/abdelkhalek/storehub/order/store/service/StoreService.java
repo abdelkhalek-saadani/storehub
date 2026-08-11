@@ -2,13 +2,13 @@ package com.abdelkhalek.storehub.order.store.service;
 
 import com.abdelkhalek.storehub.order.common.identity.KeycloakAdminService;
 import com.abdelkhalek.storehub.order.store.StoreEventPublisher;
-import com.abdelkhalek.storehub.order.store.model.CreateStoreRequest;
+import com.abdelkhalek.storehub.order.store.dto.CreateStoreRequest;
 import com.abdelkhalek.storehub.order.store.model.MembershipRole;
-import com.abdelkhalek.storehub.order.store.model.Store;
-import com.abdelkhalek.storehub.order.store.model.StoreMembership;
+import com.abdelkhalek.storehub.order.store.entity.Store;
+import com.abdelkhalek.storehub.order.store.entity.StoreMembership;
 import com.abdelkhalek.storehub.order.store.repository.StoreMembershipRepository;
 import com.abdelkhalek.storehub.order.store.repository.StoreRepository;
-import com.abdelkhalek.storehub.order.user.model.User;
+import com.abdelkhalek.storehub.order.user.entity.User;
 import com.github.slugify.Slugify;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

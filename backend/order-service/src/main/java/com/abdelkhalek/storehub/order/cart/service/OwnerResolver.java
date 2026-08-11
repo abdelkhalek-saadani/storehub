@@ -1,7 +1,7 @@
 package com.abdelkhalek.storehub.order.cart.service;
 
 import com.abdelkhalek.storehub.order.cart.domain.CartOwner;
-import com.abdelkhalek.storehub.order.user.model.User;
+import com.abdelkhalek.storehub.order.user.entity.User;
 import com.abdelkhalek.storehub.order.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;

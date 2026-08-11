@@ -1,7 +1,7 @@
 package com.abdelkhalek.storehub.order.store.repository;
 
 import com.abdelkhalek.storehub.order.store.model.MembershipRole;
-import com.abdelkhalek.storehub.order.store.model.StoreMembership;
+import com.abdelkhalek.storehub.order.store.entity.StoreMembership;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Mono;
 import java.util.UUID;

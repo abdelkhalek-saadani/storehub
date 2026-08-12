@@ -1,5 +1,5 @@
 import { Component, inject, input, output, signal } from '@angular/core';
-import { ViewPanel } from '../../directives/view-panel';
+import { ViewPanel } from '../directives/view-panel';
 import { MatFormField } from '@angular/material/form-field';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInput } from '@angular/material/input';

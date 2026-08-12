@@ -1,6 +1,6 @@
 import { Component, computed, input, Input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
-import { StarRating } from '../star-rating/star-rating';
+import { StarRating } from './star-rating';
 import { Review } from '../../models/Review';
 import { DecimalPipe } from '@angular/common';
 

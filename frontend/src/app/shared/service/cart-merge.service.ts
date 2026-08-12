@@ -1,6 +1,6 @@
 import { inject, Injectable, effect } from '@angular/core';
 import { KEYCLOAK_EVENT_SIGNAL, typeEventArgs, KeycloakEventType } from 'keycloak-angular';
-import { GUEST_ID_KEY } from '../../config/http/guest-id-interceptor';
+import { GUEST_ID_KEY } from '@core/http/guest-id-interceptor';
 import { OrderApi } from '@shared/service/order-api';
 
 @Injectable({ providedIn: 'root' })

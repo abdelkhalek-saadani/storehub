@@ -1,16 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import {
-  MatDatepicker,
-  MatDatepickerInput,
-  MatDatepickerToggle,
-} from '@angular/material/datepicker';
-import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
-import { MatInput, MatSuffix } from '@angular/material/input';
-import {
-  MatTimepicker,
-  MatTimepickerInput,
-  MatTimepickerToggle,
-} from '@angular/material/timepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
@@ -19,7 +9,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CheckoutForm } from './checkout-form/checkout-form';
 import { CheckoutDetails } from './checkout-details/checkout-details';
 import { ReviewOrder } from '@shared/components/review-order/review-order';
-import { MatOption, MatSelect } from '@angular/material/select';
 import { CartStore } from '../cart/cart-store';
 
 @Component({

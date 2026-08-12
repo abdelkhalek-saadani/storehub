@@ -2,10 +2,10 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import Keycloak from 'keycloak-js';
 import { MatButton } from '@angular/material/button';
-import { LogoText } from '@components/atoms/logo-text/logo-text';
-import { Divider } from '@components/atoms/divider/divider';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { LogoText } from '@shared/components/logo-text/logo-text';
+import { Divider } from '../divider/divider';
 
 @Component({
   selector: 'app-welcome',

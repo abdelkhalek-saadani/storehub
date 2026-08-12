@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { Router, ActivatedRoute } from '@angular/router';
 import { StorePickerService } from './service/store-picker';
-import { LogoText } from '@components/atoms/logo-text/logo-text';
+import { LogoText } from '@shared/components/logo-text/logo-text';
 
 @Component({
   selector: 'app-welcome-pick-store',

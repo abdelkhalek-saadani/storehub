@@ -11,7 +11,7 @@ const redirectIfAuthenticated = async (
   const router = inject(Router);
 
   if (authenticated) {
-    return router.parseUrl('/dev');
+    return router.parseUrl('/');
   }
   return true;
 };

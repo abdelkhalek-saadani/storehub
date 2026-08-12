@@ -26,8 +26,8 @@ import {
   withAutoRefreshToken,
 } from 'keycloak-angular';
 import { keycloakProvider } from '@core/auth/keycloak-config';
-import { bearerInterceptorProvider } from './config/http/bearer-interceptor-config';
-import { guestIdInterceptor } from './config/http/guest-id-interceptor';
+import { bearerInterceptorProvider } from '@core/http/bearer-interceptor-config';
+import { guestIdInterceptor } from '@core/http/guest-id-interceptor';
 import { CartMergeService } from '@shared/service/cart-merge.service';
 
 export const appConfig: ApplicationConfig = {

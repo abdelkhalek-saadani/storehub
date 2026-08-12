@@ -8,7 +8,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { SearchBar } from './search-bar/search-bar';
-import { LogoText } from '@components/atoms/logo-text/logo-text';
+import { LogoText } from '@shared/components/logo-text/logo-text';
 import { StoreButton } from './store-button/store-button';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatDivider } from '@angular/material/divider';

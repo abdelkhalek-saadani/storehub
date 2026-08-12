@@ -98,7 +98,7 @@ export class ReviewOrder implements OnInit {
       .subscribe((result) => this.isXSMobile.set(result.matches));
   }
 
-  orderedItems = computed(() => {
+  orderedItems = computed((): (CartItemResponse | OrderItemResponse)[] => {
     return [...this.items()].sort((a, b) => a.productId.localeCompare(b.productId));
   });
 

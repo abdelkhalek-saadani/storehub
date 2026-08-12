@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { ToggleWishlistButton } from '@components/toggle-wishlist-button/toggle-wishlist-button';
-import { Gallery } from '@components/molecules/gallery/gallery';
-import { ViewReviews } from '@components/view-reviews/view-reviews';
-import { Review } from '../../models/Review';
+import { ToggleWishlistButton } from './components/toggle-wishlist-button';
+import { Gallery } from './components/gallery';
+import { ViewReviews } from './components/view-reviews';
+import { Review } from '../models/Review';
 
 @Component({
   selector: 'app-product-details',

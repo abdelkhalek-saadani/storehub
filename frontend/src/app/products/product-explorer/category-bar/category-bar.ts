@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { CategorySquaredButton } from '../../atoms/category-squared-button/category-squared-button';
+import { CategorySquaredButton } from '../category-bar-squared-button/category-squared-button';
 import { MatChip, MatChipAvatar, MatChipSet } from '@angular/material/chips';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';

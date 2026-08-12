@@ -1,14 +1,14 @@
-import {
-  ActivatedRouteSnapshot,
-  CanActivateFn,
-  Router,
-  RouterStateSnapshot,
-  UrlTree,
-} from '@angular/router';
+import { CanActivateFn, Router, UrlTree } from '@angular/router';
 import { AuthGuardData, createAuthGuard } from 'keycloak-angular';
 import { inject } from '@angular/core';
 
-// Usage in routes: data: { role: 'EMPLOYEE' }
+/**
+ * Note: Not used anywhere in the codebase , Will be used when role based protection is added on pages
+ * @example // Usage in routes: data: { role: 'EMPLOYEE' }
+ * @param route
+ * @param _state
+ * @param authData
+ */
 const hasRequiredRole = async (
   route: any,
   _state: unknown,

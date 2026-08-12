@@ -34,11 +34,6 @@ export const routes: Routes = [
     path: 'post-login',
     loadComponent: () => import('./auth/post-login/post-login').then((m) => m.PostLogin),
   },
-  {
-    path: 'login',
-    pathMatch: 'full',
-    loadComponent: () => import('./pages/legacy/login/login'),
-  },
 
   {
     path: 'checkout/return',
@@ -66,7 +61,7 @@ export const routes: Routes = [
         children: [
           {
             path: 'wishlist',
-            loadComponent: () => import('./pages/wishlist/wishlist'),
+            loadComponent: () => import('./wishlist/wishlist'),
           },
           {
             path: 'products',
@@ -90,43 +85,11 @@ export const routes: Routes = [
             path: 'guest-track-order',
             loadComponent: () => import('./track-order/guest-track-order'),
           },
+          {
+            path: 'product/:productId',
+            loadComponent: () => import('./product-details/product-details'),
+          },
         ],
-      },
-      {
-        path: 'product/:productId',
-        loadComponent: () => import('./pages/product-details/product-details'),
-      },
-    ],
-  },
-
-  {
-    path: 'legacy',
-    loadComponent: () => import('./layout/layout/layout'),
-    children: [
-      {
-        path: 'products',
-        pathMatch: 'full',
-        redirectTo: 'products/all',
-      },
-      {
-        path: 'wishlist',
-        loadComponent: () => import('./pages/legacy/my-wishlist/my-wishlist'),
-      },
-      {
-        path: 'cart',
-        loadComponent: () => import('./pages/cart/cart'),
-      },
-      {
-        path: 'checkout',
-        loadComponent: () => import('./pages/legacy/checkout/checkout'),
-      },
-      {
-        path: 'order-success',
-        loadComponent: () => import('./pages/order-success/order-success'),
-      },
-      {
-        path: 'product/:productId',
-        loadComponent: () => import('./pages/legacy/product-details/product-details'),
       },
     ],
   },

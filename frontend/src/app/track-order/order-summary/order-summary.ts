@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import { CopyText } from '@components/atoms/copy-text/copy-text';
+import { CopyText } from '../copy-text/copy-text';
 
 @Component({
   selector: 'app-order-summary',

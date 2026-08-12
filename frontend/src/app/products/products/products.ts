@@ -6,7 +6,6 @@ import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
-import { FilterDialog } from '@components/filter-dialog/filter-dialog';
 import { FormsModule } from '@angular/forms';
 import { ProductQuery, CatalogApi } from '@shared/service/catalog-api';
 import { PagedResponse } from '../models/page-response';
@@ -17,6 +16,7 @@ import { ProductFilterState } from '../service/product-filter-state';
 import { ProductPaginationState } from '../service/product-pagination-state';
 import { FilterChips } from '../filter-chips/filter-chips';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { FilterDialog } from '../filter-dialog/filter-dialog';
 
 @Component({
   selector: 'app-products',

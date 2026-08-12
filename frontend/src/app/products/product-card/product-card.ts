@@ -3,7 +3,6 @@ import { MatCard, MatCardContent, MatCardImage } from '@angular/material/card';
 import { AddToCartButton } from '../add-to-cart-button/add-to-cart-button';
 import { Product } from '../models/product';
 import { CartStore } from '../../cart/cart-store';
-import { UpdateNature } from '@components/qty-selector/qty-selector';
 
 @Component({
   selector: 'app-product-card',
@@ -57,3 +56,5 @@ export class ProductCard {
       : this.cartStore.upsertItems([{ productId: this.product.id, quantity: this.quantity() - 1 }]);
   }
 }
+
+export type UpdateNature = 'increment' | 'decrement';

@@ -5,15 +5,14 @@ import Keycloak from 'keycloak-js';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
-import { Divider } from '@components/atoms/divider/divider';
 import { Router } from '@angular/router';
-import { LogoText } from '@components/atoms/logo-text/logo-text';
 import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-toggle';
 import { MatIcon } from '@angular/material/icon';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { SignupService } from '../signup-api';
 import { PendingStoreStorage } from '../pending-store-storage';
 import { lastValueFrom } from 'rxjs';
+import { LogoText } from '@shared/components/logo-text/logo-text';
 
 @Component({
   selector: 'app-signup',

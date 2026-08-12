@@ -18,13 +18,13 @@ import { OrderSummary } from '../order-summary/order-summary';
 import { OrderTracking } from '../order-tracking/order-tracking';
 import { PaymentSummary } from '../payment-summary/payment-summary';
 import { ReviewOrder } from '@shared/components/review-order/review-order';
-import { mapHttpError } from '../error-mapping';
+import { mapHttpError } from '../utility/error-mapping';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Duration, LocalDateTime } from '@js-joda/core';
 import { Slot } from '../track-order';
 import { CatalogApi } from '@shared/service/catalog-api';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Toaster } from '../../services/Toaster';
+import { Toaster } from '@shared/service/toaster';
 
 @Component({
   selector: 'app-order-detail-view',

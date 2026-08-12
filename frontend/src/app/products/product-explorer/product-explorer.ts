@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { OffersSection } from './offers-section/offers-section';
-import { CategoryBar } from '@components/molecules/category-bar/category-bar';
+import { CategoryBar } from './category-bar/category-bar';
 import { BestSellerSection } from './best-seller-section/best-seller-section';
 import { ProductsSection } from './products-section/products-section';
 

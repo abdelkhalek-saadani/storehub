@@ -3,8 +3,6 @@ import { MatButton, MatFabButton, MatIconButton, MatMiniFabButton } from '@angul
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Logo } from '../components/atoms/logo/logo';
-import { LogoText } from '../components/atoms/logo-text/logo-text';
 import { MatInput } from '@angular/material/input';
 import { MatFormField } from '@angular/material/form-field';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -21,18 +19,15 @@ import {
 } from '@angular/material/timepicker';
 import { OffersSection } from '../products/product-explorer/offers-section/offers-section';
 import { MatChipsModule } from '@angular/material/chips';
-import { Divider } from '../components/atoms/divider/divider';
 import { MatTabsModule } from '@angular/material/tabs';
-import { LoginForm } from '../components/molecules/login-form/login-form';
 import { MatSelectModule } from '@angular/material/select';
-import { PickStoreLocationForm } from '../components/molecules/pick-store-location-form/pick-store-location-form';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { CategoryBar } from '@components/molecules/category-bar/category-bar';
+import { CategoryBar } from '../products/product-explorer/category-bar/category-bar';
 import { Breakpoints } from '@core/constants/breakpoints';
-import { WishlistProductCard } from '@components/molecules/wishlist-product-card/wishlist-product-card';
+import { WishlistProductCard } from '../wishlist/product-card/wishlist-product-card';
 import { OrderTracking } from '../track-order/order-tracking/order-tracking';
-import { Gallery } from '../components/molecules/gallery/gallery';
+import { Gallery } from '../product-details/components/gallery';
 import Keycloak from 'keycloak-js';
 import { CheckoutForm } from '../checkout/checkout-form/checkout-form';
 import { ReviewOrder } from '@shared/components/review-order/review-order';
@@ -40,6 +35,10 @@ import { CheckoutDetails } from '../checkout/checkout-details/checkout-details';
 import { OrderConfirmation } from '../checkout/order-confirmation/order-confirmation';
 import { StoreContext } from '../store/service/store-context';
 import { DeliveryAddressForm } from '../checkout/delivery-address-form/delivery-address-form';
+import ProductDetails from '../product-details/product-details';
+import { Logo } from '@shared/components/logo/logo';
+import { LogoText } from '@shared/components/logo-text/logo-text';
+import { Divider } from '../auth/divider/divider';
 @Component({
   selector: 'app-dev',
   imports: [
@@ -67,9 +66,7 @@ import { DeliveryAddressForm } from '../checkout/delivery-address-form/delivery-
     OffersSection,
     Divider,
     ReactiveFormsModule,
-    LoginForm,
     MatSelectModule,
-    PickStoreLocationForm,
     DeliveryAddressForm,
     CategoryBar,
     CheckoutForm,
@@ -77,6 +74,7 @@ import { DeliveryAddressForm } from '../checkout/delivery-address-form/delivery-
     WishlistProductCard,
     OrderConfirmation,
     Gallery,
+    ProductDetails,
   ],
   template: `
     <div class="catalog p-6 font-sans">
@@ -122,13 +120,10 @@ import { DeliveryAddressForm } from '../checkout/delivery-address-form/delivery-
 
           <app-delivery-address-form />
 
-          <span class="label">Pick Store Location</span>
+          <span class="label">Product details</span>
+          <app-product-details />
 
-          <app-pick-store-location-form />
-
-          <span class="label">The Login Form</span>
-
-          <app-login-form />
+          <span class="label">Navigation schematic</span>
           <span class="label">Chips + category-chip class</span>
           <mat-chip-set class="category-chip" aria-label="Fish selection">
             <mat-chip>

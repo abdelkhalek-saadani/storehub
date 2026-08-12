@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { WishlistProductCard } from '@components/molecules/wishlist-product-card/wishlist-product-card';
+import { WishlistProductCard } from './product-card/wishlist-product-card';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 

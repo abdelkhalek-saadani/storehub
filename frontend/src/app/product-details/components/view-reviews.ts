@@ -1,13 +1,13 @@
 import { Component, input, signal } from '@angular/core';
-import { StarRating } from '../star-rating/star-rating';
+import { StarRating } from './star-rating';
 import { MatIcon } from '@angular/material/icon';
-import { ViewReviewItem } from '../view-review-item/view-review-item';
-import { RatingSummary } from '../rating-summary/rating-summary';
+import { ViewReviewItem } from './view-review-item';
+import { RatingSummary } from './rating-summary';
 import { Review } from '../../models/Review';
-import { ViewPanel } from '../../directives/view-panel';
+import { ViewPanel } from '../directives/view-panel';
 import { Product } from '../../models/Product';
 import { MatButton } from '@angular/material/button';
-import { WriteReview } from '../write-review/write-review';
+import { WriteReview } from './write-review';
 
 @Component({
   selector: 'app-view-reviews',

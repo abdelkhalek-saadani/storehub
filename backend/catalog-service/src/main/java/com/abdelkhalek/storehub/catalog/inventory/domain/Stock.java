@@ -1,11 +1,7 @@
 package com.abdelkhalek.storehub.catalog.inventory.domain;
 
 import com.abdelkhalek.storehub.catalog.inventory.exception.InsufficientStockException;
-import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -21,6 +17,8 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor
 @Setter
+@Builder
+@AllArgsConstructor
 public class Stock {
 
     private UUID storeId;

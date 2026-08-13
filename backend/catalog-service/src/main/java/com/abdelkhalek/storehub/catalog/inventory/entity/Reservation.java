@@ -59,6 +59,14 @@ public class Reservation {
         this.createdAt = Instant.now();
         this.expiresAt = expiresAt;
     }
+    public Reservation(UUID storeId, UUID productId, int quantity, Instant expiresAt) {
+        this.storeId = storeId;
+        this.productId = productId;
+        this.quantity = quantity;
+        this.status = ReservationStatus.ACTIVE;
+        this.createdAt = Instant.now();
+        this.expiresAt = expiresAt;
+    }
 
     public void confirm() {
         this.status = ReservationStatus.CONFIRMED;

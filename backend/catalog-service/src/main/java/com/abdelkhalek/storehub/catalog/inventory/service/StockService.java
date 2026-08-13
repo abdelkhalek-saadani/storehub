@@ -5,6 +5,7 @@ import com.abdelkhalek.storehub.catalog.inventory.dto.ReservationItem;
 import com.abdelkhalek.storehub.catalog.inventory.entity.Reservation;
 import com.abdelkhalek.storehub.catalog.inventory.entity.StockEntity;
 import com.abdelkhalek.storehub.catalog.inventory.dto.Item;
+import com.abdelkhalek.storehub.catalog.inventory.exception.NoReservationsForSuchOrderException;
 import com.abdelkhalek.storehub.catalog.inventory.mapper.StockMapper;
 import com.abdelkhalek.storehub.catalog.inventory.entity.StockMovement;
 import com.abdelkhalek.storehub.catalog.inventory.domain.*;
@@ -35,6 +36,7 @@ import java.util.UUID;
 public class StockService {
 
     private static final int MAX_RETRIES = 3;
+    public static final Duration RESERVATION_HOLD_TTL = Duration.ofMinutes(15);
 
     private final StockRepository stockRepository;
     private final ReservationRepository reservationRepository;
@@ -62,7 +64,6 @@ public class StockService {
                 return false;
             }
         }
-        ;
         return true;
     }
 
@@ -79,11 +80,11 @@ public class StockService {
      *
      * @return the list of reservations ids
      */
-    public List<UUID> reserveForOrder(UUID storeId, UUID orderId, List<ReservationItem> items) {
+    public List<UUID> reserveForOrder(UUID storeId, List<ReservationItem> items) {
         int attempt = 0;
         while (true) {
             try {
-                return self.reserveForOrderTx(storeId, orderId, items);
+                return self.reserveForOrderTx(storeId, items);
             } catch (ObjectOptimisticLockingFailureException ex) {
                 attempt++;
                 if (attempt >= MAX_RETRIES) {
@@ -95,8 +96,8 @@ public class StockService {
     }
 
     @Transactional
-    protected List<UUID> reserveForOrderTx(UUID storeId, UUID orderId, List<ReservationItem> items) {
-        Instant expiresAt = Instant.now().plus(Duration.ofMinutes(15)); // payment hold TTL
+    public List<UUID> reserveForOrderTx(UUID storeId, List<ReservationItem> items) {
+        Instant expiresAt = Instant.now().plus(RESERVATION_HOLD_TTL); // payment hold TTL
 
         List<UUID> reservationIds = new ArrayList<>();
         for (ReservationItem item : items) {
@@ -113,7 +114,7 @@ public class StockService {
             stockRepository.save(stockEntity);
 
             Reservation reservation = new Reservation(
-                    storeId, orderId, item.productId(), item.quantity(), expiresAt);
+                    storeId, item.productId(), item.quantity(), expiresAt);
             Reservation r = reservationRepository.save(reservation);
             reservationIds.add(r.getId());
         }
@@ -129,6 +130,11 @@ public class StockService {
     public void confirmForOrder(UUID storeId, UUID orderId) {
         List<Reservation> active = reservationRepository
                 .findByOrderIdAndStatus(orderId, ReservationStatus.ACTIVE);
+
+        if (active.isEmpty()) {
+            throw new NoReservationsForSuchOrderException(
+                    "No active reservation found for order " + orderId + " in store " + storeId);
+        }
 
         for (Reservation reservation : active) {
             StockEntity stockEntity = stockRepository
@@ -178,7 +184,7 @@ public class StockService {
     /**
      * Helper method for releaseItems by reservationIds/orderId
      */
-    private void releaseItems(List<Reservation> reservations, UUID storeId){
+    private void releaseItems(List<Reservation> reservations, UUID storeId) {
         for (Reservation reservation : reservations) {
             StockEntity stockEntity = stockRepository
                     .findByStoreIdAndProductId(storeId, reservation.getProductId())

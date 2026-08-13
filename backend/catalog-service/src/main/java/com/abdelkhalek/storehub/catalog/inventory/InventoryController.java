@@ -38,7 +38,7 @@ public class InventoryController {
         List<ReservationItem> reservationItems =
                 items.stream().map(item -> new ReservationItem(item.productId(), item.quantity()))
                         .toList();
-        List<UUID> ids = stockService.reserveForOrder(storeId, null, reservationItems);
+        List<UUID> ids = stockService.reserveForOrder(storeId, reservationItems);
         return ResponseEntity.ok().body(new ReservationResponse(ids));
     }
 

@@ -17,6 +17,12 @@ import java.util.UUID;
 public class ReservationService {
     private final ReservationRepository reservationRepository;
 
+    /**
+     * Called when order created event is received, It links the reservations to their order
+     * through assigning the {@code orderId}
+     * @param reservationIds Ids of the reservation that will be linked to their order
+     * @param orderId The order where the reservations belong
+     */
     @Transactional
     public void setReservationsOrderId(List<UUID> reservationIds, UUID orderId) {
         Optional<Reservation> rOptional;

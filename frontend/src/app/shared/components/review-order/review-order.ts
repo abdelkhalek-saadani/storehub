@@ -30,6 +30,7 @@ import { CartStore } from '../../../cart/cart-store';
               @for (item of headerItems(); track item.itemId) {
                 <div class="w-16 rounded-2xl h-16 aspect-square overflow-hidden">
                   <img
+                    class="w-full h-full object-cover"
                     [src]="
                       item.productImageUrl ??
                       'https://images.unsplash.com/photo-1603751915495-a5a3ec39c7f5'
@@ -54,6 +55,7 @@ import { CartStore } from '../../../cart/cart-store';
               <div class="flex flex-row gap-4">
                 <div class="w-16 rounded-2xl h-16 aspect-square overflow-hidden">
                   <img
+                    class="w-full h-full object-cover"
                     [src]="
                       item.productImageUrl ??
                       'https://images.unsplash.com/photo-1603751915495-a5a3ec39c7f5'

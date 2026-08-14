@@ -47,7 +47,8 @@ public class DiscountService {
         }
 
         DiscountEntity discount = new DiscountEntity();
-        // set fields...
+        discount.setType(type);
+        discount.setRule(rule);
         discount.getProducts().addAll(products);
         return discountRepository.save(discount);
     }

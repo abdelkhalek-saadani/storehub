@@ -5,9 +5,13 @@ import com.abdelkhalek.storehub.catalog.inventory.dto.Item;
 import com.abdelkhalek.storehub.catalog.inventory.dto.ReservationItem;
 import com.abdelkhalek.storehub.catalog.inventory.entity.Reservation;
 import com.abdelkhalek.storehub.catalog.inventory.entity.StockEntity;
+import com.abdelkhalek.storehub.catalog.inventory.enums.MovementType;
+import com.abdelkhalek.storehub.catalog.inventory.enums.ReservationStatus;
 import com.abdelkhalek.storehub.catalog.inventory.exception.InsufficientStockException;
+import com.abdelkhalek.storehub.catalog.inventory.exception.NoReservationsForSuchOrderException;
 import com.abdelkhalek.storehub.catalog.inventory.mapper.StockMapper;
 import com.abdelkhalek.storehub.catalog.inventory.repository.ReservationRepository;
+import com.abdelkhalek.storehub.catalog.inventory.repository.StockMovementRepository;
 import com.abdelkhalek.storehub.catalog.inventory.repository.StockRepository;
 import com.abdelkhalek.storehub.catalog.inventory.service.StockService;
 import com.abdelkhalek.storehub.catalog.pricing.exception.StockNotFoundException;
@@ -40,6 +44,8 @@ class StockServiceTest {
     private ReservationRepository reservationRepository;
     @Mock
     private StockMapper stockMapper;
+    @Mock
+    private StockMovementRepository stockMovementRepository;
 
     @InjectMocks
     private StockService stockService;
@@ -252,7 +258,7 @@ class StockServiceTest {
 
         assertThatThrownBy(() -> stockService.reserveForOrder(storeId, items))
                 .isInstanceOf(ObjectOptimisticLockingFailureException.class);
-        verify(spyService, times(3)).reserveForOrderTx(storeId, items); // MAX_RETRIES
+        verify(spyService, times(StockService.MAX_RETRIES)).reserveForOrderTx(storeId, items);
     }
 
     @Test
@@ -265,11 +271,135 @@ class StockServiceTest {
         int qty = 10;
         List<ReservationItem> items = List.of(new ReservationItem(productId, qty));
 
-        doThrow(new InsufficientStockException(productId,qty,1))
+        doThrow(new InsufficientStockException(productId, qty, 1))
                 .when(spyService).reserveForOrderTx(storeId, items);
 
         assertThatThrownBy(() -> stockService.reserveForOrder(storeId, items))
                 .isInstanceOf(InsufficientStockException.class);
         verify(spyService, times(1)).reserveForOrderTx(storeId, items);
+    }
+
+    @Test
+    void confirmForOrder_confirmsDeduction_andRecordsStockMovement_forActiveReservations() {
+        UUID storeId = UUID.randomUUID();
+        UUID orderId = UUID.randomUUID();
+        UUID productId = UUID.randomUUID();
+        Reservation reservation = new Reservation(storeId, orderId, productId, 3, Instant.now());
+        int reservationQty = 3;
+        StockEntity entity = new StockEntity();
+        Stock stock =
+                Stock.builder().productId(productId).quantityOnHand(10).quantityReserved(3).build();
+        int initialQtyOnHand = stock.getQuantityOnHand();
+        int initialQtyReserved = stock.getQuantityReserved();
+
+        when(reservationRepository.findByOrderIdAndStatus(orderId, ReservationStatus.ACTIVE))
+                .thenReturn(List.of(reservation));
+        when(stockRepository.findByStoreIdAndProductId(storeId, productId))
+                .thenReturn(Optional.of(entity));
+        when(stockMapper.toDomain(entity)).thenReturn(stock);
+
+        Instant before = Instant.now();
+        stockService.confirmForOrder(storeId, orderId);
+        Instant after = Instant.now();
+
+        assertThat(stock.getQuantityOnHand()).isEqualTo(initialQtyOnHand - reservationQty);   // 10 - 3
+        assertThat(stock.getQuantityReserved()).isEqualTo(initialQtyReserved - reservationQty); //3-3
+
+        verify(stockMovementRepository).save(argThat(m ->
+                m.getType() == MovementType.DEDUCT && m.getQuantityDelta() == -reservationQty));
+        verify(reservationRepository).save(reservation);
+
+        assertThat(reservation.getStatus()).isEqualTo(ReservationStatus.CONFIRMED);
+        assertThat(reservation.getResolvedAt()).isBetween(before, after);
+    }
+
+    @Test
+    void confirmForOrder_doesNothing_whenNoActiveReservations() {
+        UUID storeId = UUID.randomUUID();
+        UUID orderId = UUID.randomUUID();
+
+        when(reservationRepository.findByOrderIdAndStatus(orderId, ReservationStatus.ACTIVE))
+                .thenReturn(List.of());
+
+        assertThatThrownBy(() -> stockService.confirmForOrder(storeId, orderId))
+                .isInstanceOf(NoReservationsForSuchOrderException.class);
+
+        verifyNoInteractions(stockMovementRepository);
+        verifyNoInteractions(stockRepository);
+    }
+
+    @Test
+    void releaseItems_byIds_releasesStockAndReservations() {
+        UUID storeId = UUID.randomUUID();
+        UUID productId = UUID.randomUUID();
+        UUID reservationId = UUID.randomUUID();
+        Reservation reservation = new Reservation(storeId, UUID.randomUUID(), productId, 4, Instant.now());
+        StockEntity entity = new StockEntity();
+        Stock stock =
+                Stock.builder().productId(productId).quantityAvailable(5).quantityReserved(4).build();
+        int initialQtyReserved = stock.getQuantityReserved();
+        int initialQtyAvailable = stock.getQuantityAvailable();
+
+        when(reservationRepository.findAllById(List.of(reservationId)))
+                .thenReturn(List.of(reservation));
+        when(stockRepository.findByStoreIdAndProductId(storeId, productId))
+                .thenReturn(Optional.of(entity));
+        when(stockMapper.toDomain(entity)).thenReturn(stock);
+
+        stockService.releaseItems(List.of(reservationId));
+
+        assertThat(stock.getQuantityReserved()).isEqualTo(initialQtyReserved-reservation.getQuantity());
+        assertThat(stock.getQuantityAvailable()).isEqualTo(initialQtyAvailable+reservation.getQuantity());
+
+        verify(stockRepository).save(entity);
+        verify(reservationRepository).save(reservation);
+
+        assertThat(reservation.getStatus()).isEqualTo(ReservationStatus.RELEASED);
+    }
+
+    @Test
+    void releaseItems_byIds_throws_whenReservationListEmpty() {
+        when(reservationRepository.findAllById(List.of())).thenReturn(List.of());
+
+        assertThatThrownBy(() -> stockService.releaseItems(List.of()))
+                .isInstanceOf(NoSuchElementException.class);
+    }
+
+    @Test
+    void expireAbandonedReservations_releasesStock_andMarksExpired_forExpiredActiveReservations() {
+        UUID storeId = UUID.randomUUID();
+        UUID productId = UUID.randomUUID();
+        Reservation reservation = new Reservation(storeId, UUID.randomUUID(), productId, 2, Instant.now().minusSeconds(60));
+        StockEntity entity = new StockEntity();
+        Stock stock =
+                Stock.builder().productId(productId).quantityAvailable(10).quantityReserved(2).build();
+        int initialQtyReserved = stock.getQuantityReserved();
+        int initialQtyAvailable = stock.getQuantityAvailable();
+
+        when(reservationRepository.findByStatusAndExpiresAtBefore(eq(ReservationStatus.ACTIVE), any(Instant.class)))
+                .thenReturn(List.of(reservation));
+        when(stockRepository.findByStoreIdAndProductId(storeId, productId))
+                .thenReturn(Optional.of(entity));
+        when(stockMapper.toDomain(entity)).thenReturn(stock);
+
+        stockService.expireAbandonedReservations();
+
+        assertThat(stock.getQuantityReserved()).isEqualTo(initialQtyReserved-reservation.getQuantity());
+        assertThat(stock.getQuantityAvailable()).isEqualTo(initialQtyAvailable+reservation.getQuantity());
+
+        verify(stockRepository).save(entity);
+        verify(reservationRepository).save(reservation);
+        assertThat(reservation.getStatus()).isEqualTo(ReservationStatus.EXPIRED);
+    }
+
+    @Test
+    void expireAbandonedReservations_doesNothing_whenNoneExpired() {
+        when(reservationRepository.findByStatusAndExpiresAtBefore(eq(ReservationStatus.ACTIVE), any(Instant.class)))
+                .thenReturn(List.of());
+
+        stockService.expireAbandonedReservations();
+
+        verify(reservationRepository, never()).save(any());
+        verifyNoInteractions(stockRepository);
     }
 }

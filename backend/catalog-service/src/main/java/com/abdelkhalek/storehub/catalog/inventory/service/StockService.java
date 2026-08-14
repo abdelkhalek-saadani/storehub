@@ -35,7 +35,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class StockService {
 
-    private static final int MAX_RETRIES = 3;
+    public static final int MAX_RETRIES = 3;
     public static final Duration RESERVATION_HOLD_TTL = Duration.ofMinutes(15);
 
     private final StockRepository stockRepository;
@@ -157,6 +157,8 @@ public class StockService {
     /**
      * Release items reservations by their reservation ids (Called when payment failed is
      * consumed or on explicit cancellation)
+     * <p>
+     * Throws {@code NoSuchElementException } if no active reservations is found
      */
     @Transactional
     public void releaseItems(List<UUID> reservationIds) {

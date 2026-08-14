@@ -7,9 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -20,12 +18,14 @@ public class ReservationService {
     /**
      * Called when order created event is received, It links the reservations to their order
      * through assigning the {@code orderId}
+     *
      * @param reservationIds Ids of the reservation that will be linked to their order
-     * @param orderId The order where the reservations belong
+     * @param orderId        The order where the reservations belong
      */
     @Transactional
     public void setReservationsOrderId(List<UUID> reservationIds, UUID orderId) {
         Optional<Reservation> rOptional;
+        List<UUID> notFoundReservations = new ArrayList<>(List.of());
         for (UUID retainId : reservationIds) {
             rOptional = reservationRepository.findById(retainId);
             rOptional.ifPresentOrElse(reservation -> {
@@ -35,8 +35,13 @@ public class ReservationService {
                     () -> {
                         log.error("Could not find reservation with id {}, it is linked to the " +
                                 "order {}", retainId, orderId);
+                        notFoundReservations.add(retainId);
                     });
 
+        }
+        if (!notFoundReservations.isEmpty()) {
+            throw new NoSuchElementException("Reservation(s) with id(s)" + notFoundReservations +
+                    " not found, therefore can't link it/them to order " + orderId);
         }
     }
 }

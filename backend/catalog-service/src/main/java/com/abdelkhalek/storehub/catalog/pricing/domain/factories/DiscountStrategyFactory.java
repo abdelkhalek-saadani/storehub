@@ -17,34 +17,13 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class DiscountStrategyFactory {
 
-    private static final Map<String, DiscountStrategy> strategyCache = new ConcurrentHashMap<>();
-
     public static synchronized DiscountStrategy getDiscountStrategy(DiscountWithProductIds discount) {
-        String key = discount.getType().name().toLowerCase();
-        DiscountStrategy cachedStrategy = strategyCache.get(key);
-        if (cachedStrategy != null) {
-            log.debug("Discount strategy already exists for discount id {}", discount);
-            cachedStrategy.update(discount);
-            log.debug("Cached discount strategy updated {} ", cachedStrategy);
-            return cachedStrategy;
-        }
-        DiscountStrategy newStrategy;
-        switch (discount.getRule()) {
-            case PercentageOff ignored:
-                newStrategy = new PercentageDiscount(discount);
-                strategyCache.put(key, newStrategy);
-                return newStrategy;
-            case Quantity ignored:
-                newStrategy = new QuantityDiscount(discount);
-                strategyCache.put(key, newStrategy);
-                return newStrategy;
-            case BuyXGetY ignored:
-                newStrategy = new BuyXGetYDiscount(discount);
-                strategyCache.put(key, newStrategy);
-                return newStrategy;
-            default:
-                throw new RuntimeException("No such discount strategy: " + discount.getId());
-        }
+        return switch (discount.getRule()) {
+            case PercentageOff ignored -> new PercentageDiscount(discount);
+            case Quantity ignored -> new QuantityDiscount(discount);
+            case BuyXGetY ignored -> new BuyXGetYDiscount(discount);
+            default -> throw new RuntimeException("No such discount strategy: " + discount.getId());
+        };
     }
 
 }

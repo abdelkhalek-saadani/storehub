@@ -14,6 +14,10 @@ public class UserEventListener {
 
     @RabbitListener(queues = "user.created.queue")
     public void handleUserCreated(UserCreatedEvent event) {
-        userShadowRepository.save(new UserShadow(event.userId(), event.keycloakId(),Instant.now()));
-    }
+        UserShadow shadow = userShadowRepository.findById(event.userId())
+                .orElse(new UserShadow());
+        shadow.setId(event.userId());
+        shadow.setKeycloakId(event.keycloakId());
+        shadow.setSyncedAt(Instant.now());
+        userShadowRepository.save(shadow);    }
 }

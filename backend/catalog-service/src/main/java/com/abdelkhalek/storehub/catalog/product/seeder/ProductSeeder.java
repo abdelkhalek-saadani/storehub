@@ -6,6 +6,7 @@ import com.abdelkhalek.storehub.catalog.product.repository.ProductRepository;
 import com.abdelkhalek.storehub.catalog.product.repository.SubCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Profile("!test")
 @Component
 @Order(3)
 @RequiredArgsConstructor
@@ -31,18 +33,20 @@ public class ProductSeeder implements CommandLineRunner {
         Map<String, SubCategory> subCats = subCategoryRepository.findByStoreId(STORE_ID).stream()
                 .collect(Collectors.toMap(SubCategory::getName, s -> s));
 
-        create("d08d570a-22ee-41dd-a1c6-a6afea103fcd", "Laptop Pro 14", "High performance laptop", "1200.00", subCats.get("Laptops"));
-        create("c2fddc73-92af-454a-8bdf-45fbf3eea60c", "Wireless Mouse", "Ergonomic mouse", "25.99", subCats.get("Accessories"));
-        create("24818752-ae3b-4959-9fae-85917c459b7a", "Mechanical Keyboard", "RGB keyboard", "89.99", subCats.get("Accessories"));
-        create("2ca93902-2e7c-4433-a29c-a08ac1e7ca62", "USB-C Charger", "65W fast charger", "19.99", subCats.get("Accessories"));
-        create("33089686-7b9d-49e9-b344-7ec8312aec55", "Monitor 27\"", "4K display monitor", "299.99", subCats.get("Accessories"));
-        create("89739022-6630-46ab-98da-a8bfe0495951", "External SSD 1TB", "Fast storage drive", "129.99", subCats.get("Accessories"));
-        create("d2814c50-3848-4517-be66-d640d5ac88ab", "Office Chair", "Ergonomic chair", "199.99", subCats.get("Furniture"));
-        create("89dd4386-66e3-4620-9743-11932d8e2bf2", "Webcam HD", "1080p webcam", "49.99", subCats.get("Accessories"));
-        create("403b968c-8fb1-448f-8429-2989520eed64", "Noise Cancelling Headphones", "Over-ear headphones", "159.99", subCats.get("Accessories"));
-        create("62acac9a-3615-431e-b089-35a8a25f8175", "Smartphone X", "Latest smartphone model", "999.99", subCats.get("Phones"));
+        create(null, "Laptop Pro 14", "High performance laptop", "1200.00", subCats.get("Laptops"));
+        create(null, "Wireless Mouse", "Ergonomic mouse", "25.99", subCats.get("Accessories"));
+        create(null, "Mechanical Keyboard", "RGB keyboard", "89.99", subCats.get("Accessories"));
+        create(null, "USB-C Charger", "65W fast charger", "19.99", subCats.get("Accessories"));
+        create(null, "Monitor 27\"", "4K display monitor", "299.99", subCats.get("Accessories"));
+        create(null, "External SSD 1TB", "Fast storage drive", "129.99", subCats.get("Accessories"));
+        create(null, "Office Chair", "Ergonomic chair", "199.99", subCats.get("Furniture"));
+        create(null, "Webcam HD", "1080p webcam", "49.99", subCats.get("Accessories"));
+        create(null, "Noise Cancelling Headphones", "Over-ear headphones", "159.99", subCats.get("Accessories"));
+        create(null, "Smartphone X", "Latest smartphone model", "999.99", subCats.get("Phones"));
 
-        create(null, "Gaming Laptop 16", "High-end gaming laptop", "1899.99", subCats.get("Laptops"));
+        create(null, "Gaming Laptop 16", "High-end gaming laptop", "1899.99",
+                subCats.get(
+                "Laptops"));
         create(null, "Smartphone Y Lite", "Budget-friendly smartphone", "399.99", subCats.get("Phones"));
         create(null, "Men's Denim Jacket", "Classic blue denim jacket", "59.99", subCats.get("Men"));
         create(null, "Women's Summer Dress", "Lightweight floral dress", "45.99", subCats.get("Women"));

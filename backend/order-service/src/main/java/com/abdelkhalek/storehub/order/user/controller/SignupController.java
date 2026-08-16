@@ -6,6 +6,7 @@ import com.abdelkhalek.storehub.order.user.dto.SignupRequest;
 import com.abdelkhalek.storehub.order.user.entity.User;
 import com.abdelkhalek.storehub.order.user.repository.UserRepository;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,17 +20,13 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
+@AllArgsConstructor
 public class SignupController {
 
     private final KeycloakAdminService keycloakAdminService;
     private final UserRepository userRepository;
     private final UserEventPublisher userEventPublisher;
 
-    public SignupController(KeycloakAdminService keycloakAdminService, UserRepository userRepository, UserEventPublisher userEventPublisher) {
-        this.keycloakAdminService = keycloakAdminService;
-        this.userRepository = userRepository;
-        this.userEventPublisher = userEventPublisher;
-    }
 
     @PostMapping("/signup")
     public Mono<ResponseEntity<Map<String, String>>> signup(@Valid @RequestBody SignupRequest req) {

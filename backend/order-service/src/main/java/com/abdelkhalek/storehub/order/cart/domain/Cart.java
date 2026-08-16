@@ -1,6 +1,7 @@
 package com.abdelkhalek.storehub.order.cart.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder(toBuilder = true)
 public class Cart {
 
     UUID id;
@@ -23,7 +25,7 @@ public class Cart {
     BigDecimal originalTotal;
     BigDecimal finalTotal;
     BigDecimal totalDiscount;
-    List<CartItem> items;
+    List<CartItem> items = new ArrayList<>();
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
 

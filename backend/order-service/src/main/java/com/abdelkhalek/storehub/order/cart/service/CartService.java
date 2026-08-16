@@ -38,7 +38,7 @@ public class CartService {
                 ? cartRepository.findByGuestIdAndStoreId(owner.guestId(), storeId)
                 : cartRepository.findByUserIdAndStoreId(owner.userId(), storeId);
 
-        return cart.switchIfEmpty(createEmptyCart(owner, storeId))
+        return cart.switchIfEmpty(Mono.defer(() -> createEmptyCart(owner, storeId)))
                 .map(cartMapper::fromEntityToResponse)
                 .map((cr) -> owner.isGuest() ? ServiceResult.forGuest(cr, owner.guestId()) :
                         ServiceResult.forUser(cr));
@@ -118,13 +118,14 @@ public class CartService {
             }
             List<CartItem> items =
                     cartMapper.fromPriceItemsResponse(pricesResponse.items());
-
-            cart.setItems(items);
-            cart.setFinalTotal(pricesResponse.finalTotal());
-            cart.setTotalDiscount(pricesResponse.totalDiscount());
-            cart.setOriginalTotal(pricesResponse.originalTotal());
+            Cart uc = cart.toBuilder()
+                    .items(items)
+                    .finalTotal(pricesResponse.finalTotal())
+                    .totalDiscount(pricesResponse.totalDiscount())
+                    .originalTotal(pricesResponse.originalTotal())
+                    .build();
             log.debug("cart order: {}", cart);
-            return cart;
+            return uc;
         }));
     }
 
@@ -134,7 +135,7 @@ public class CartService {
                 cartRepository.findByGuestIdAndStoreId(owner.guestId(), storeId) :
                 cartRepository.findByUserIdAndStoreId(owner.userId(), storeId);
 
-        return cartMono.switchIfEmpty(createEmptyCart(owner, storeId));
+        return cartMono.switchIfEmpty(Mono.defer(() -> createEmptyCart(owner, storeId)));
     }
 
     private Mono<CartEntity> getOrCreateCart(UUID userId, UUID storeId) {

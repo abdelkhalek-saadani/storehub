@@ -7,6 +7,7 @@ import com.abdelkhalek.storehub.order.order.spi.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
@@ -48,6 +49,21 @@ public class OrderRepositoryAdapter implements OrderRepository {
         log.debug("Getting Order with id: {}", paymentOrderId);
         return orderReactiveRepository.findByPaymentOrderId(paymentOrderId)
                 .map(orderMapper::fromEntity);
+    }
+
+    @Override
+    public Flux<Order> findAll() {
+        return orderReactiveRepository.findAll().map(orderMapper::fromEntity);
+    }
+
+    @Override
+    public Mono<Void> deleteAll() {
+        return orderReactiveRepository.deleteAll();
+    }
+
+    @Override
+    public Mono<Long> count() {
+        return orderReactiveRepository.count();
     }
 
     @Override

@@ -41,6 +41,8 @@ public interface OrderMapper {
     OrderEntity toEntity(Order order);
     Order fromEntity(OrderEntity orderEntity);
 
+    List<Order> fromEntities(List<OrderEntity> orderEntities);
+
     @Mapping(target = "appliedOfferLabel", source = "appliedOffer", qualifiedByName = "offerLabel")
     OrderItemEntity toOrderItemEntity(OrderItem orderItem);
     @Mapping(source = "appliedOfferLabel", target = "appliedOffer", qualifiedByName = "offer")

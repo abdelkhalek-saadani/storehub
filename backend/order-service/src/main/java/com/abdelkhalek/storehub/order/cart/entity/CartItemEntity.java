@@ -45,4 +45,10 @@ public class CartItemEntity {
     CartEntity cart;
     UUID cartId;
 
-    LocalDateTime createdAt;}
+    LocalDateTime createdAt;
+
+    public CartItemEntity(UUID productId, int quantity) {
+        this.productId = productId;
+        this.quantity = quantity;
+    }
+}

@@ -5,6 +5,7 @@ import com.abdelkhalek.storehub.order.cart.exception.CatalogServiceException;
 import com.abdelkhalek.storehub.order.cart.exception.ProductNotFoundException;
 import com.abdelkhalek.storehub.order.order.exceptions.OrderNotFoundException;
 import com.abdelkhalek.storehub.order.order.exceptions.UnauthorizedAccessException;
+import com.abdelkhalek.storehub.order.order.exceptions.UnavailableException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,8 +38,8 @@ public class GlobalExceptionHandler {
                 .body(Map.of("message", ex.getMessage())));
     }
 
-    @ExceptionHandler(CatalogServiceException.class)
-    public Mono<ResponseEntity<Map<String, String>>> handleResponseStatus(CatalogServiceException ex) {
+    @ExceptionHandler({CatalogServiceException.class,  UnavailableException.class})
+    public Mono<ResponseEntity<Map<String, String>>> handleResponseStatus(Exception ex) {
         return Mono.just(ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Map.of("message", ex.getMessage())));
     }
@@ -60,6 +61,8 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage, (a, b) -> a));
         return ResponseEntity.badRequest().body(errors);
     }
+
+
 
     @ExceptionHandler(Exception.class)
     public Mono<ResponseEntity<Map<String, String>>> handleGeneric(Exception ex) {

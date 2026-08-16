@@ -46,6 +46,8 @@ class OrderControllerIT {
     static void wireMockProperties(DynamicPropertyRegistry registry) {
         registry.add("storehub.catalog-base-url",
                 () -> "http://localhost:" + 12345);
+        registry.add("storehub.payment-base-url",
+                () -> "http://localhost:" + 12345);
     }
 
     @Container
@@ -72,7 +74,6 @@ class OrderControllerIT {
     }
 
 
-
     @Test
     void placeOrder_createsOrderAndReturnsResponse_onHappyPath() throws JsonProcessingException {
         UUID storeId = UUID.randomUUID();
@@ -84,7 +85,12 @@ class OrderControllerIT {
 
         stubForAvailable(storeId, cartId, slotId);
         stubPricingSuccess();
-        stubPaymentSuccess();
+
+        UUID expectedPaymentId = UUID.randomUUID();
+        String expectedApprovalUrl = "https://www.sandbox.paypal" +
+                ".com/checkoutnow?token=3YE25194U0140084J";
+        stubPaymentSuccess(expectedPaymentId, expectedApprovalUrl);
+
         stubForReservation(inventoryReservationIds, slotRId);
 
         OrderRequest orderRequest = new OrderRequest(storeId, cartId, slotId, "buyer@example.com",
@@ -98,7 +104,12 @@ class OrderControllerIT {
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody(OrderCreatedResponse.class)
-                .value(response -> assertThat(response.orderId()).isNotNull());
+                .value(response -> {
+                    log.debug("the response is {}", response);
+                    assertThat(response.orderId()).isNotNull();
+                    assertThat(response.paymentId()).isEqualTo(expectedPaymentId);
+                    assertThat(response.paymentApprovalUrl()).isEqualTo(expectedApprovalUrl);
+                });
 
         // real DB assertion — proves the pipeline actually persisted correctly
         List<Order> orders = orderRepository.findAll().collectList().block();
@@ -110,15 +121,16 @@ class OrderControllerIT {
     }
 
     @Test
-    void placeOrder_setsGuestHeader_whenGuestCheckout() {
+    void placeOrder_setsGuestHeader_whenGuestCheckout()  throws JsonProcessingException {
         UUID storeId = UUID.randomUUID();
         UUID slotId = UUID.randomUUID();
-        CartOwner owner = null;
-        UUID cartId = seedCart(storeId,null );
+        CartOwner owner = CartOwner.ofGuest(UUID.randomUUID());
+        UUID cartId = seedCart(storeId, owner);
 
         stubForAvailable(storeId, cartId, slotId);
         stubPricingSuccess();
         stubPaymentSuccess();
+        stubForReservation();
 
 
         OrderRequest orderRequest = new OrderRequest(storeId, cartId, slotId, "guest@example.com",
@@ -135,27 +147,32 @@ class OrderControllerIT {
     }
 
     @Test
-    void placeOrder_returnsExistingOrder_noNewRowCreated_whenIdempotencyKeyReused() {
+    void placeOrder_returnsExistingOrder_noNewRowCreated_whenIdempotencyKeyReused() throws JsonProcessingException {
         UUID storeId = UUID.randomUUID();
         UUID slotId = UUID.randomUUID();
-        UUID cartId = seedCart(storeId, null);
+        CartOwner owner = CartOwner.ofGuest(UUID.randomUUID());
+        UUID cartId = seedCart(storeId, owner);
         UUID idempotencyKey = UUID.randomUUID();
 
         stubForAvailable(storeId, cartId, slotId);
         stubPricingSuccess();
         stubPaymentSuccess();
+        stubForReservation();
 
         OrderRequest orderRequest = new OrderRequest(storeId, cartId, slotId, "buyer@example.com",
                 billingAddress(), deliveryAddress(), null, null, null);
 
         // first call creates the order
-        webTestClient.post().uri("/api/orders")
+        OrderCreatedResponse ocr = webTestClient.post().uri("/api/orders")
                 .header("Idempotency-Key", idempotencyKey.toString())
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(orderRequest)
 
                 .exchange()
-                .expectStatus().isOk();
+                .expectStatus().isOk()
+                .expectBody(OrderCreatedResponse.class)
+                .returnResult()
+                .getResponseBody();
 
         // second call, same idempotency key -> should short-circuit, not create a new row
         webTestClient.post().uri("/api/orders")
@@ -163,21 +180,27 @@ class OrderControllerIT {
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(orderRequest)
                 .exchange()
-                .expectStatus().isOk();
+                .expectStatus().isOk()
+                .expectBody(OrderCreatedResponse.class)
+                .value(response -> {
+                    assertThat(response.orderId()).isEqualTo(ocr.orderId());
+                });
 
         List<Order> orders = orderRepository.findByIdempotencyKey(idempotencyKey)
                 .flux().collectList().block();
         assertThat(orders).hasSize(1);
+        assertThat(orders.getFirst().getId()).isEqualTo(ocr.orderId());
     }
 
     @Test
     void placeOrder_returns4xxAndCreatesNoOrder_whenSlotUnavailable() {
         UUID storeId = UUID.randomUUID();
         UUID slotId = UUID.randomUUID();
-        UUID cartId = seedCart(storeId, null);
+        CartOwner owner = CartOwner.ofGuest(UUID.randomUUID());
+        UUID cartId = seedCart(storeId, owner);
 
-        stubInventoryAvailable( true);
-        stubSlotAvailable( false); // slot unavailable
+        stubInventoryAvailable(true);
+        stubSlotAvailable(false);
 
         OrderRequest orderRequest = new OrderRequest(storeId, cartId, slotId, "buyer@example.com",
                 billingAddress(), deliveryAddress(), null, null, null);
@@ -212,10 +235,14 @@ class OrderControllerIT {
         return cartRepository.save(cart).block().getId();
     }
 
+    private void stubForReservation() throws JsonProcessingException {
+        stubForReservation(List.of(UUID.randomUUID()), UUID.randomUUID());
+    }
+
     private void stubForReservation(List<UUID> inventoryReservationIds, UUID slotReservationId) throws JsonProcessingException {
 
-            stubInventoryReservation(inventoryReservationIds);
-            stubSlotReservation(slotReservationId);
+        stubInventoryReservation(inventoryReservationIds);
+        stubSlotReservation(slotReservationId);
 
     }
 
@@ -252,7 +279,9 @@ class OrderControllerIT {
     }
 
     private void stubPaymentSuccess() {
-        String paymentId = UUID.randomUUID().toString();
+        stubPaymentSuccess(UUID.randomUUID(), "randomstring");
+    }
+    private void stubPaymentSuccess(UUID id, String approvalUrl) {
         stubFor(post(urlPathEqualTo("/api/payments/paypal"))
                 .willReturn(okJson(
                         """
@@ -260,10 +289,10 @@ class OrderControllerIT {
                                 "paymentId": "%s",
                                 "paymentOrderId": "9EE99600LX3657029",
                                  "status": "CREATED",
-                                 "approvalUrl": "https://www.sandbox.paypal.com/checkoutnow?token=3YE25194U0140084J",
+                                 "approvalUrl": "%s",
                                  "message": "Payment created successfully"
                                  }
-                                """.formatted(paymentId)
+                                """.formatted(id, approvalUrl)
                 )));
     }
 

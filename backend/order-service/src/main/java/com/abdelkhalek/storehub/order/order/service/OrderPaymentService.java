@@ -25,6 +25,7 @@ public class OrderPaymentService {
     public Mono<ServiceResult<OrderCreatedResponse>> attachPaymentAndSave(Order order) {
         return getPaymentApprovalLink(order)
                 .flatMap(paymentResponse -> {
+                    log.info("Attaching payment {} to order {}", paymentResponse, order);
                     order.setPaymentId(paymentResponse.paymentId());
                     order.setPaymentApprovalLink(paymentResponse.approvalUrl());
                     order.setPaymentOrderId(paymentResponse.paymentOrderId());

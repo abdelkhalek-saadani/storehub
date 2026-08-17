@@ -39,15 +39,18 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 @Testcontainers
 @AutoConfigureWireMock(port = 12345)
 class OrderControllerIT {
+    static final int WIREMOCK_PORT = 12345;
 
     ObjectMapper mapper = new ObjectMapper();
 
     @DynamicPropertySource
     static void wireMockProperties(DynamicPropertyRegistry registry) {
         registry.add("storehub.catalog-base-url",
-                () -> "http://localhost:" + 12345);
+                () -> "http://localhost:" + WIREMOCK_PORT);
         registry.add("storehub.payment-base-url",
-                () -> "http://localhost:" + 12345);
+                () -> "http://localhost:" + WIREMOCK_PORT);
+        registry.add("spring.security.oauth2.client.provider.storehub-keycloak.token-uri",() ->
+                "http://localhost:"+WIREMOCK_PORT+ "/realms/myrealm/protocol/openid-connect/token");
     }
 
     @Container
@@ -92,6 +95,10 @@ class OrderControllerIT {
         stubPaymentSuccess(expectedPaymentId, expectedApprovalUrl);
 
         stubForReservation(inventoryReservationIds, slotRId);
+
+        stubKeycloak();
+
+
 
         OrderRequest orderRequest = new OrderRequest(storeId, cartId, slotId, "buyer@example.com",
                 billingAddress(), deliveryAddress(), "abdlekhalek", "saadani", "23725059");
@@ -216,8 +223,8 @@ class OrderControllerIT {
         assertThat(orderRepository.count().block()).isZero();
     }
 
-    // ---- helpers ----
 
+    // ---- helpers ----
     private UUID seedCart(UUID storeId, CartOwner owner) {
         CartEntity cart = new CartEntity();
         if (owner.isGuest()) cart.setGuestId(owner.guestId());
@@ -233,6 +240,17 @@ class OrderControllerIT {
         cart.setFinalTotal(BigDecimal.valueOf(20));
         cart.setTotalDiscount(BigDecimal.ZERO);
         return cartRepository.save(cart).block().getId();
+    }
+
+    private void stubKeycloak() {
+        stubFor(post(urlEqualTo("/realms/myrealm/protocol/openid-connect/token"))
+                .willReturn(okJson("""
+        {
+          "access_token": "fake-jwt-token",
+          "token_type": "Bearer",
+          "expires_in": 300
+        }
+        """)));
     }
 
     private void stubForReservation() throws JsonProcessingException {

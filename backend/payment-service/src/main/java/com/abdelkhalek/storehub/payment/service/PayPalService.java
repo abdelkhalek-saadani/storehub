@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientException;
 
 
 import java.math.BigDecimal;
@@ -123,7 +124,6 @@ public class PayPalService {
         return extractAuthorizationResponse(response);
     }
 
-    // TODO: Review this method
     public boolean verifyWebhook(String payload, String transmissionId, String certUrl,
                                  String authAlgo, String transmissionSig, String transmissionTime) {
         JsonNode webhookEvent;
@@ -142,7 +142,7 @@ public class PayPalService {
                 webhookEvent
         );
 
-        /*PayPalWebhookVerificationResponse response;
+        PayPalWebhookVerificationResponse response;
         try {
             response = restClient.post()
                     .uri("/v1/notifications/verify-webhook-signature")
@@ -153,26 +153,9 @@ public class PayPalService {
         } catch (RestClientException e) {
             log.error("PayPal webhook verification call failed", e);
             return false;
-        }*/
-
-        // TEST
-        String rawBody = restClient.post()
-                .uri("/v1/notifications/verify-webhook-signature")
-                .header("Content-Type", "application/json")
-                .body(verificationRequest)
-                .retrieve()
-                .body(String.class);
-
-        log.info("PayPal verification raw response: {}", rawBody);
-
-        PayPalWebhookVerificationResponse response;
-        try {
-            response = objectMapper.readValue(rawBody, PayPalWebhookVerificationResponse.class);
-        } catch (JsonProcessingException e) {
-            log.error("Failed to parse verification response", e);
-            return false;
         }
-        // END TEST
+
+
 
         if (response == null) {
             log.error("PayPal webhook verification returned an empty response");

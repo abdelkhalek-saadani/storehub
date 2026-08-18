@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,8 +60,8 @@ public class PaymentService {
                         "Payment not found by customer ID: " + customerId));
     }
 
-    public Page<PaymentEntity> getPayments(PaymentFilter filter, Pageable pageable) {
-        return paymentRepository.findWithFilters(filter.getStatus(), filter.getStartDate(), filter.getEndDate(), pageable);
+    public Page<PaymentEntity> getPayments(Specification<PaymentEntity> spec, Pageable pageable) {
+        return paymentRepository.findAll(spec, pageable);
     }
 
 

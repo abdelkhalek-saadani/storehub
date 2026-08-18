@@ -1,10 +1,13 @@
 package com.abdelkhalek.storehub.payment.controller;
 
 import com.abdelkhalek.storehub.payment.dto.CreatePaymentRequest;
+import com.abdelkhalek.storehub.payment.dto.PagedResponse;
 import com.abdelkhalek.storehub.payment.dto.PaymentResponse;
 import com.abdelkhalek.storehub.payment.entity.PaymentEntity;
+import com.abdelkhalek.storehub.payment.enums.PaymentStatus;
 import com.abdelkhalek.storehub.payment.exception.PaymentNotFoundException;
 import com.abdelkhalek.storehub.payment.model.PaymentFilter;
+import com.abdelkhalek.storehub.payment.repository.PaymentSpecifications;
 import com.abdelkhalek.storehub.payment.service.PaymentService;
 import com.abdelkhalek.storehub.payment.webhook.WebhookHandler;
 import jakarta.validation.Valid;
@@ -15,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -155,67 +160,24 @@ public class PayPalController {
     }
 
     @GetMapping
-    // TODO: Review this method
-    public ResponseEntity<?> getPayments(
+    public ResponseEntity<PagedResponse<PaymentEntity>> getPayments(
             @RequestParam(required = false) String captureId,
-            @RequestParam(required = false) String status,
             @RequestParam(required = false) String authorizationId,
             @RequestParam(required = false) UUID customerId,
+            @RequestParam(required = false) PaymentStatus status,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
-            @RequestParam(defaultValue = "createdAt") String sortBy,
-            @RequestParam(defaultValue = "desc") String sortDir,
-            @RequestParam(defaultValue = "1") @Min(1) int page,
-            @RequestParam(defaultValue = "20") @Min(1) @Max(100) int limit
+            @PageableDefault(size = 20, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
+        Specification<PaymentEntity> spec = PaymentSpecifications.captureIdEquals(captureId)
+                .and(PaymentSpecifications.authorizationIdEquals(authorizationId))
+                .and(PaymentSpecifications.customerIdEquals(customerId))
+                .and(PaymentSpecifications.statusEquals(status))
+                .and(PaymentSpecifications.createdBetween(startDate, endDate));
 
-        if (captureId != null && !captureId.isEmpty()) {
-            PaymentEntity payment = paymentService.getByCaptureId(captureId);
-            if (payment == null) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.ok(Map.of("data", payment));
-        }
+        Page<PaymentEntity> paymentsPage = paymentService.getPayments(spec, pageable);
 
-        if (authorizationId != null && !authorizationId.isEmpty()) {
-            PaymentEntity payment = paymentService.getByAuthorizationId(authorizationId);
-            if (payment == null) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.ok(Map.of("data", payment));
-        }
 
-        if (customerId != null && !customerId.toString().isEmpty()) {
-            PaymentEntity payment = paymentService.getByCustomerId(customerId);
-            if (payment == null) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.ok(Map.of("data", payment));
-        }
-
-        PaymentFilter filter = PaymentFilter.builder()
-                .status(status)
-                .startDate(startDate)
-                .endDate(endDate)
-                .build();
-
-        Sort.Direction direction = sortDir.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, sortBy);
-
-        Pageable pageable = PageRequest.of(page - 1, limit, sort);
-        Page<PaymentEntity> paymentsPage = paymentService.getPayments(filter, pageable);
-
-        Map<String, Object> response = Map.of(
-                "data", paymentsPage.getContent(),
-                "pagination", Map.of(
-                        "page", page,
-                        "limit", limit,
-                        "total", paymentsPage.getTotalElements(),
-                        "totalPages", paymentsPage.getTotalPages()
-                )
-        );
-
-        return ResponseEntity.ok(response);
-
+        return ResponseEntity.ok(PagedResponse.of(paymentsPage));
     }
 }

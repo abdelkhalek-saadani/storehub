@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -50,7 +51,12 @@ public class WebhookHandler {
     }
 
     private boolean tryMarkProcessed(String eventId) {
-        try {
+        Optional<ProcessedWebhookEventEntity> pwe = processedWebhookEventRepository.findByEventId(eventId);
+        if (pwe.isPresent()) {
+            log.debug("The event is already processed {}", eventId);
+            return false; // already processed, duplicate delivery
+        } else {
+            log.debug("Marking the event as processed {}", eventId);
             processedWebhookEventRepository.save(
                     ProcessedWebhookEventEntity.builder()
                             .eventId(eventId)
@@ -58,8 +64,6 @@ public class WebhookHandler {
                             .build()
             );
             return true; // first time seeing this event
-        } catch (DataIntegrityViolationException e) {
-            return false; // already processed, duplicate delivery
         }
     }
 

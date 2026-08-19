@@ -138,6 +138,7 @@ class OrderControllerIT {
         stubPricingSuccess();
         stubPaymentSuccess();
         stubForReservation();
+        stubKeycloak();
 
 
         OrderRequest orderRequest = new OrderRequest(storeId, cartId, slotId, "guest@example.com",
@@ -208,6 +209,7 @@ class OrderControllerIT {
 
         stubInventoryAvailable(true);
         stubSlotAvailable(false);
+        stubKeycloak();
 
         OrderRequest orderRequest = new OrderRequest(storeId, cartId, slotId, "buyer@example.com",
                 billingAddress(), deliveryAddress(), null, null, null);

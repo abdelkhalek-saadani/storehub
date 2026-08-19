@@ -44,7 +44,7 @@ export const appConfig: ApplicationConfig = {
       useValue: {
         appearance: 'outline',
         subscriptSizing: 'dynamic',
-        floatLabel: 'auto', // either set it to always or auto
+        floatLabel: 'auto',
       },
     },
     { provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: { disableClose: false } },

@@ -157,7 +157,6 @@ export class OrderApi {
   clearCart(): Observable<CartResponse> {
     let params = new HttpParams().set('storeId', this.getStoreId());
     const response = this.http.delete<CartResponse>(this.cartUrl, { params });
-    console.log(response);
     return response;
   }
 }

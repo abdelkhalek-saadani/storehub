@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-const STORAGE_KEY = 'pending_store_creation';
+export const STORAGE_KEY = 'pending_store_creation';
 
 export interface PendingStore {
   name: string;

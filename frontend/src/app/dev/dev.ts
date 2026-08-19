@@ -38,7 +38,6 @@ import { DeliveryAddressForm } from '../checkout/delivery-address-form/delivery-
 import ProductDetails from '../product-details/product-details';
 import { Logo } from '@shared/components/logo/logo';
 import { LogoText } from '@shared/components/logo-text/logo-text';
-import { Divider } from '../auth/divider/divider';
 @Component({
   selector: 'app-dev',
   imports: [
@@ -64,7 +63,6 @@ import { Divider } from '../auth/divider/divider';
     MatTimepicker,
     MatTimepickerToggle,
     OffersSection,
-    Divider,
     ReactiveFormsModule,
     MatSelectModule,
     DeliveryAddressForm,

@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-toggle';
 import { MatIcon } from '@angular/material/icon';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { SignupService } from '../signup-api';
+import { SignupApi } from '../signup-api';
 import { PendingStoreStorage } from '../pending-store-storage';
 import { lastValueFrom } from 'rxjs';
 import { LogoText } from '@shared/components/logo-text/logo-text';
@@ -108,7 +108,7 @@ import { LogoText } from '@shared/components/logo-text/logo-text';
               mat-raised-button
               color="primary"
               type="submit"
-              [disabled]="form.invalid || submitting()"
+              [disabled]="form.invalid || isSubmitting()"
             >
               Sign up
             </button>
@@ -123,13 +123,13 @@ export class Signup {
   private readonly keycloak = inject(Keycloak);
   readonly router = inject(Router);
 
-  private signupService = inject(SignupService);
+  private signupService = inject(SignupApi);
   private pendingStoreStorage = inject(PendingStoreStorage);
 
   errorMessage = '';
-  isSubmitting = false;
+  isSubmitting = signal(false);
 
-  form = this.fb.group({
+  form = this.fb.nonNullable.group({
     firstName: ['Abdelkhalek', Validators.required],
     lastName: ['Saadani', Validators.required],
     address: ['cite Zayatine', Validators.required],
@@ -144,19 +144,19 @@ export class Signup {
 
   async onSubmit() {
     if (this.form.invalid) return;
-    this.isSubmitting = true;
+    this.isSubmitting.set(true);
     this.errorMessage = '';
 
-    const values = this.form.value;
+    const values = this.form.getRawValue();
 
     try {
       // Step 1: create the account (identity fields only go to backend)
       await lastValueFrom(
         this.signupService.signup({
-          email: values.email!,
-          password: values.password!,
-          firstName: values.firstName!,
-          lastName: values.lastName!,
+          email: values.email,
+          password: values.password,
+          firstName: values.firstName,
+          lastName: values.lastName,
           address: values.address ?? '',
           phoneNumber: values.phoneNumber ?? '',
         }),
@@ -178,11 +178,9 @@ export class Signup {
       });
     } catch (err: any) {
       this.errorMessage = err?.error?.message ?? 'Signup failed';
-      this.isSubmitting = false;
+      this.isSubmitting.set(false);
     }
   }
-
-  submitting = signal(false);
 
   type = toSignal(this.form.controls.accountType.valueChanges, {
     initialValue: this.form.controls.accountType.value,

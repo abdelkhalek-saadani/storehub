@@ -17,7 +17,7 @@ export interface SignupResponse {
 }
 
 @Injectable({ providedIn: 'root' })
-export class SignupService {
+export class SignupApi {
   constructor(private http: HttpClient) {}
 
   signup(data: SignupPayload): Observable<SignupResponse> {

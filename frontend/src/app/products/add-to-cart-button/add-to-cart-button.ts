@@ -1,7 +1,6 @@
 import { Component, inject, input, output } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { ProductStore } from '../../product-store';
 
 @Component({
   selector: 'app-add-to-cart-button',
@@ -26,8 +25,6 @@ import { ProductStore } from '../../product-store';
 export class AddToCartButton {
   quantity = input<number>();
   qtyUpdated = output<UpdateNature>();
-
-  store = inject(ProductStore);
 }
 
 export type UpdateNature = 'increment' | 'decrement';

@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, inject, input, signal, ViewChild } from '@angular/core';
 import { MatDivider, MatListItem, MatNavList } from '@angular/material/list';
 import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
-import { ProductStore } from '../../product-store';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { SidenavService } from '../sidenav.service';
 import { Header } from '../header/header';
@@ -99,7 +98,6 @@ import { Cart } from '../../cart/cart/cart';
   styles: ``,
 })
 export default class Layout implements AfterViewInit {
-  store = inject(ProductStore);
   sidenavService = inject(SidenavService);
   cartSidenavService = inject(CartSidenav);
 

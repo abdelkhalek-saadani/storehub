@@ -7,7 +7,6 @@ import { MatSelect } from '@angular/material/select';
 import { MatButton } from '@angular/material/button';
 import { MatOption } from '@angular/material/select';
 import { MatLabel } from '@angular/material/form-field';
-import { ProductStore } from '../../product-store';
 
 @Component({
   selector: 'app-write-review',
@@ -77,7 +76,6 @@ export class WriteReview {
     comment: ['a comment', Validators.required],
   });
   productId = input.required<string>();
-  store = inject(ProductStore);
 
   options = signal<OptionItem[]>([
     { label: '5 Stars - Excellent', value: 5 },
@@ -99,12 +97,7 @@ export class WriteReview {
     // console.log('passe dvalidation')
     const { title, comment, rating } = this.reviewForm.getRawValue();
     console.log('passed the values get');
-    this.store.addReview({
-      title: title,
-      comment,
-      rating: +rating,
-      productId: this.productId(),
-    });
+
     this.reviewAdded.emit();
   }
 }

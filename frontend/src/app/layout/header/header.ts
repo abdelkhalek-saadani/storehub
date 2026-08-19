@@ -2,7 +2,6 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatIconButton } from '@angular/material/button';
-import { ProductStore } from '../../product-store';
 import { SidenavService } from '../sidenav.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -123,7 +122,6 @@ import { MatBadge } from '@angular/material/badge';
   styles: ``,
 })
 export class Header {
-  store = inject(ProductStore);
   cartStore = inject(CartStore);
   sidenavService = inject(SidenavService);
   cartSidenavService = inject(CartSidenav);

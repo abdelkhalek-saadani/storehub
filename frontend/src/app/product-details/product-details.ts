@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { ToggleWishlistButton } from './components/toggle-wishlist-button';
 import { Gallery } from './components/gallery';
 import { ViewReviews } from './components/view-reviews';
 import { Review } from '../models/Review';
 
 @Component({
   selector: 'app-product-details',
-  imports: [MatIconButton, MatIcon, ToggleWishlistButton, Gallery, MatButton, ViewReviews],
+  imports: [MatIconButton, MatIcon, Gallery, MatButton, ViewReviews],
   host: {
     class: 'min-h-screen flex flex-col px-4 bg-[#F8F8F8] pt-2',
   },

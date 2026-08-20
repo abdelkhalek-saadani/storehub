@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import IntlTelInput, { intlTelInput } from '@intl-tel-input/angular';
-import 'intl-tel-input/styles';
+// import 'intl-tel-input/styles';
 import { CheckoutFormService } from '../checkout-form.service';
 import type { ValidationError } from 'intl-tel-input';
 import { ReactiveFormsModule } from '@angular/forms';

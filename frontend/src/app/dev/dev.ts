@@ -225,10 +225,6 @@ import { LogoText } from '@shared/components/logo-text/logo-text';
         </div>
       </section>
 
-      <section class="mb-10">
-        <h2 class="section-title">Divider</h2>
-        <app-divider />
-      </section>
       <!-- ── LOGOS ── -->
       <section class="mb-10">
         <h2 class="section-title">Logos</h2>

@@ -27,7 +27,7 @@ import { CartStore } from '../cart-store';
       <div class="flex flex-row gap-6 justify-between items-center">
         <div class="flex flex-row gap-3 items-center">
           <div class="font-semibold text-base">{{ item().finalLineTotal | number: '1.2-2' }}</div>
-          @if (originalLineTotal() != finalLineTotal()) {
+          @if (item().originalLineTotal != item().finalLineTotal) {
             <div class="text-xl font-regular text-[#A2A2A2] line-through">
               {{ item().originalLineTotal | number: '1.2-2' }}
             </div>
@@ -38,20 +38,11 @@ import { CartStore } from '../cart-store';
             Remove
           </button>
           <div class="flex flex-row items-center bg-[#F6FAFF]">
-            <button
-              matIconButton
-              class="sidecart-button"
-              (click)="onDecrementQty(item().productId)"
-            >
+            <button matIconButton class="sidecart-button" (click)="onDecrementQty()">
               <mat-icon>remove</mat-icon>
             </button>
             <div class="text-sm font-medium px-1">{{ item().quantity }}</div>
-            <button
-              matIconButton
-              class="sidecart-button"
-              (click)="onIncrementQty(item().productId)"
-              )
-            >
+            <button matIconButton class="sidecart-button" (click)="onIncrementQty()">
               <mat-icon>add</mat-icon>
             </button>
           </div>
@@ -66,17 +57,13 @@ export class CartItem {
 
   store = inject(CartStore);
 
-  originalLineTotal = computed(() => this.item().originalLineTotal.toPrecision(2));
-  finalLineTotal = computed(() => this.item().finalLineTotal.toPrecision(2));
-
-  onIncrementQty(productId: string): void {
-    const current = this.store.items().find((i) => i.productId === productId);
-    const newQty = (current?.quantity ?? 0) + 1;
-    this.store.upsertItems([{ productId, quantity: newQty }]);
+  onIncrementQty(): void {
+    const newQty = this.item().quantity + 1;
+    this.onQuantityChange(this.item().productId, newQty);
   }
 
-  onDecrementQty(productId: string): void {
-    this.onQuantityChange(productId, this.item().quantity - 1);
+  onDecrementQty(): void {
+    this.onQuantityChange(this.item().productId, this.item().quantity - 1);
   }
 
   onRemoveItem(productId: string): void {

@@ -1,5 +1,3 @@
-import { UUID } from 'node:crypto';
-
 export interface CartResponse {
   cartId: string;
   items: CartItemResponse[];
@@ -10,8 +8,8 @@ export interface CartResponse {
 }
 
 export interface CartItemResponse {
-  itemId: UUID;
-  productId: UUID;
+  itemId: string;
+  productId: string;
   productName: string;
   productImageUrl: string;
   quantity: number;

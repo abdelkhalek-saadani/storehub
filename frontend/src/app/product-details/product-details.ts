@@ -4,10 +4,11 @@ import { MatIcon } from '@angular/material/icon';
 import { Gallery } from './components/gallery';
 import { ViewReviews } from './components/view-reviews';
 import { Review } from '../models/Review';
+import { ToggleWishlistButton } from './components/toggle-wishlist-button';
 
 @Component({
   selector: 'app-product-details',
-  imports: [MatIconButton, MatIcon, Gallery, MatButton, ViewReviews],
+  imports: [MatIconButton, MatIcon, Gallery, MatButton, ViewReviews, ToggleWishlistButton],
   host: {
     class: 'min-h-screen flex flex-col px-4 bg-[#F8F8F8] pt-2',
   },

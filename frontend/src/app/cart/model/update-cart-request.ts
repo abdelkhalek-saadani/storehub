@@ -1,5 +1,3 @@
-import { UUID } from 'node:crypto';
-
 export interface UpdateCartRequest {
   storeId: string;
   items: UpdateCartItem[];

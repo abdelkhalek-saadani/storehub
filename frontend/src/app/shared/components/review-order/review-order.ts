@@ -3,13 +3,10 @@ import { MatExpansionPanel, MatExpansionPanelHeader } from '@angular/material/ex
 import { DecimalPipe, TitleCasePipe } from '@angular/common';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Breakpoints } from '@core/constants/breakpoints';
-import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { CatalogApi } from '@shared/service/catalog-api';
-import { OrderApi, OrderItemResponse } from '@shared/service/order-api';
-import { UUID } from 'node:crypto';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+import { OrderItemResponse } from '@shared/service/order-api';
 import { CartItemResponse } from '../../../cart/model/cart-response';
-import { number } from 'zod';
-import { CartStore } from '../../../cart/cart-store';
 
 @Component({
   selector: 'app-review-order',

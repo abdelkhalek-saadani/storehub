@@ -5,10 +5,11 @@ import { MatButton } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { LogoText } from '@shared/components/logo-text/logo-text';
+import { Divider } from '../component/divider';
 
 @Component({
   selector: 'app-welcome',
-  imports: [LogoText, FormsModule, MatButton],
+  imports: [LogoText, FormsModule, MatButton, Divider],
   host: {
     class: 'min-h-screen flex flex-col bg-primary',
   },

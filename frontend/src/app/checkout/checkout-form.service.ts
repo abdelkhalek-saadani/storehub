@@ -4,6 +4,7 @@ import { OrderApi } from '@shared/service/order-api';
 import { LocalDate } from '@js-joda/core';
 import { v4 as uuidv4 } from 'uuid';
 import { CartStore } from '../cart/cart-store';
+import { NavigationService } from './navigation.service';
 
 @Injectable({ providedIn: 'root' })
 export class CheckoutFormService {
@@ -37,6 +38,7 @@ export class CheckoutFormService {
   });
   idempotencyKey = uuidv4();
   cartStore = inject(CartStore);
+  navigationService = inject(NavigationService);
 
   submitting = signal(false);
   submitError = signal<string | null>(null);
@@ -56,6 +58,7 @@ export class CheckoutFormService {
     const cartId = this.cartStore.cartId();
     if (!cartId) {
       this.submitError.set('Your cart could not be found. Please refresh and try again.');
+      this.submitting.set(false);
       return;
     }
     const da = value.deliveryAddress;
@@ -76,7 +79,7 @@ export class CheckoutFormService {
     };
     this.orderApi.placeOrder(this.idempotencyKey, body).subscribe({
       next: (res) => {
-        window.location.href = res.paymentApprovalUrl;
+        this.navigationService.redirectTo(res.paymentApprovalUrl);
       },
       error: () => {
         this.submitting.set(false);

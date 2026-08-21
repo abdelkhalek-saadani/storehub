@@ -15,7 +15,6 @@ import { CartStore } from '../cart/cart-store';
   selector: 'app-checkout',
   imports: [
     FormsModule,
-
     MatFormFieldModule,
     DatePipe,
     MatIcon,
@@ -33,19 +32,13 @@ import { CartStore } from '../cart/cart-store';
     <div
       class="md:w-2/3 flex flex-col gap-6 md:p-6 md:gap-4 md:bg-white md:border md:border-[#F0EEF0] md:rounded-xl"
     >
-      <div class="flex justify-between items-center mt-3">
+      <div class="flex items-center mt-3">
         <div class="flex gap-2 items-center text-lg md:text-[22px] font-semibold">
           <div class="text-3xl text-primary leading-8">
             <mat-icon [inline]="true">shopping_cart_checkout</mat-icon>
           </div>
           <span class="">Checkout</span>
         </div>
-        @if (value) {
-          <div class="flex gap-1 items-center text-primary text-base">
-            <mat-icon [inline]="true"> date_range</mat-icon>
-            <span>{{ value | date: 'MMM d, h a' }}</span>
-          </div>
-        }
       </div>
 
       <app-checkout-form />
@@ -56,7 +49,6 @@ import { CartStore } from '../cart/cart-store';
   `,
 })
 export default class CheckoutPage {
-  value!: Date;
   isMobile = signal(false);
   cartStore = inject(CartStore);
 

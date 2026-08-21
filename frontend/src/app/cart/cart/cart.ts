@@ -46,7 +46,11 @@ import { StoreContext } from '../../store/service/store-context';
         </div>
       </div>
       @if (isMobile()) {
-        <button matButton="elevated" class="w-full">
+        <button
+          matButton="elevated"
+          class="w-full"
+          [routerLink]="['/store', this.storeContext.storeSlug(), 'checkout']"
+        >
           Continue Checkout
           <mat-icon iconPositionEnd>arrow_forward</mat-icon>
         </button>

@@ -15,16 +15,7 @@ import { DomSanitizer, provideClientHydration, withEventReplay } from '@angular/
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { MatIconRegistry } from '@angular/material/icon';
 import { provideNativeDateAdapter } from '@angular/material/core';
-import {
-  AutoRefreshTokenService,
-  createInterceptorCondition,
-  INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
-  IncludeBearerTokenCondition,
-  includeBearerTokenInterceptor,
-  provideKeycloak,
-  UserActivityService,
-  withAutoRefreshToken,
-} from 'keycloak-angular';
+import { includeBearerTokenInterceptor } from 'keycloak-angular';
 import { keycloakProvider } from '@core/auth/keycloak-config';
 import { bearerInterceptorProvider } from '@core/http/bearer-interceptor-config';
 import { guestIdInterceptor } from '@core/http/guest-id-interceptor';

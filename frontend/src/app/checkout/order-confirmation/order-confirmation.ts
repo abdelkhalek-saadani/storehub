@@ -3,6 +3,8 @@ import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
 import { StoreContext } from '../../store/service/store-context';
+import { StorePickerModal } from '../../store/modal/store-picker.modal';
+import { StorePickerService } from '../../store/service/store-picker';
 
 @Component({
   selector: 'app-order-confirmation',
@@ -40,6 +42,7 @@ export class OrderConfirmation {
   state = input<'fail' | 'success'>('success');
   storeContext = inject(StoreContext);
   router = inject(Router);
+  picker = inject(StorePickerService);
 
   goBackHome() {
     const currentStore = this.storeContext.getCurrentStore();
@@ -47,7 +50,9 @@ export class OrderConfirmation {
       this.router.navigate(['/store', currentStore.slug, 'products']);
       return;
     }
-    // TODO: implement store pick page
-    this.router.navigate(['store']);
+
+    this.picker.pickStore(false).subscribe((store) => {
+      this.router.navigate(['/store', store.storeSlug, 'products']);
+    });
   }
 }

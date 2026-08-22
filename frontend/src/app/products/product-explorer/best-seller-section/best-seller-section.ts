@@ -68,7 +68,6 @@ export class BestSellerSection {
   private catalogApi = inject(CatalogApi);
   isMobile = signal(false);
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
-  retryTrigger = signal(0);
 
   products = rxResource({
     stream: () => this.catalogApi.getBestSellerProducts(),

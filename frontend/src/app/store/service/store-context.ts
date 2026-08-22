@@ -44,7 +44,7 @@ export class StoreContext {
     }
   }
 
-  clearPendingStore() {
+  clearCurrentStore() {
     localStorage.removeItem(STORAGE_KEY);
   }
 }

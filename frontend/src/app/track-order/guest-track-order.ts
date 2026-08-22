@@ -14,7 +14,7 @@ export interface formValue {
 }
 
 @Component({
-  selector: 'app-track-order',
+  selector: 'app-guest-track-order',
   imports: [
     MatIcon,
     MatIconButton,
@@ -87,9 +87,6 @@ export default class GuestTrackOrderPage implements OnInit {
     orderId: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
   });
-  get orderIdCtrl() {
-    return this.form.controls['orderId'];
-  }
 
   isTouched(field: keyof formValue): boolean {
     return this.form.controls[field].touched;
@@ -99,9 +96,6 @@ export default class GuestTrackOrderPage implements OnInit {
     return this.form.controls[field].invalid;
   }
 
-  get emailCtrl() {
-    return this.form.controls.email;
-  }
   searchParams = signal<{ orderId: string; email: string } | undefined>(undefined);
 
   ngOnInit() {

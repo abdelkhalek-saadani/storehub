@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 
 export function mapHttpError(err: unknown): string {
+  if (err === null) return 'Unknown error';
   const actual = (err as Error).cause ?? err;
   if (actual instanceof HttpErrorResponse) {
     switch (actual.status) {

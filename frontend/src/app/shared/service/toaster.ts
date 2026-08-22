@@ -1,5 +1,5 @@
-import {inject, Injectable} from '@angular/core';
-import {HotToastService} from '@ngxpert/hot-toast';
+import { inject, Injectable } from '@angular/core';
+import { HotToastService } from '@ngxpert/hot-toast';
 
 @Injectable({
   providedIn: 'root',
@@ -7,8 +7,8 @@ import {HotToastService} from '@ngxpert/hot-toast';
 export class Toaster {
   toaster = inject(HotToastService);
 
-  success(message: string) {
-    this.toaster.success(message);
+  success(message: string, duration: number = 3000) {
+    this.toaster.success(message, { duration: duration });
   }
 
   error(message: string) {

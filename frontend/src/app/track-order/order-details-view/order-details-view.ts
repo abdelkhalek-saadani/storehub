@@ -178,7 +178,7 @@ export class OrderDetailView {
   slot = signal<Slot | null>(null);
   orderNumber = computed(() => {
     const order = this.orderResult().value();
-    return order ? order.orderId : "Can't get order number";
+    return order.orderId ? order.orderId : "Can't get order number";
   });
   isCancelling = signal(false);
   cancelOrder() {
@@ -189,21 +189,17 @@ export class OrderDetailView {
     this.orderApi.cancelOrder(id).subscribe({
       next: () => {
         this.isCancelling.set(false);
-        this.snackBar.open('Order cancelled successfully', 'Close', { duration: 3000 });
+        this.hotToaster.success('Order cancelled successfully');
         this.orderResult().reload();
       },
       error: (err) => {
         this.isCancelling.set(false);
-        /*this.snackBar.open('Failed to cancel order. Please try again.', 'Close', {
-          duration: 3000,
-        });*/
         this.hotToaster.error('Failed to cancel order. Please try again.');
         console.error('Failed to cancel order', err);
       },
     });
   }
   orderId = computed(() => this.orderResult().value().orderId);
-  private snackBar = inject(MatSnackBar);
   private hotToaster = inject(Toaster);
 
   deliveryAddress = computed(() => {

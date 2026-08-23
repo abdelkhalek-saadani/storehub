@@ -1,5 +1,6 @@
 package com.abdelkhalek.storehub.order.order.models;
 
+import com.abdelkhalek.storehub.order.order.dto.AddressDto;
 import lombok.Builder;
 import lombok.Data;
 
@@ -26,7 +27,7 @@ public class Order {
     LocalDateTime createdAt = LocalDateTime.now();
     LocalDateTime updatedAt;
 
-    String deliveryAddress;
+    AddressDto deliveryAddress;
     String billingAddress;
 
     UUID slotId;

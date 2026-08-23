@@ -4,6 +4,7 @@ import com.abdelkhalek.storehub.order.cart.domain.CartOwner;
 import com.abdelkhalek.storehub.order.cart.entity.CartEntity;
 import com.abdelkhalek.storehub.order.cart.entity.CartItemEntity;
 import com.abdelkhalek.storehub.order.cart.repository.CartRepository;
+import com.abdelkhalek.storehub.order.order.dto.AddressDto;
 import com.abdelkhalek.storehub.order.order.dto.OrderCreatedResponse;
 import com.abdelkhalek.storehub.order.order.dto.OrderRequest;
 import com.abdelkhalek.storehub.order.order.models.Order;
@@ -321,7 +322,12 @@ class OrderControllerIT {
         return "The billing, address";
     }
 
-    private String deliveryAddress() {
-        return "The delivery, address";
+    private AddressDto deliveryAddress() {
+        return new AddressDto(AddressDto.AddressTypeDto.HOME,
+                "street",
+                "city",
+                "9",
+                "8030",
+                "No instructions");
     }
 }

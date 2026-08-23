@@ -8,7 +8,6 @@ import org.springframework.data.r2dbc.config.EnableR2dbcAuditing;
 
 
 @Slf4j
-@EnableR2dbcAuditing
 @SpringBootApplication
 public class OrderApplication {
 

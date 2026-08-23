@@ -19,7 +19,7 @@ public record OrderDto
                 List<OrderItemDto> items,
 
 
-                String deliveryAddress,
+                AddressDto deliveryAddress,
                 String billingAddress,
 
                 UUID slotId,

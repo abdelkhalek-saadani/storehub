@@ -12,7 +12,7 @@ public record OrderRequest (
         // These fields are optional
         // Wire real address object from the frontend
         String billingAddress,
-        String deliveryAddress,
+        AddressDto deliveryAddress,
         String firstName,
         String lastName,
         String phoneNumber

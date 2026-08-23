@@ -1,5 +1,6 @@
 package com.abdelkhalek.storehub.order.order.entity;
 
+import com.abdelkhalek.storehub.order.order.dto.AddressDto;
 import com.abdelkhalek.storehub.order.order.models.OrderStatus;
 import io.github.joselion.springr2dbcrelationships.annotations.OneToMany;
 import lombok.AllArgsConstructor;
@@ -48,7 +49,8 @@ public class OrderEntity {
     @LastModifiedDate
     LocalDateTime updatedAt;
 
-    String deliveryAddress;
+
+    AddressDto deliveryAddress;
     String billingAddress;
 
     UUID slotId;

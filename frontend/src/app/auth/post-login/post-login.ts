@@ -30,6 +30,6 @@ export class PostLogin implements OnInit {
       }
     }
 
-    this.router.navigate(['/dev']);
+    this.router.navigate(['/']);
   }
 }

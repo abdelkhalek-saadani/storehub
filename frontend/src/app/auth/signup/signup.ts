@@ -2,14 +2,14 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import Keycloak from 'keycloak-js';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
+import { MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
+import { MatError, MatInput } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
 import { Router } from '@angular/router';
 import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-toggle';
 import { MatIcon } from '@angular/material/icon';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { SignupApi } from '../signup-api';
+import { SignupApi, SignupResponse } from '../signup-api';
 import { PendingStoreStorage } from '../pending-store-storage';
 import { lastValueFrom } from 'rxjs';
 import { LogoText } from '@shared/components/logo-text/logo-text';
@@ -27,6 +27,7 @@ import { LogoText } from '@shared/components/logo-text/logo-text';
     MatButtonToggle,
     MatButtonToggleGroup,
     MatIcon,
+    MatHint,
   ],
   host: {
     class: 'min-h-screen flex flex-col bg-primary',
@@ -68,10 +69,15 @@ import { LogoText } from '@shared/components/logo-text/logo-text';
               </mat-form-field>
             </div>
 
-            <mat-form-field appearance="outline">
-              <mat-label>Email</mat-label>
-              <input matInput formControlName="email" placeholder="Email" />
-            </mat-form-field>
+            <div>
+              <mat-form-field appearance="outline">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email" placeholder="Email" />
+              </mat-form-field>
+              @if (error()?.code == 409) {
+                <span class="text-red-600 text-sm ms-2">{{ error()?.message }}</span>
+              }
+            </div>
 
             <mat-form-field appearance="outline">
               <mat-label>Password</mat-label>
@@ -112,6 +118,9 @@ import { LogoText } from '@shared/components/logo-text/logo-text';
             >
               Sign up
             </button>
+            @if (error()?.code != 409) {
+              <span>{{ error()?.message }}</span>
+            }
           </form>
         </div>
       </div>
@@ -126,7 +135,7 @@ export class Signup {
   private signupService = inject(SignupApi);
   private pendingStoreStorage = inject(PendingStoreStorage);
 
-  errorMessage = '';
+  error = signal<Error | null>(null);
   isSubmitting = signal(false);
 
   form = this.fb.nonNullable.group({
@@ -144,11 +153,11 @@ export class Signup {
 
   async onSubmit() {
     if (this.form.invalid) return;
+    this.form.markAsTouched();
     this.isSubmitting.set(true);
-    this.errorMessage = '';
+    this.error.set(null);
 
     const values = this.form.getRawValue();
-
     try {
       // Step 1: create the account (identity fields only go to backend)
       await lastValueFrom(
@@ -177,7 +186,7 @@ export class Signup {
         redirectUri: window.location.origin + '/post-login',
       });
     } catch (err: any) {
-      this.errorMessage = err?.error?.message ?? 'Signup failed';
+      this.error.set({ code: err?.status, message: err?.error?.message ?? 'Signup failed' });
       this.isSubmitting.set(false);
     }
   }
@@ -186,4 +195,9 @@ export class Signup {
     initialValue: this.form.controls.accountType.value,
   });
   isOwner = computed(() => this.type() === 'owner');
+}
+
+interface Error {
+  code: number;
+  message: string;
 }

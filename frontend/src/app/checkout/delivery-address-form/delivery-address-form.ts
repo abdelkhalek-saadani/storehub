@@ -10,7 +10,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { Breakpoints } from '@core/constants/breakpoints';
-import { CheckoutFormService } from '../checkout-form.service';
+import { AddressType, CheckoutFormService } from '../checkout-form.service';
 
 @Component({
   selector: 'app-delivery-address-form',
@@ -30,11 +30,11 @@ import { CheckoutFormService } from '../checkout-form.service';
         <div>
           <h3 class="text-[#1a1b1f] font-medium mb-2 text-base">Select Address Type</h3>
           <mat-button-toggle-group formControlName="type">
-            <mat-button-toggle value="home">
+            <mat-button-toggle [value]="AddressType.home">
               <mat-icon>home</mat-icon>
               Home
             </mat-button-toggle>
-            <mat-button-toggle value="apartment">
+            <mat-button-toggle [value]="AddressType.apartment">
               <mat-icon>apartment</mat-icon>
               @if (isXSMobile()) {
                 Apt.
@@ -42,7 +42,7 @@ import { CheckoutFormService } from '../checkout-form.service';
                 Apartment
               }
             </mat-button-toggle>
-            <mat-button-toggle value="office">
+            <mat-button-toggle [value]="AddressType.office">
               <mat-icon>work</mat-icon>
               Office
             </mat-button-toggle>
@@ -89,4 +89,6 @@ export class DeliveryAddressForm {
       .pipe(takeUntilDestroyed())
       .subscribe((result) => this.isXSMobile.set(result.matches));
   }
+
+  protected readonly AddressType = AddressType;
 }

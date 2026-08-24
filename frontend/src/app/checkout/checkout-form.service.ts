@@ -6,6 +6,12 @@ import { v4 as uuidv4 } from 'uuid';
 import { CartStore } from '../cart/cart-store';
 import { NavigationService } from './navigation.service';
 
+export enum AddressType {
+  home = 'HOME',
+  office = 'OFFICE',
+  apartment = 'APARTMENT',
+}
+
 @Injectable({ providedIn: 'root' })
 export class CheckoutFormService {
   form = new FormGroup({
@@ -22,7 +28,10 @@ export class CheckoutFormService {
     }),
     slotId: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
     deliveryAddress: new FormGroup({
-      type: new FormControl('home', { nonNullable: true, validators: [Validators.required] }),
+      type: new FormControl(AddressType.home, {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
       street: new FormControl('zuhur street', {
         nonNullable: true,
         validators: [Validators.required],

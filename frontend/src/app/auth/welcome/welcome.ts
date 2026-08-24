@@ -45,7 +45,7 @@ export class Welcome {
   private readonly route = inject(ActivatedRoute);
 
   login(): void {
-    const redirectUrl = this.route.snapshot.queryParamMap.get('redirectUrl') ?? '/dev';
+    const redirectUrl = this.route.snapshot.queryParamMap.get('redirectUrl') ?? '/';
     this.keycloak.login({
       redirectUri: window.location.origin + redirectUrl,
     });

@@ -74,7 +74,10 @@ describe('CheckoutPage', () => {
 
   describe('cartItems', () => {
     it('mirrors cartStore.items()', async () => {
-      const items = [buildItem({ productId: 'a' }), buildItem({ productId: 'b' })];
+      const items = [
+        buildItem({ productId: 'a' }),
+        buildItem({ itemId: 'item-2', productId: 'b' }),
+      ];
       storeMock.items.set(items);
       await fixture.whenStable();
 

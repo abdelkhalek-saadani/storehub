@@ -50,6 +50,7 @@ describe('StoreContext', () => {
     it('returns null and clears storage when data is corrupted', () => {
       localStorage.setItem('current_store', '{invalid json');
       const removeSpy = spyOn(localStorage, 'removeItem').and.callThrough();
+      spyOn(console, 'error');
 
       const result = service.getCurrentStore();
 

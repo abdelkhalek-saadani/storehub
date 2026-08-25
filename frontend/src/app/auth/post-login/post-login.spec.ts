@@ -46,7 +46,7 @@ describe('PostLogin', () => {
 
     expect(storeApiSpy.createStore).not.toHaveBeenCalled();
     expect(pendingStoreStorageSpy.clearPendingStore).not.toHaveBeenCalled();
-    expect(routerSpy.navigate).toHaveBeenCalledWith(['/dev']);
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
   });
 
   it('creates the pending store, clears it, then navigates', async () => {
@@ -58,7 +58,7 @@ describe('PostLogin', () => {
 
     expect(storeApiSpy.createStore).toHaveBeenCalledWith(pending);
     expect(pendingStoreStorageSpy.clearPendingStore).toHaveBeenCalled();
-    expect(routerSpy.navigate).toHaveBeenCalledWith(['/dev']);
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
   });
 
   it('still clears storage and navigates even if store creation fails', async () => {
@@ -70,6 +70,6 @@ describe('PostLogin', () => {
     await component.ngOnInit();
 
     expect(pendingStoreStorageSpy.clearPendingStore).toHaveBeenCalled();
-    expect(routerSpy.navigate).toHaveBeenCalledWith(['/dev']);
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/']);
   });
 });

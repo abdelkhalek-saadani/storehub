@@ -26,6 +26,7 @@ describe('PendingStoreStorage', () => {
     sessionStorage.setItem(STORAGE_KEY, '{invalid json');
     const removeSpy = spyOn(sessionStorage, 'removeItem').and.callThrough();
 
+    spyOn(console, 'error');
     const result = service.getPendingStore();
 
     expect(result).toBeNull();

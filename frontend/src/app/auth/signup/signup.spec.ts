@@ -140,7 +140,7 @@ describe('Signup', () => {
 
       await component.onSubmit();
 
-      expect(component.errorMessage).toBe('Email already exists');
+      expect(component.error()?.message).toBe('Email already exists');
       expect(component.isSubmitting()).toBeFalse();
     });
 
@@ -149,7 +149,7 @@ describe('Signup', () => {
 
       await component.onSubmit();
 
-      expect(component.errorMessage).toBe('Signup failed');
+      expect(component.error()?.message).toBe('Signup failed');
     });
   });
 

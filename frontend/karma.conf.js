@@ -1,6 +1,7 @@
 // Karma configuration file, see link for more information
 // https://karma-runner.github.io/1.0/config/configuration-file.html
-process.env.CHROME_BIN = require('puppeteer').executablePath();
+process.env.CHROME_BIN = process.env.CHROME_BIN || require('puppeteer').executablePath();
+
 module.exports = function (config) {
   config.set({
     basePath: '',
@@ -10,6 +11,7 @@ module.exports = function (config) {
       require('karma-chrome-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage'),
+      require('karma-spec-reporter'),
     ],
     client: {
       jasmine: {
@@ -19,16 +21,20 @@ module.exports = function (config) {
         // or set a specific seed with `seed: 4321`
       },
     },
-    jasmineHtmlReporter: {
-      suppressAll: true, // removes the duplicated traces
-    },
+    jasmineHtmlReporter: { suppressAll: true },
     coverageReporter: {
       dir: require('path').join(__dirname, './coverage/frontend'),
       subdir: '.',
       reporters: [{ type: 'html' }, { type: 'text-summary' }],
     },
-    reporters: ['progress', 'kjhtml'],
-    browsers: ['Chrome'],
+    reporters: ['spec', 'kjhtml'],
+    browsers: ['ChromeHeadlessNoSandbox'],
+    customLaunchers: {
+      ChromeHeadlessNoSandbox: {
+        base: 'ChromeHeadless',
+        flags: ['--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage'],
+      },
+    },
     restartOnFileChange: true,
   });
 };

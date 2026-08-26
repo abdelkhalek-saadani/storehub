@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "POST",
+    "urlPath": "/v1/oauth2/token"
+  },
+  "response": {
+    "status": 200,
+    "headers": { "Content-Type": "application/json" },
+    "jsonBody": {
+      "access_token": "A21AAFakeAccessTokenForE2ETests1234567890",
+      "token_type": "Bearer",
+      "expires_in": 32400
+    }
+  }
+}

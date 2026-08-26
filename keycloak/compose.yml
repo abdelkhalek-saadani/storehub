@@ -1,5 +1,5 @@
 services:
-    storehub-auth-server:
+    auth-server:
         image: quay.io/keycloak/keycloak:26.1.1
         ports:
             - "8081:8080"

@@ -32,6 +32,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable) // stateless JWT API, no cookies
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"api/salemu-alaykom").permitAll()
                         .requestMatchers("/api/payments/paypal/webhook").permitAll()
                         .anyRequest().hasRole("SERVICE")

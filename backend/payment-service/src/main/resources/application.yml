@@ -1,11 +1,38 @@
 spring:
   application:
     name: Payment Service
-  profiles:
-    active: dev
+  datasource:
+    url: jdbc:postgresql://localhost:5432/payment_db
+    username: payment_user
+    password: payment_password
+  # JPA settings
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KC_BASE_URL}/realms/storehub
+          jwk-set-uri: ${KC_BASE_URL}/realms/storehub/protocol/openid-connect/certs
+      client:
+        registration:
+          paypal:
+            client-id: ${PAYPAL_CLIENT_ID}
+            client-secret: ${PAYPAL_CLIENT_SECRET}
+            authorization-grant-type: client_credentials
+            provider: paypal
+        provider:
+          paypal:
+            token-uri: ${paypal.base-url}/v1/oauth2/token
+
 logging:
   level:
-    com.proxiad.payment: DEBUG
+    com.abdelkhalek.storehub.payment: DEBUG
 
 
   rabbitmq:
@@ -20,3 +47,16 @@ server:
 
 storehub:
   rabbit.exchange: storehub.exchange
+
+paypal:
+  base-url: https://api.sandbox.paypal.com
+  webhook:
+    id: 5HM86695C73415230
+  return-url: http://localhost:4200/checkout/return
+  cancel-url: http://localhost:4200/checkout/cancel
+
+
+management:
+  web:
+    exposure:
+      include: "health"

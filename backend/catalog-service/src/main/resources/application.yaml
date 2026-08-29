@@ -57,3 +57,9 @@ storehub:
 
 server:
   port: 8082
+
+management:
+  endpoints:
+    access:
+      default: none
+

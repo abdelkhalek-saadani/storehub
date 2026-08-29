@@ -1,6 +1,7 @@
 package com.abdelkhalek.storehub.catalog.product.controller;
 
 import com.abdelkhalek.storehub.catalog.product.ProductMapper;
+import com.abdelkhalek.storehub.catalog.product.dto.CreateProductDto;
 import com.abdelkhalek.storehub.catalog.product.dto.ParentCategoryDTO;
 import com.abdelkhalek.storehub.catalog.product.dto.ProductResponse;
 import com.abdelkhalek.storehub.catalog.product.dto.SubCategoryDTO;
@@ -17,11 +18,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
@@ -40,6 +41,14 @@ public class ProductController {
     private final SaleEventService saleEventService;
     private final StoreService storeService;
 
+    @PostMapping("products")
+    public ResponseEntity<CreateProductDto> create(@AuthenticationPrincipal Jwt jwt,
+                                                   @RequestBody CreateProductDto request) {
+        UUID storeId = storeService.getStoreId(jwt.getSubject());
+        CreateProductDto created = productService.create(storeId, request.name(), request.unitPrice(),
+                request.initialQty());
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
 
     @GetMapping("products")
     public ResponseEntity<Page<ProductResponse>> findAll(

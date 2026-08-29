@@ -2,9 +2,7 @@ package com.abdelkhalek.storehub.catalog.product.entity;
 
 import com.abdelkhalek.storehub.catalog.pricing.entity.DiscountEntity;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -15,7 +13,9 @@ import java.util.UUID;
 @Table(name = "products")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class ProductEntity {
 
     @Id

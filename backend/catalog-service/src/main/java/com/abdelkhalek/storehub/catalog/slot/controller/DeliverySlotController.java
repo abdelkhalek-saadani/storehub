@@ -52,10 +52,11 @@ public class DeliverySlotController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         Optional<List<DeliverySlot>> slots;
         if (!date.isEqual(LocalDate.now())) slots =
-                deliverySlotRepository.findByStoreIdAndSlotDate(storeId, date);
-        else slots = deliverySlotRepository.findByStoreIdAndSlotDateAndStartTimeAfter(
+                deliverySlotRepository.findByStoreIdAndSlotDateAndStatus(storeId, date, DeliverySlot.Status.OPEN);
+        else slots = deliverySlotRepository.findByStoreIdAndSlotDateAndStatusAndStartTimeAfter(
                 storeId,
                 date,
+                DeliverySlot.Status.OPEN,
                 LocalDateTime.now());
         if (slots.isEmpty()) return ResponseEntity.notFound().build();
         List<SlotDto> slotDtos = slots.get().stream()

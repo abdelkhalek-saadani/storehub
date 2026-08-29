@@ -22,10 +22,17 @@ public interface ProductMapper {
 
 
     @Mapping(source = "discounts", target = "activeDiscount", qualifiedByName = "activeDiscount")
-    @Mapping(target = "categoryName", expression = "java(entity.getSubCategory().getName())")
+    @Mapping(source = "subCategory", target = "categoryName", qualifiedByName =
+            "subCategoryToCategory")
     ProductResponse toResponse(ProductEntity entity);
 
     List<ProductResponse> toResponses(List<ProductEntity> entities);
+
+    @Named("subCategoryToCategory")
+    default String subCategoryToCategory(SubCategory subCategory) {
+        if (subCategory == null) return null;
+        return subCategory.getName();
+    }
 
     @Named("activeDiscount")
     default DiscountSummary findActiveDiscount(Set<DiscountEntity> discounts) {

@@ -16,9 +16,12 @@ public interface DeliverySlotRepository extends JpaRepository<DeliverySlot, UUID
 
     Optional<DeliverySlot> findByIdAndStoreId(UUID id, UUID storeId);
 
-    Optional<List<DeliverySlot>> findByStoreIdAndSlotDate(UUID storeId, LocalDate date);
+    Optional<List<DeliverySlot>> findByStoreIdAndSlotDateAndStatus(UUID storeId, LocalDate date,
+                                                                   DeliverySlot.Status status);
 
-    Optional<List<DeliverySlot>> findByStoreIdAndSlotDateAndStartTimeAfter(UUID storeId, LocalDate slotDate, LocalDateTime startTimeAfter);
+    Optional<List<DeliverySlot>> findByStoreIdAndSlotDateAndStatusAndStartTimeAfter(UUID storeId,
+                                                                                    LocalDate slotDate, DeliverySlot.Status status,
+                                                                                    LocalDateTime startTimeAfter);
 
 
     Boolean existsByStoreIdAndSlotDate(UUID storeId, LocalDate date);

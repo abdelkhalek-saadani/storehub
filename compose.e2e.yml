@@ -1,0 +1,143 @@
+name: portfolio-e2e
+
+include:
+  - ./wiremock/compose.yml
+  - ./keycloak/compose.e2e.yml    # service name auth-server
+  - ./frontend/compose.yml
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports: ["5672:5672", "15672:15672"]
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  catalog:
+    build: ./backend/catalog-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://catalog-db:5432/catalog_db
+      SPRING_DATASOURCE_USERNAME: catalog
+      SPRING_DATASOURCE_PASSWORD: catalog
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_PROFILES_ACTIVE: e2e
+      KC_BASE_URL: http://auth-server:8088
+      ORDER_BASE_URL: http://order:8080
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:8080}     # This important for CORS
+    ports:
+      - "8100:8080"
+    depends_on:
+      catalog-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    env_file:
+      - ./backend/catalog-service/.env
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+  catalog-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: catalog_db
+      POSTGRES_USER: catalog
+      POSTGRES_PASSWORD: catalog
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U catalog -d catalog_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  payment:
+    build: ./backend/payment-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://payment-db:5432/payment_db
+      SPRING_DATASOURCE_USERNAME: payment
+      SPRING_DATASOURCE_PASSWORD: payment
+      SPRING_RABBITMQ_HOST: rabbitmq
+      PAYPAL_BASE_URL: http://wiremock:8080
+      SPRING_PROFILES_ACTIVE: e2e
+      KC_BASE_URL: http://auth-server:8088
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+    env_file:
+      - ./backend/payment-service/.env
+    ports:
+      - "8200:8080"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      payment-db:
+        condition: service_healthy
+      auth-server:
+        condition: service_healthy
+      wiremock:
+        condition: service_started
+
+  payment-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: payment_db
+      POSTGRES_USER: payment
+      POSTGRES_PASSWORD: payment
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U payment -d payment_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  order:
+    build: ./backend/order-service
+    environment:
+      SPRING_R2DBC_URL: r2dbc:postgresql://order-db:5432/order_db
+      SPRING_R2DBC_USERNAME: order
+      SPRING_R2DBC_PASSWORD: order
+      SPRING_RABBITMQ_HOST: rabbitmq
+      CATALOG_BASE_URL: http://catalog:8080
+      PAYMENT_BASE_URL: http://payment:8080
+      KC_BASE_URL: http://auth-server:8088
+      SPRING_PROFILES_ACTIVE: e2e
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:8080}     # This important for CORS
+    env_file:
+      - ./backend/order-service/.env
+    ports:
+      - "8090:8080"
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      order-db:
+        condition: service_healthy
+      catalog:
+        condition: service_healthy
+      payment:
+        condition: service_healthy
+      auth-server:
+        condition: service_started
+    healthcheck:
+      test: [ "CMD", "wget", "-qO-", "http://localhost:8080/actuator/health" ]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+  order-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: order_db
+      POSTGRES_USER: order
+      POSTGRES_PASSWORD: order
+    volumes:
+      - ./backend/order-service/src/main/resources/init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U order -d order_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+

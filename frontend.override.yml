@@ -1,0 +1,6 @@
+services:
+  frontend:         # imported from ./frontend/compose.yml
+    depends_on:
+      - order
+      - catalog
+      - auth-server

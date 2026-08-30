@@ -5,23 +5,31 @@
   },
   "response": {
     "status": 201,
-    "headers": { "Content-Type": "application/json" },
+    "headers": {
+      "Content-Type": "application/json"
+    },
     "jsonBody": {
-      "id": "5O190127TN364715T",
+      "_meta": {
+        "var1": "{{val (randomInt lower=10000000 upper=99999999) assign='firstRandomPart'}}{{firstRandomPart}}",
+        "var2": "{{val (randomInt lower=100000 upper=999999) assign='secondRandomPart'}}{{secondRandomPart}}"
+      },
+      "id": "{{firstRandomPart}}TN{{secondRandomPart}}T",
       "status": "PAYER_ACTION_REQUIRED",
       "links": [
         {
-          "href": "{{request.baseUrl}}/v2/checkout/orders/5O190127TN364715T",
+          "href": "{{request.baseUrl}}/v2/checkout/orders/{{firstRandomPart}}TN{{secondRandomPart}}T",
           "rel": "self",
           "method": "GET"
         },
         {
-          "href": "{{request.baseUrl}}/checkoutnow?token=5O190127TN364715T",
+          "href": "{{request.baseUrl}}/checkoutnow?token={{firstRandomPart}}TN{{secondRandomPart}}T",
           "rel": "payer-action",
           "method": "GET"
         }
       ]
     },
-    "transformers": ["response-template"]
+    "transformers": [
+      "response-template"
+    ]
   }
 }

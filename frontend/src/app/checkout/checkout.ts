@@ -16,7 +16,6 @@ import { CartStore } from '../cart/cart-store';
   imports: [
     FormsModule,
     MatFormFieldModule,
-    DatePipe,
     MatIcon,
     ReviewOrder,
     CheckoutDetails,

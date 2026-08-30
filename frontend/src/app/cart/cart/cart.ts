@@ -41,7 +41,7 @@ import { StoreContext } from '../../store/service/store-context';
         </div>
         <div class="flex flex-col gap-2 divide-y divide-[#F8F7F8]">
           @for (item of sortedItems(); track item.itemId) {
-            <app-cart-item [item]="item" />
+            <app-cart-item [item]="item" data-cy="cart-item" />
           }
         </div>
       </div>
@@ -50,6 +50,7 @@ import { StoreContext } from '../../store/service/store-context';
           matButton="elevated"
           class="w-full"
           [routerLink]="['/store', this.storeContext.storeSlug(), 'checkout']"
+          data-cy="continue-checkout-btn"
         >
           Continue Checkout
           <mat-icon iconPositionEnd>arrow_forward</mat-icon>
@@ -59,6 +60,7 @@ import { StoreContext } from '../../store/service/store-context';
           matButton="filled"
           class="btn-lg"
           [routerLink]="['/store', this.storeContext.storeSlug(), 'checkout']"
+          data-cy="continue-checkout-btn"
         >
           Continue Checkout
           <mat-icon iconPositionEnd>arrow_forward</mat-icon>

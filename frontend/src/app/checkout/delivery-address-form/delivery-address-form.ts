@@ -50,28 +50,37 @@ import { AddressType, CheckoutFormService } from '../checkout-form.service';
         </div>
         <mat-form-field>
           <mat-label>Street Address</mat-label>
-          <input matInput formControlName="street" />
+          <input matInput formControlName="street" data-cy="delivery-street-input" />
         </mat-form-field>
 
         <div class="flex flex-col gap-6 md:flex-row md:gap-3">
           <mat-form-field>
             <mat-label>City</mat-label>
-            <input matInput formControlName="city" />
+            <input matInput formControlName="city" data-cy="delivery-city-input" />
           </mat-form-field>
 
           <mat-form-field>
             <mat-label>N.of Apartment</mat-label>
-            <input matInput formControlName="apartmentNumber" />
+            <input matInput formControlName="apartmentNumber" data-cy="delivery-apartment-input" />
           </mat-form-field>
 
           <mat-form-field>
             <mat-label>Zip Code</mat-label>
-            <input matInput type="number" formControlName="zipCode" />
+            <input
+              matInput
+              type="number"
+              formControlName="zipCode"
+              data-cy="delivery-zipCode-input"
+            />
           </mat-form-field>
         </div>
         <mat-form-field>
           <mat-label>Delivery Instructions</mat-label>
-          <input matInput formControlName="deliveryInstructions" />
+          <input
+            matInput
+            formControlName="deliveryInstructions"
+            data-cy="delivery-instructions-input"
+          />
         </mat-form-field>
       </div>
     </div>

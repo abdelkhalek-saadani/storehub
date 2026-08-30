@@ -45,7 +45,7 @@ import { RouterLink } from '@angular/router';
           class="grid grid-rows-2 grid-flow-col gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth px-4 pb-4 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
         >
           @for (product of pagedResult.value().content; track product.id) {
-            <app-product-card [product]="product" />
+            <app-product-card [product]="product" data-cy="product-card" />
           }
         </div>
       }

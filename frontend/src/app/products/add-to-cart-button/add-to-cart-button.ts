@@ -9,12 +9,12 @@ import { MatIcon } from '@angular/material/icon';
     <div class="flex items-center gap-3 bg-white rounded-full">
       <div class="inline-flex items-center">
         @if (quantity() != 0) {
-          <button matIconButton [disabled]="quantity() == 0" class="remove">
+          <button matIconButton [disabled]="quantity() == 0" class="remove" data-cy="remove-btn">
             <mat-icon (click)="qtyUpdated.emit('decrement')"> remove </mat-icon>
           </button>
           <div class="px-3 text-sm font-medium">{{ quantity() }}</div>
         }
-        <button matIconButton class="add">
+        <button matIconButton class="add" data-cy="add-btn">
           <mat-icon (click)="qtyUpdated.emit('increment')"> add </mat-icon>
         </button>
       </div>

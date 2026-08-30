@@ -65,12 +65,14 @@ describe('Seed test data', () => {
       token1 = t;
     });
     for (let i = 1; i <= 8; i++) {
-      cy.createProduct(token1, {
-        name: `Product ${i}`,
-        unitPrice: 10 + i,
-        initialQty: 9999,
-      }).then((res) => {
-        expect(res.status).to.eq(201);
+      cy.then(() => token1).then((token) => {
+        cy.createProduct(token, {
+          name: `Product ${i}`,
+          unitPrice: 10 + i,
+          initialQty: 9999,
+        }).then((res) => {
+          expect(res.status).to.eq(201);
+        });
       });
     }
   });
@@ -81,16 +83,18 @@ describe('Seed test data', () => {
       token1 = t;
     });
     [0, 1].forEach((day) => {
-      cy.createSlotConfig(token1, {
-        dayOfWeek: day,
-        startTime: '09:00',
-        endTime: '18:00',
-        slotDurationMin: 30,
-        maxCapacity: 10,
-        cutoffMinutes: 60,
-        active: true,
-      }).then((res) => {
-        expect(res.status).to.eq(200);
+      cy.then(() => token1).then((token) => {
+        cy.createSlotConfig(token, {
+          dayOfWeek: day,
+          startTime: '09:00',
+          endTime: '18:00',
+          slotDurationMin: 30,
+          maxCapacity: 10,
+          cutoffMinutes: 60,
+          active: true,
+        }).then((res) => {
+          expect(res.status).to.eq(200);
+        });
       });
     });
   });

@@ -26,11 +26,21 @@ import { Divider } from '../component/divider';
       <div class="flex flex-col max-w-[418px] min-w-[300px] -mt-[200px] gap-4">
         <div class="p-6 bg-white/50 rounded-2xl border border-[#F8F7F8]">
           <div class="flex flex-col gap-4">
-            <button matButton="filled" class="btn-sign w-full" (click)="login()">
+            <button
+              matButton="filled"
+              class="btn-sign w-full"
+              (click)="login()"
+              data-cy="login-btn"
+            >
               <span class="text-black"> Login</span>
             </button>
             <app-divider />
-            <button matButton="filled" class="btn-sign w-full" (click)="goToSignup()">
+            <button
+              matButton="filled"
+              class="btn-sign w-full"
+              (click)="goToSignup()"
+              data-cy="create-account-btn"
+            >
               <span class="text-black"> Create an Account</span>
             </button>
           </div>
@@ -45,7 +55,7 @@ export class Welcome {
   private readonly route = inject(ActivatedRoute);
 
   login(): void {
-    const redirectUrl = this.route.snapshot.queryParamMap.get('redirectUrl') ?? '/';
+    const redirectUrl = this.route.snapshot.queryParamMap.get('redirectUrl') ?? '/'; // In case the use came from isAuthenticated guard redirection
     this.keycloak.login({
       redirectUri: window.location.origin + redirectUrl,
     });

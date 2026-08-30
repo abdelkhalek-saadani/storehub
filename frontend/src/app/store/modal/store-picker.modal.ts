@@ -33,6 +33,7 @@ import { MatIcon } from '@angular/material/icon';
             <li
               class="flex items-center gap-3 py-[10px] px-2 rounded-lg cursor-pointer  [transition:background_0.15s_ease] hover:bg-black/4"
               (click)="select(store)"
+              [attr.data-cy]="'store-card-' + store.storeSlug"
             >
               <span
                 class="w-9 h-9 rounded-[50%] flex items-center justify-center text-white text-sm font-semibold shrink-0"

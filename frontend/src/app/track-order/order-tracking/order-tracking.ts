@@ -14,9 +14,9 @@ import { LocalDateTime } from '@js-joda/core';
     <div class="border border-[#F8F7F8] rounded-2xl p-4 flex flex-col gap-4">
       <div class="flex items-center justify-between">
         <div class="flex flex-col gap-1">
-          <span class="text-lg md:text-[22px] font-semibold text-black-900">{{
-            status().label
-          }}</span>
+          <span class="text-lg md:text-[22px] font-semibold text-black-900" data-cy="order-status">
+            {{ status().label }}
+          </span>
           @if (!isOrderFailed() && status().code != 'DELIVERED') {
             <span class="text-sm font-medium text-primary">Order {{ orderArriveIn() }}</span>
           }

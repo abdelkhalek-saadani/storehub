@@ -13,7 +13,9 @@ import { LogoText } from '@shared/components/logo-text/logo-text';
       <app-logo-text [height]="40" [width]="163" class="mb-2" />
       <h1 class="text-3xl font-medium m-0">Welcome</h1>
       <p class="text-black/60 mb-4">Pick a store to explore</p>
-      <button mat-flat-button color="primary" (click)="choose()">Choose a store</button>
+      <button mat-flat-button color="primary" (click)="choose()" data-cy="choose-store-btn">
+        Choose a store
+      </button>
     </div>
   `,
   styles: ``,

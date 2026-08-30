@@ -57,6 +57,7 @@ import { CouponDialog } from '../coupon-dialog/coupon-dialog';
         class="w-full btn-pill space-between"
         [disabled]="formService.form.invalid || formService.submitting()"
         (click)="formService.submit()"
+        data-cy="checkout-btn"
       >
         <!--<span style="display:flex; align-items:center; gap:8px;">-->
         <span class="flex items-center gap-2">

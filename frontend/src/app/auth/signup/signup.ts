@@ -27,7 +27,6 @@ import { LogoText } from '@shared/components/logo-text/logo-text';
     MatButtonToggle,
     MatButtonToggleGroup,
     MatIcon,
-    MatHint,
   ],
   host: {
     class: 'min-h-screen flex flex-col bg-primary',
@@ -49,39 +48,52 @@ import { LogoText } from '@shared/components/logo-text/logo-text';
             <div class="flex flex-col gap-4 md:gap-2 md:flex-row">
               <mat-form-field appearance="outline">
                 <mat-label>First Name</mat-label>
-                <input matInput formControlName="firstName" value="Abdelkhalek" />
+                <input
+                  matInput
+                  formControlName="firstName"
+                  value="Abdelkhalek"
+                  data-cy="firstName-input"
+                />
               </mat-form-field>
 
               <mat-form-field appearance="outline">
                 <mat-label>Last Name</mat-label>
-                <input matInput formControlName="lastName" />
+                <input matInput formControlName="lastName" data-cy="lastName-input" />
               </mat-form-field>
             </div>
             <div class="flex flex-col gap-4 md:gap-2 md:flex-row">
               <mat-form-field appearance="outline">
                 <mat-label>Address</mat-label>
-                <input matInput formControlName="address" />
+                <input matInput formControlName="address" data-cy="address-input" />
               </mat-form-field>
 
               <mat-form-field appearance="outline">
                 <mat-label>Phone Number</mat-label>
-                <input matInput formControlName="phoneNumber" />
+                <input matInput formControlName="phoneNumber" data-cy="phone-input" />
               </mat-form-field>
             </div>
 
             <div>
               <mat-form-field appearance="outline">
                 <mat-label>Email</mat-label>
-                <input matInput formControlName="email" placeholder="Email" />
+                <input matInput formControlName="email" placeholder="Email" data-cy="email-input" />
               </mat-form-field>
               @if (error()?.code == 409) {
-                <span class="text-red-600 text-sm ms-2">{{ error()?.message }}</span>
+                <span data-cy="signup-error" class="text-red-600 text-sm ms-2">{{
+                  error()?.message
+                }}</span>
               }
             </div>
 
             <mat-form-field appearance="outline">
               <mat-label>Password</mat-label>
-              <input matInput formControlName="password" type="password" placeholder="Password" />
+              <input
+                matInput
+                formControlName="password"
+                type="password"
+                placeholder="Password"
+                data-cy="password-input"
+              />
             </mat-form-field>
 
             <mat-button-toggle-group formControlName="accountType" class="w-fit">
@@ -115,6 +127,7 @@ import { LogoText } from '@shared/components/logo-text/logo-text';
               color="primary"
               type="submit"
               [disabled]="form.invalid || isSubmitting()"
+              data-cy="signup-submit"
             >
               Sign up
             </button>

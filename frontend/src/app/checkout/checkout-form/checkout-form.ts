@@ -49,9 +49,11 @@ interface CheckoutFormValue {
 
           <mat-form-field>
             <mat-label>Time Slot</mat-label>
-            <mat-select formControlName="slotId">
+            <mat-select formControlName="slotId" data-cy="delivery-slot-select">
               @for (slot of slotsResult.value(); track slot.slotId) {
-                <mat-option [value]="slot.slotId">{{ slot.slotLabel }}</mat-option>
+                <mat-option [value]="slot.slotId" [attr.data-cy]="'slot-' + $index">{{
+                  slot.slotLabel
+                }}</mat-option>
               }
             </mat-select>
           </mat-form-field>

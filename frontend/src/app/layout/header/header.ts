@@ -49,6 +49,7 @@ import { MatBadge } from '@angular/material/badge';
             class="background-primary"
             (click)="cartSidenavService.toggle()"
             [matBadge]="itemCount()"
+            data-cy="cart-btn"
           >
             <mat-icon>shopping_cart</mat-icon>
           </button>
@@ -77,7 +78,12 @@ import { MatBadge } from '@angular/material/badge';
               <mat-icon>favorite</mat-icon>
               3 Products
             </button>
-            <button matButton="filled" class="btn-pill-sm" (click)="cartSidenavService.toggle()">
+            <button
+              matButton="filled"
+              class="btn-pill-sm"
+              (click)="cartSidenavService.toggle()"
+              data-cy="cart-btn"
+            >
               <div class="flex items-center gap-1">
                 <mat-icon>shopping_cart</mat-icon>
                 <span>{{ total() }} TND</span>

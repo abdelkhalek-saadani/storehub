@@ -107,7 +107,16 @@ public class CartService {
      * @param cart cart with items (productId, and quantity)
      * @return the passed cart with prices populated and discounts applied
      */
-    private Mono<Cart> reprice(Cart cart) {
+    public Mono<Cart> reprice(Cart cart) {
+        if (cart.getItems().isEmpty()) {
+            Cart uc = cart.toBuilder()
+                    .finalTotal(BigDecimal.ZERO)
+                    .totalDiscount(BigDecimal.ZERO)
+                    .originalTotal(BigDecimal.ZERO)
+                    .build();
+            log.debug("empty cart: {}", cart);
+            return Mono.just(uc);
+        }
         PricesRequest pricesRequest = cartMapper.toPricesRequest(cart);
         Mono<PricesResponse> pricesResponseMono = pricesService.fetchPrices(pricesRequest);
 

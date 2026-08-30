@@ -1,10 +1,7 @@
---
--- PostgreSQL database dump
---
+-- This schema init script is used by the compose.e2e.yml compose file to spin up an order container.
 
-
--- Dumped from database version 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1)
--- Dumped by pg_dump version 16.14 (Ubuntu 16.14-0ubuntu0.24.04.1)
+-- Dumped from database version 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)
+-- Dumped by pg_dump version 16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -25,27 +22,11 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION pgcrypto; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
-
-
---
 -- Name: uuid-ossp; Type: EXTENSION; Schema: -; Owner: -
 --
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA public;
 
-
---
--- Name: EXTENSION "uuid-ossp"; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION "uuid-ossp" IS 'generate universally unique identifiers (UUIDs)';
-
-
-SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
@@ -99,28 +80,6 @@ CREATE TABLE public.cart_item (
 
 
 --
--- Name: customer_order; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE public.customer_order (
-                                       id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-                                       delivery_address_id uuid,
-                                       invoice_address_id uuid,
-                                       original_subtotal_id uuid,
-                                       subtotal_id uuid,
-                                       total_id uuid,
-                                       delivery_fee_id uuid,
-                                       slot_id uuid,
-                                       date timestamp without time zone,
-                                       delivery_mode character varying(255),
-                                       slot_retain_id uuid,
-                                       inventory_retain_id uuid,
-                                       some_column character varying(255),
-                                       payment_mode character varying(255)
-);
-
-
---
 -- Name: order_item; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -152,7 +111,7 @@ CREATE TABLE public.orders (
                                total_discount numeric(12,2) DEFAULT 0 NOT NULL,
                                created_at timestamp without time zone DEFAULT now() NOT NULL,
                                updated_at timestamp without time zone,
-                               delivery_address text,
+                               delivery_address jsonb,
                                billing_address text,
                                slot_id uuid,
                                delivery_fee numeric(12,2) DEFAULT 10,
@@ -250,17 +209,6 @@ ALTER TABLE ONLY public.cart
 
 
 --
--- Name: customer_order customer_order_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.customer_order
-    ADD CONSTRAINT customer_order_pkey PRIMARY KEY (id);
-
-
-
-
-
---
 -- Name: order_item order_item_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -340,8 +288,6 @@ ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
 
 
-
-
 --
 -- Name: idx_cart_item_cart_id; Type: INDEX; Schema: public; Owner: -
 --
@@ -368,32 +314,6 @@ CREATE INDEX idx_cart_user_store ON public.cart USING btree (user_id, store_id);
 --
 
 CREATE INDEX idx_order_item_order_id ON public.order_item USING btree (order_id);
-
-
---
--- Name: customer_order customer_order_delivery_address_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.customer_order
-    ADD CONSTRAINT customer_order_delivery_address_id_fkey FOREIGN KEY (delivery_address_id) REFERENCES public.address(id) ON DELETE CASCADE;
-
-
---
--- Name: customer_order customer_order_invoice_address_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.customer_order
-    ADD CONSTRAINT customer_order_invoice_address_id_fkey FOREIGN KEY (invoice_address_id) REFERENCES public.address(id) ON DELETE CASCADE;
-
-
-
---
--- Name: customer_order customer_order_slot_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY public.customer_order
-    ADD CONSTRAINT customer_order_slot_id_fkey FOREIGN KEY (slot_id) REFERENCES public.slot(id) ON DELETE CASCADE;
-
 
 
 --
@@ -431,4 +351,3 @@ ALTER TABLE ONLY public.store_memberships
 --
 -- PostgreSQL database dump complete
 --
-

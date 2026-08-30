@@ -7,6 +7,7 @@ import com.abdelkhalek.storehub.order.user.entity.User;
 import com.abdelkhalek.storehub.order.user.repository.UserRepository;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/auth")
 @AllArgsConstructor
@@ -46,11 +48,13 @@ public class SignupController {
                         .flatMap(userEventPublisher::userCreated)
                         .thenReturn(ResponseEntity.status(HttpStatus.CREATED)
                                 .body(Map.<String, String>of("message", "User created, please login")))
-                        .onErrorResume(dbError ->
+                        .onErrorResume(dbError ->{
+                            log.error(dbError.getMessage());
+                            return
                                 keycloakAdminService.deleteUser(keycloakId)
                                         .then(Mono.error(new ResponseStatusException(
                                                 HttpStatus.INTERNAL_SERVER_ERROR,
-                                                "Signup failed, please retry")))
+                                                "Signup failed, please retry")));}
                         )
                 );
     }

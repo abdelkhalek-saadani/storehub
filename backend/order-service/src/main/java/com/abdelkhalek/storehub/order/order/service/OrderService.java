@@ -36,6 +36,8 @@ public class OrderService {
         return orderCreationService.checkAvailability(orderRequest.storeId(), orderRequest.cartId(), orderRequest.slotId())
                 .flatMap(isAvailable -> {
                     if (!isAvailable) {
+                        log.debug("Unavailable items in cart {} or slot {}", orderRequest.cartId(),
+                                orderRequest.slotId());
                         return Mono.error(new UnavailableException("Unavailable items or slot"));
                     }
                     return ownerResolver.resolveOwner(guestId)

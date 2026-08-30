@@ -3,6 +3,7 @@ package com.abdelkhalek.storehub.order.cart.domain;
 import com.abdelkhalek.storehub.order.cart.entity.CartEntity;
 import com.abdelkhalek.storehub.order.shared.model.AppliedOffer;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class CartItem {
 
     UUID id;

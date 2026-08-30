@@ -10,4 +10,7 @@ public record PricesResponse(
         BigDecimal finalTotal,
         BigDecimal totalDiscount
 ) {
+    public static PricesResponse empty(){
+        return new PricesResponse(List.of(),BigDecimal.ZERO,BigDecimal.ZERO,BigDecimal.ZERO);
+    }
 }

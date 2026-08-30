@@ -23,7 +23,10 @@ import reactor.test.StepVerifier;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
@@ -34,8 +37,10 @@ class CartServiceTest {
 
     @Mock
     private CartRepository cartRepository;
-    @Mock private CartMapper cartMapper;
-    @Mock private PricesService pricesService;
+    @Mock
+    private CartMapper cartMapper;
+    @Mock
+    private PricesService pricesService;
     @InjectMocks
     private CartService cartService;
 
@@ -104,7 +109,7 @@ class CartServiceTest {
 
         CartEntity existingEntity = new CartEntity();
         Cart domainCart = new Cart();// real, empty cart, upsert() will run for real
-        domainCart.setItems(List.of(new CartItem(existingProductId,10)));
+        domainCart.setItems(List.of(new CartItem(existingProductId, 10)));
         PricesResponse pricesResponse = new PricesResponse(List.of(), BigDecimal.TEN, BigDecimal.TEN, BigDecimal.ZERO);
         CartEntity savedEntity = new CartEntity();
         CartResponse response = createCartResponse(storeId);
@@ -196,12 +201,105 @@ class CartServiceTest {
         assertThat(saved.getFinalTotal()).isEqualByComparingTo(BigDecimal.ZERO);
     }
 
+    @Test
+    void reprice_returnsCartPricesAndItemsPriced_whenItemsAreNotEmpty() {
+        // Arrange
+        UUID productId1 = UUID.randomUUID();
+        UUID productId2 = UUID.randomUUID();
+        int product1Qty = 1;
+        int product2Qty = 10;
+        List<CartItem> items = List.of(
+                CartItem.builder().productId(productId1).quantity(product1Qty).build(),
+                CartItem.builder().productId(productId2).quantity(product2Qty).build());
+        Cart cart = Cart.builder()
+                .items(items)
+                .build();
+        PricesRequest pricesRequest = PricesRequest.empty();
+        when(cartMapper.toPricesRequest(cart)).thenReturn(pricesRequest);
+        PricesResponse pricesResponse = new PricesResponse(List.of(), BigDecimal.TEN, BigDecimal.TEN, BigDecimal.ZERO);
+
+        when(pricesService.fetchPrices(pricesRequest)).thenReturn(Mono.just(pricesResponse));
+
+        BigDecimal product1Price = BigDecimal.valueOf(100);
+        BigDecimal product2Price = BigDecimal.valueOf(200);
+        CartItem cartItem1 = CartItem.builder()
+                .productId(productId1)
+                .quantity(product1Qty)
+                .unitPrice(product1Price)
+                .finalLineTotal(product1Price.multiply(BigDecimal.valueOf(product1Qty)))
+                .originalLineTotal(product1Price.multiply(BigDecimal.valueOf(product1Qty)))
+                .productName(productId1.toString())
+                .build();
+        CartItem cartItem2 = CartItem.builder()
+                .productId(productId2)
+                .quantity(product2Qty)
+                .unitPrice(product2Price)
+                .finalLineTotal(product2Price.multiply(BigDecimal.valueOf(product2Qty)))
+                .originalLineTotal(product2Price.multiply(BigDecimal.valueOf(product2Qty)))
+                .productName(productId2.toString())
+                .build();
+        List<CartItem> cartItems = List.of(cartItem1, cartItem2);
+        when(cartMapper.fromPriceItemsResponse(pricesResponse.items())).thenReturn(cartItems);
 
 
+        // Act
+        // call reprice with a cart that has items
+        StepVerifier.create(cartService.reprice(cart))
+                // Assert
+                .assertNext((uc) -> {
+                    Map<UUID, CartItem> itemsById = uc.getItems().stream()
+                            .collect(Collectors.toMap(CartItem::getProductId, Function.identity()));
+
+                    CartItem item1 = itemsById.get(productId1);
+                    assertThat(item1.getQuantity()).isEqualTo(product1Qty);
+                    assertThat(item1.getUnitPrice()).isEqualTo(product1Price);
+                    assertThat(item1.getFinalLineTotal()).isEqualTo(cartItem1.getFinalLineTotal());
+                    assertThat(item1.getOriginalLineTotal()).isEqualTo(cartItem1.getOriginalLineTotal());
+                    assertThat(item1.getProductName()).isEqualTo(productId1.toString());
+
+                    CartItem item2 = itemsById.get(productId2);
+                    assertThat(item2.getQuantity()).isEqualTo(product2Qty);
+                    assertThat(item2.getUnitPrice()).isEqualTo(product2Price);
+                    assertThat(item2.getFinalLineTotal()).isEqualTo(cartItem2.getFinalLineTotal());
+                    assertThat(item2.getOriginalLineTotal()).isEqualTo(cartItem2.getOriginalLineTotal());
+                    assertThat(item2.getProductName()).isEqualTo(productId2.toString());
+                    assertThat(uc.getItems().size()).isEqualTo(2);
+                })
+                .verifyComplete();
+
+        verify(pricesService).fetchPrices(pricesRequest);
+        verify(cartMapper).fromPriceItemsResponse(pricesResponse.items());
+        verify(cartMapper).toPricesRequest(cart);
 
 
-    private CartResponse createCartResponse(UUID storeId){
-        return new CartResponse(UUID.randomUUID(),List.of(),BigDecimal.ZERO,
-                BigDecimal.ZERO,BigDecimal.ZERO,storeId);
+    }
+
+    @Test
+    void reprice_returnsZeroPricesAndDoesntCallFetchPrices_whenItemsEmpty() {
+        Cart cart = Cart.builder()
+                .items(List.of())
+                .build();
+
+        // Act
+        StepVerifier.create(cartService.reprice(cart))
+                // Assert
+                .assertNext((uc) -> {
+                    assertThat(uc.getFinalTotal()).isEqualTo(BigDecimal.ZERO);
+                    assertThat(uc.getOriginalTotal()).isEqualTo(BigDecimal.ZERO);
+                    assertThat(uc.getTotalDiscount()).isEqualTo(BigDecimal.ZERO);
+                    assertThat(uc.getItems()).isEmpty();
+                })
+                .verifyComplete();
+
+        verify(pricesService, never()).fetchPrices(any());
+        verify(cartMapper, never()).fromPriceItemsResponse(any());
+        verify(cartMapper, never()).toPricesRequest(cart);
+
+    }
+
+
+    private CartResponse createCartResponse(UUID storeId) {
+        return new CartResponse(UUID.randomUUID(), List.of(), BigDecimal.ZERO,
+                BigDecimal.ZERO, BigDecimal.ZERO, storeId);
     }
 }

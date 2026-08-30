@@ -50,3 +50,7 @@ storehub:
   payment-base-url: ${PAYMENT_BASE_URL}
 
 
+management:
+  endpoints:
+    access:
+      default: none

@@ -20,7 +20,7 @@ public class SubCategory {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_category_id", nullable = false)
+    @JoinColumn(name = "parent_category_id", nullable = true)
     private ParentCategory parentCategory;
 
     @Column(nullable = false)

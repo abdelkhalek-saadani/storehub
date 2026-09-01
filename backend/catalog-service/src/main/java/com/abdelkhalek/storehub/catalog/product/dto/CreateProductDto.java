@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 public record CreateProductDto(
         String name,
         BigDecimal unitPrice,
-        int initialQty
+        int initialQty,
+        String imageUrl,
+        boolean isBestSeller
 ) {
 }

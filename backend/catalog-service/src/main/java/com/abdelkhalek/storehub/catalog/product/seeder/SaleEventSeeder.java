@@ -36,12 +36,7 @@ public class SaleEventSeeder implements CommandLineRunner {
     }
 
     private void create(String name, String imageUrl) {
-       SaleEvent se = new SaleEvent();
-       se.setName(name);
-       se.setDescription("This is a special event");
-       se.setImageUrl(imageUrl);
-       se.setStoreId(STORE_ID);
-       saleEventService.create(se);
+       saleEventService.create(STORE_ID, name, imageUrl);
     }
 
 }

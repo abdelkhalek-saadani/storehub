@@ -49,12 +49,15 @@ public class ProductService {
     }
 
     @Transactional
-    public CreateProductDto create(UUID storeId, String name, BigDecimal unitPrice, int initialQty) {
+    public CreateProductDto create(UUID storeId, String name, BigDecimal unitPrice,
+                                   int initialQty, String imageUrl, boolean isBestSeller) {
         ProductEntity productEntity =
                 ProductEntity.builder()
                         .storeId(storeId)
                         .name(name)
                         .unitPrice(unitPrice)
+                        .imageUrl(imageUrl)
+                        .isBestSeller(isBestSeller)
                         .build();
         productEntity = productRepository.save(productEntity);
 
@@ -71,7 +74,9 @@ public class ProductService {
         return new CreateProductDto(
                 productEntity.getName(),
                 productEntity.getUnitPrice(),
-                stockEntity.getQuantityOnHand());
+                stockEntity.getQuantityOnHand(),
+                productEntity.getImageUrl(),
+                productEntity.getIsBestSeller());
     }
 
 

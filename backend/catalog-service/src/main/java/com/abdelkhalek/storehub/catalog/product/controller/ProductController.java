@@ -1,10 +1,7 @@
 package com.abdelkhalek.storehub.catalog.product.controller;
 
 import com.abdelkhalek.storehub.catalog.product.ProductMapper;
-import com.abdelkhalek.storehub.catalog.product.dto.CreateProductDto;
-import com.abdelkhalek.storehub.catalog.product.dto.ParentCategoryDTO;
-import com.abdelkhalek.storehub.catalog.product.dto.ProductResponse;
-import com.abdelkhalek.storehub.catalog.product.dto.SubCategoryDTO;
+import com.abdelkhalek.storehub.catalog.product.dto.*;
 import com.abdelkhalek.storehub.catalog.product.entity.ProductEntity;
 import com.abdelkhalek.storehub.catalog.product.entity.SaleEvent;
 import com.abdelkhalek.storehub.catalog.product.repository.ProductRepository;
@@ -46,7 +43,7 @@ public class ProductController {
                                                    @RequestBody CreateProductDto request) {
         UUID storeId = storeService.getStoreId(jwt.getSubject());
         CreateProductDto created = productService.create(storeId, request.name(), request.unitPrice(),
-                request.initialQty());
+                request.initialQty(), request.imageUrl(), request.isBestSeller());
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
@@ -96,6 +93,15 @@ public class ProductController {
         return ResponseEntity.ok(subCategories);
     }
 
+    @PostMapping("categories/subcategories")
+    public ResponseEntity<SubCategoryDTO> createSubCategory(@AuthenticationPrincipal Jwt jwt,
+                                                            @RequestBody SubCategoryDTO request) {
+        UUID storeId = storeService.getStoreId(jwt.getSubject());
+        SubCategoryDTO created = categoryService.create(storeId, request.name(),
+                request.imageUrl());
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
     @GetMapping("categories/parents")
     public ResponseEntity<List<ParentCategoryDTO>> getParentsWithSubs(@RequestParam UUID storeId) {
         return ResponseEntity.ok(categoryService.getParentCategories(storeId));
@@ -106,6 +112,14 @@ public class ProductController {
                                                          @RequestParam(required = false,
                                                                  defaultValue = "6") @Min(1) Integer count) {
         return ResponseEntity.ok(saleEventService.getSaleEvents(storeId, count));
+    }
+
+    @PostMapping("sale-events")
+    public ResponseEntity<CreateSaleEventDto> createSaleEvent(@AuthenticationPrincipal Jwt jwt,
+                                                     @RequestBody CreateSaleEventDto request){
+        UUID storeId = storeService.getStoreId(jwt.getSubject());
+        CreateSaleEventDto created = saleEventService.create(storeId, request.name(), request.imageUrl());
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
 }

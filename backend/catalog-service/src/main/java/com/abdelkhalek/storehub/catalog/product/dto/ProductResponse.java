@@ -10,5 +10,6 @@ public record ProductResponse(
         String description,
         BigDecimal unitPrice,
         DiscountSummary activeDiscount, // null if none active
-        String categoryName
+        String categoryName,
+        String imageUrl
 ) {}

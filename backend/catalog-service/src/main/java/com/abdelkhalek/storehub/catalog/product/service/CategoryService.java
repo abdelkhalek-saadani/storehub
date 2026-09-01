@@ -22,6 +22,15 @@ public class CategoryService {
     private final SubCategoryRepository subCategoryRepository;
     private final ProductMapper productMapper;
 
+    public SubCategoryDTO create(UUID storeId, String name, String imageUrl) {
+        SubCategory sc = new SubCategory();
+        sc.setName(name);
+        sc.setImageUrl(imageUrl);
+        sc.setStoreId(storeId);
+        SubCategory saved = subCategoryRepository.save(sc);
+        return new SubCategoryDTO(saved.getId(), saved.getName(), imageUrl);
+    }
+
     public List<SubCategoryDTO> getSubCategories(UUID storeId) {
         return productMapper.toSubCategoryDTOs(subCategoryRepository.findByStoreId(storeId));
     }

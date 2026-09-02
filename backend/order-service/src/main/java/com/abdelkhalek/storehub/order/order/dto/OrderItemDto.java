@@ -7,6 +7,7 @@ public record OrderItemDto(
         UUID itemId,
 
         String productName,
+        String productImageUrl,
 
         UUID productId,
 

@@ -16,6 +16,7 @@ public class OrderItem {
 
     UUID id;
     String productName;
+    String productImageUrl;
     UUID productId;
     int quantity;
 

@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .pathMatchers("/api/stores/by-slug/**").permitAll()
                         .pathMatchers(HttpMethod.GET,"/api/stores/**").permitAll()
                         .pathMatchers("/api/orders/*/track").permitAll()
+                        .pathMatchers(HttpMethod.POST,"/api/orders/*/void").permitAll()
                         .pathMatchers("/api/auth/**").permitAll()
                         .pathMatchers("/api/cart/quote/**").permitAll()
                         .pathMatchers("/internal/**").hasRole("SERVICE") // service-to-service
@@ -95,7 +96,8 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(allowedOrigins);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Idempotency-Key", "X-Guest-Id"));
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "Idempotency-Key", "X" +
+                "-Guest-Id", "From"));
         config.setExposedHeaders(List.of("X-Guest-Id"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

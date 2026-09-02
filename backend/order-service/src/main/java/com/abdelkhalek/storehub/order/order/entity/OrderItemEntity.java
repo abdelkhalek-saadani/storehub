@@ -28,6 +28,8 @@ public class OrderItemEntity {
     UUID id;
 
     String productName;
+    String productImageUrl;
+
 
     UUID productId;
 

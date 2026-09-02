@@ -12,5 +12,5 @@ public interface PaymentService {
 
     Mono<PaymentResponse> getPaymentApprovalLink(Order order);
 
-    Mono<PaymentResponse> voidAuthorizedPayment(UUID orderId);
+    Mono<PaymentResponse> voidAuthorizedPayment(UUID paymentId);
 }

@@ -42,13 +42,13 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Mono<PaymentResponse> voidAuthorizedPayment(UUID orderId) {
+    public Mono<PaymentResponse> voidAuthorizedPayment(UUID paymentId) {
         return paymentWebClient.post()
-                .uri(ub -> ub.path("/api/payments/paypal/{orderId}/void").build(orderId))
+                .uri(ub -> ub.path("/api/payments/paypal/{paymentId}/void").build(paymentId.toString()))
                 .retrieve()
                 .bodyToMono(PaymentResponse.class)
                 .onErrorResume(e -> {
-                    log.warn("Error sending void request for order {}", orderId);
+                    log.warn("Error sending void request for order {}", paymentId);
                     return Mono.error(e);
                 });
 

@@ -1,5 +1,6 @@
 package com.abdelkhalek.storehub.order.order.service;
 
+import com.abdelkhalek.storehub.order.cart.service.CartService;
 import com.abdelkhalek.storehub.order.cart.service.OwnerResolver;
 import com.abdelkhalek.storehub.order.order.dto.*;
 import com.abdelkhalek.storehub.order.order.exceptions.OrderNotFoundException;
@@ -16,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -31,6 +33,7 @@ public class OrderService {
     private final OrderMapper orderMapper;
     private final OrderStatusService orderStatusService;
     private final OwnerResolver ownerResolver;
+    private final CartService cartService;
 
     public Mono<Order> placeOrder(OrderRequest orderRequest, UUID idempotencyKey, UUID guestId) {
         return orderCreationService.checkAvailability(orderRequest.storeId(), orderRequest.cartId(), orderRequest.slotId())
@@ -59,7 +62,24 @@ public class OrderService {
                         : ServiceResult.forUser(ocr)))
                 .switchIfEmpty(
                         placeOrder(orderRequest, idempotencyKey, guestId)
-                                .flatMap(orderPaymentService::attachPaymentAndSave));
+                                .flatMap(orderPaymentService::attachPaymentAndSave)
+                                .flatMap((order) ->
+                                        cartService.clearCart(orderRequest.cartId())
+                                                .timeout(Duration.ofSeconds(5))
+                                                .onErrorResume(e -> {
+                                                    log.error("Failed to clear cart {} after placing order {}",
+                                                            orderRequest.cartId(),
+                                                            order.getId(), e);
+                                                    return Mono.empty();
+                                                })
+                                                .thenReturn(order))
+                                .map(order -> {
+                                    OrderCreatedResponse ocr = OrderCreatedResponse.from(order);
+                                    return order.getGuestId() != null ?
+                                            ServiceResult.forGuest(ocr, guestId) :
+                                            ServiceResult.forUser(ocr);
+                                })
+                );
     }
 
     public Mono<OrderDto> getOrder(UUID orderId) {
@@ -106,21 +126,34 @@ public class OrderService {
 
     public Mono<OrderCancelResponse> cancelOrder(UUID orderId) {
         return getOrderForUser(orderId)
-                .flatMap((order -> {
-                    Mono<PaymentResponse> prMono =
-                            orderPaymentService.voidAuthorizedPayment(orderId);
-                    return prMono.flatMap((pr) ->
-                            orderStatusService.updateStatus(order, OrderStatus.VOID_REQUESTED)
-                                    .map((order1 -> new OrderCancelResponse(order1.getId(),
-                                            order1.getPaymentId(),
-                                            orderMapper.toDto(order1.getStatus()), pr.message()))));
-                }));
+                .flatMap(this::cancelOrder);
     }
 
-    public Mono<OrderDto> getOrderByIdAndEmail(UUID orderId, String email) {
+    public Mono<OrderCancelResponse> cancelOrder(UUID orderId, String email) {
+        return getOrderByIdAndEmail(orderId, email)
+                .flatMap(this::cancelOrder);
+
+    }
+
+    private Mono<OrderCancelResponse> cancelOrder(Order order) {
+        if (order.getStatus().equals(OrderStatus.VOID_REQUESTED))
+            return Mono.just(new OrderCancelResponse(order.getId(),
+                    order.getPaymentId(),
+                    orderMapper.toDto(OrderStatus.VOID_REQUESTED),
+                    "A void request already submitted"));
+        Mono<PaymentResponse> prMono =
+                orderPaymentService.voidAuthorizedPayment(order.getPaymentId());
+        return prMono.flatMap((pr) ->
+                orderStatusService.updateStatus(order, OrderStatus.VOID_REQUESTED)
+                        .map((order1 -> new OrderCancelResponse(order1.getId(),
+                                order1.getPaymentId(),
+                                orderMapper.toDto(order1.getStatus()), pr.message()))));
+    }
+
+    public Mono<Order> getOrderByIdAndEmail(UUID orderId, String email) {
         return orderRepository.findByIdAndEmail(orderId, email)
                 .switchIfEmpty(Mono.error(new OrderNotFoundException("Order with id " +
                         orderId + "is not found")))
-                .map((orderMapper::toOrderDto));
+                ;
     }
 }

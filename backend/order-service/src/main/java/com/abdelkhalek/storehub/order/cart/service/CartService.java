@@ -174,6 +174,14 @@ public class CartService {
                         ServiceResult.forUser(cr));
     }
 
+    public Mono<Void> clearCart(UUID cartId){
+        return cartRepository.findById(cartId)
+                .map(this::clearCart)
+                .doOnNext(cartEntity -> log.debug("cart entity cleared: {}", cartEntity))
+                .flatMap(cartRepository::save)
+                .then();
+    }
+
     private CartEntity clearCart(CartEntity cart) {
         cart.setItems(List.of());
         cart.setOriginalTotal(BigDecimal.ZERO);

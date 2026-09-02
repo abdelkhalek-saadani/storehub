@@ -75,7 +75,8 @@ CREATE TABLE public.cart_item (
                                   applied_offer_label character varying(255),
                                   cart_id uuid NOT NULL,
                                   created_at timestamp without time zone DEFAULT now() NOT NULL,
-                                  product_name character varying
+                                  product_name character varying,
+                                    product_image_url character varying
 );
 
 
@@ -86,6 +87,7 @@ CREATE TABLE public.cart_item (
 CREATE TABLE public.order_item (
                                    id uuid DEFAULT gen_random_uuid() NOT NULL,
                                    product_name text NOT NULL,
+                                   product_image_url character varying,
                                    product_id uuid NOT NULL,
                                    quantity integer NOT NULL,
                                    unit_price numeric(12,2) NOT NULL,

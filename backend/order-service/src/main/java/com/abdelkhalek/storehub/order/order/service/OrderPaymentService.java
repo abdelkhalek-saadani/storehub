@@ -1,10 +1,8 @@
 package com.abdelkhalek.storehub.order.order.service;
 
-import com.abdelkhalek.storehub.order.order.dto.OrderCreatedResponse;
 import com.abdelkhalek.storehub.order.order.dto.PaymentResponse;
 import com.abdelkhalek.storehub.order.order.exceptions.PaymentProcessingException;
 import com.abdelkhalek.storehub.order.order.models.Order;
-import com.abdelkhalek.storehub.order.shared.model.ServiceResult;
 import com.abdelkhalek.storehub.order.order.spi.OrderRepository;
 import com.abdelkhalek.storehub.order.order.spi.PaymentService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +20,7 @@ public class OrderPaymentService {
     private final OrderRepository orderRepository;
     private final PaymentService paymentService;
 
-    public Mono<ServiceResult<OrderCreatedResponse>> attachPaymentAndSave(Order order) {
+    public Mono<Order> attachPaymentAndSave(Order order) {
         return getPaymentApprovalLink(order)
                 .flatMap(paymentResponse -> {
                     log.info("Attaching payment {} to order {}", paymentResponse, order);
@@ -31,10 +29,6 @@ public class OrderPaymentService {
                     order.setPaymentOrderId(paymentResponse.paymentOrderId());
                     return orderRepository.save(order);
                 })
-                .map(OrderCreatedResponse::from)
-                .map(ocr -> order.getGuestId() != null ?
-                        ServiceResult.forGuest(ocr, order.getGuestId()):
-                        ServiceResult.forUser(ocr)  )
                 .onErrorMap(e -> new PaymentProcessingException("Failed to get payment approval link", e));
     }
 
@@ -44,7 +38,7 @@ public class OrderPaymentService {
     }
 
 
-    public Mono<PaymentResponse> voidAuthorizedPayment(UUID orderId) {
-        return paymentService.voidAuthorizedPayment(orderId);
+    public Mono<PaymentResponse> voidAuthorizedPayment(UUID paymentId) {
+        return paymentService.voidAuthorizedPayment(paymentId);
     }
 }

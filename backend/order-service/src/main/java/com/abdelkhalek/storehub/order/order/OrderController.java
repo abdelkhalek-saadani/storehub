@@ -55,8 +55,16 @@ public class OrderController {
 
     @PostMapping("/{orderId}/void")
     Mono<OrderCancelResponse> cancelOrder(
-            @PathVariable UUID orderId
+            @PathVariable UUID orderId,
+            @RequestHeader(value = "From", required = false) String email
     ) {
+        // This path for guests, a guest can cancel an order by its id and email
+        if (email != null) {
+            log.debug("Cancelling order for guest: {}, orderId: {}", email, orderId);
+            return orderService.cancelOrder(orderId, email);
+        }
+        // For connected users
+        log.debug("Cancelling order for connected user, orderId: {}", orderId);
         return orderService.cancelOrder(orderId);
     }
 
@@ -77,6 +85,7 @@ public class OrderController {
         //Do the same reactive pipeline as the getOrderByToken, just change the check from userId
         // to email
         log.debug("track order request: {}", trackOrderRequest);
-        return orderService.getOrderByIdAndEmail(trackOrderRequest.orderId(), trackOrderRequest.email());
+        return orderService.getOrderByIdAndEmail(trackOrderRequest.orderId(), trackOrderRequest.email())
+                .map((orderMapper::toOrderDto));
     }
 }

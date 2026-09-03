@@ -13,13 +13,13 @@ import { NgClass } from '@angular/common';
         <a
           routerLink="../products"
           [queryParams]="{ saleEvent: offer.slug }"
-          [attr.aria-label]="offer.description"
+          [attr.aria-label]="offer.slug"
           [ngClass]="['relative block rounded-lg overflow-hidden no-underline ', columns[$index]]"
         >
           <img
             class="h-full w-full object-cover transition-transform duration-400 ease-in-out hover:scale-[1.04]"
             [src]="offer.imageUrl"
-            [alt]="offer.description"
+            [alt]="offer.slug"
             loading="lazy"
           />
           <span class="absolute bottom-4 left-4 text-white text-base font-medium">{{

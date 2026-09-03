@@ -136,6 +136,7 @@ export default class GuestTrackOrderPage implements OnInit {
       paymentId: '',
       paymentApprovalLink: '',
       createdAt: '',
+      email: '',
     },
   });
 }

@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { AddressType, CheckoutFormService } from './checkout-form.service';
-import { OrderApi } from '@shared/service/order-api';
 import { CartStore } from '../cart/cart-store';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { NavigationService } from './navigation.service';
+import { OrderApi } from '@shared/service/order-api';
 
 describe('CheckoutFormService', () => {
   let service: CheckoutFormService;
@@ -99,9 +99,9 @@ describe('CheckoutFormService', () => {
           deliveryAddress: jasmine.objectContaining({
             type: AddressType.home,
             street: 'zuhur street',
-            city: 'zayatine city',
-            apartmentNumber: '22',
-            zipCode: '8030',
+            city: 'city',
+            apartmentNumber: '11',
+            zipCode: '9050',
             deliveryInstructions: 'Jawk behi',
           }),
         }),

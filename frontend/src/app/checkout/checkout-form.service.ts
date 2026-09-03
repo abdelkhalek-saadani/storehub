@@ -32,17 +32,17 @@ export class CheckoutFormService {
         nonNullable: true,
         validators: [Validators.required],
       }),
-      street: new FormControl('zuhur street', {
+      street: new FormControl('Zuhur Street', {
         nonNullable: true,
         validators: [Validators.required],
       }),
-      city: new FormControl('zayatine city', {
+      city: new FormControl('city', {
         nonNullable: true,
         validators: [Validators.required],
       }),
-      apartmentNumber: new FormControl('22'),
-      zipCode: new FormControl('8030'),
-      deliveryInstructions: new FormControl('Jawk behi'),
+      apartmentNumber: new FormControl('11'),
+      zipCode: new FormControl('9050'),
+      deliveryInstructions: new FormControl(''),
     }),
   });
   idempotencyKey = uuidv4();

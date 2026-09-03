@@ -6,10 +6,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { CheckoutFormService } from '../checkout-form.service';
 import { CartStore } from '../../cart/cart-store';
 import { CouponDialog } from '../coupon-dialog/coupon-dialog';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-checkout-details',
-  imports: [MatButton, MatIcon, MatProgressBar],
+  imports: [MatButton, MatIcon, MatProgressBar, DecimalPipe],
   template: `
     <div class="p-8 flex flex-col gap-4 rounded-2xl border border-[#F0EEF0] max-w-96">
       <div class="flex flex-col gap-6">
@@ -26,7 +27,9 @@ import { CouponDialog } from '../coupon-dialog/coupon-dialog';
             </div>
             <div class="flex flex-row justify-between">
               <span class="font-normal text-base text-[#686069]">Items total</span
-              ><span class="font-medium text-base text-black-900">{{ finalTotal() }}TND</span>
+              ><span class="font-medium text-base text-black-900"
+                >{{ finalTotal() | number: '1.2-2' }}TND</span
+              >
             </div>
           </div>
         </div>
@@ -46,7 +49,7 @@ import { CouponDialog } from '../coupon-dialog/coupon-dialog';
         </div>
         <div class="flex flex-row justify-between font-semibold text-xl text-black-900">
           <span>Total</span>
-          <span>{{ finalTotal() }}TND</span>
+          <span>{{ finalTotal() | number: '1.2-2' }}TND</span>
         </div>
         <div class="text-[#807681] font-normal text-sm">
           By placing this order, you are agreeing to Terms and Conditions.
@@ -64,7 +67,7 @@ import { CouponDialog } from '../coupon-dialog/coupon-dialog';
           <mat-icon>payment</mat-icon>
           {{ formService.submitting() ? 'Placing order...' : 'Checkout' }}
         </span>
-        <span>{{ finalTotal() }}TND</span>
+        <span>{{ finalTotal() | number: '1.2-2' }}TND</span>
       </button>
       @if (!formService.submitting && formService.submitError()) {
         <p class="text-red-500">{{ formService.submitError() }}</p>

@@ -71,6 +71,7 @@ export default class TrackOrderPage implements OnInit {
       paymentId: '',
       paymentApprovalLink: '',
       createdAt: '',
+      email: '',
     },
   });
 

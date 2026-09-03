@@ -8,4 +8,5 @@ export interface Product {
   unitPrice: number;
   activeDiscount: DiscountSummary | null;
   finalPrice: number;
+  imageUrl: string;
 }

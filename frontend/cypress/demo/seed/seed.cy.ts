@@ -242,14 +242,14 @@ describe('Seed demo data', () => {
   });
 
   const subcategories = [
-    ['Fresh Produce', 'https://images.unsplash.com/photo-1610832958506-aa56368176cf'],
+    ['Fresh', 'https://images.unsplash.com/photo-1610832958506-aa56368176cf'],
     ['Bakery ', 'https://images.unsplash.com/photo-1509440159596-0249088772ff'],
     ['Dairy ', 'https://images.unsplash.com/photo-1628088062854-d1870b4553da'],
     ['Meat ', 'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f'],
     ['Pantry ', 'https://images.unsplash.com/photo-1606787366850-de6330128bfc'],
     ['Snacks ', 'https://images.unsplash.com/photo-1621939514649-280e2ee25f60'],
     ['Beverages', 'https://images.unsplash.com/photo-1544145945-f90425340c7e'],
-    ['Ready Meals', 'https://images.unsplash.com/photo-1547592180-85f173990554'],
+    ['Ready', 'https://images.unsplash.com/photo-1547592180-85f173990554'],
   ];
 
   it('creates 8 subcategories', () => {

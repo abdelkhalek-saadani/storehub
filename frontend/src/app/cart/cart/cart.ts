@@ -8,10 +8,11 @@ import { CartSidenav } from '@shared/service/cart-sidenav';
 import { CartStore } from '../cart-store';
 import { RouterLink } from '@angular/router';
 import { StoreContext } from '../../store/service/store-context';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-cart',
-  imports: [CartItem, MatButton, MatIcon, MatIconButton, RouterLink],
+  imports: [CartItem, MatButton, MatIcon, MatIconButton, RouterLink, DecimalPipe],
   template: `
     <div class="p-4 flex flex-col gap-5">
       <div class="flex justify-between">
@@ -31,10 +32,12 @@ import { StoreContext } from '../../store/service/store-context';
         <div class="flex justify-between items-center">
           <span class="text-[18px] font-semibold text-[#7B7B7B]">Items</span>
           <div class="flex flex-row gap-3 items-center">
-            <span class="text-[18px] font-semibold">{{ store.finalTotal() }} TND</span>
+            <span class="text-[18px] font-semibold"
+              >{{ store.finalTotal() | number: '1.2-2' }} TND</span
+            >
             @if (store.finalTotal() != store.originalTotal()) {
               <div class="text-xl font-regular text-[#A2A2A2] line-through">
-                {{ store.originalTotal() }} TND
+                {{ store.originalTotal() | number: '1.2-2' }} TND
               </div>
             }
           </div>

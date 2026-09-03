@@ -5,6 +5,7 @@ export default defineConfig({
   allowCypressEnv: true,
 
   e2e: {
+    specPattern: ['cypress/e2e/**/*.cy.ts', 'cypress/demo/**/*.cy.ts'],
     setupNodeEvents(on, config) {
       cypressGrepPlugin(config);
       return config;

@@ -14,7 +14,7 @@ describe('End-to-end checkout flow', { testIsolation: false }, () => {
     address: {
       street: 'Street',
       city: 'City',
-      zipCode: '8030',
+      zipCode: '9050',
       deliveryInstructions: 'Some instructions',
       apartment: 'Apartment 5',
     },

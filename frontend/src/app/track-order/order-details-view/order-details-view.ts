@@ -54,7 +54,7 @@ import { Toaster } from '@shared/service/toaster';
           <mat-spinner></mat-spinner>
         }
         <app-payment-summary />
-        <app-location-summary [deliveryAddress]="deliveryAddress()" />
+        <app-location-summary [deliveryAddress]="fakeDeliveryAddress()" />
         <app-order-summary [orderNumber]="orderNumber()" [itemsTotal]="itemsTotal()" />
         <app-review-order [items]="items()" />
         <app-invoice-download />
@@ -75,27 +75,30 @@ import { Toaster } from '@shared/service/toaster';
           <div class="flex flex-col gap-4 w-1/3">
             <app-order-summary [orderNumber]="orderNumber()" [itemsTotal]="itemsTotal()" />
             <app-payment-summary />
-            <app-location-summary [deliveryAddress]="deliveryAddress()" />
+            <app-location-summary [deliveryAddress]="fakeDeliveryAddress()" />
             <app-invoice-download />
           </div>
         </div>
       }
 
-      <div
-        class=" md:mt-8 p-6 md:p-8 flex flex-col md:flex-row md:justify-between items-center gap-4 border-[#F8F7F8] rounded-2xl bg-white"
-      >
-        <span class="font-medium text-[14px] md:text-base"
-          >You can cancel your order before its prepared</span
+      @if (status()?.code != 'PAYMENT_VOIDED' && status()?.code != 'PAYMENT_REFUNDED') {
+        <div
+          class=" md:mt-8 p-6 md:p-8 flex flex-col md:flex-row md:justify-between items-center gap-4 border-[#F8F7F8] rounded-2xl bg-white"
         >
-        <button
-          matButton="filled"
-          class="danger w-full md:w-auto"
-          (click)="cancelOrder()"
-          [disabled]="isCancelling()"
-        >
-          {{ isCancelling() ? 'Cancelling...' : 'Cancel Order' }}
-        </button>
-      </div>
+          <span class="font-medium text-[14px] md:text-base"
+            >You can cancel your order before its prepared</span
+          >
+
+          <button
+            matButton="filled"
+            class="danger w-full md:w-auto"
+            (click)="cancelOrder()"
+            [disabled]="isCancelling()"
+          >
+            {{ isCancelling() ? 'Cancelling...' : 'Cancel Order' }}
+          </button>
+        </div>
+      }
     }
   `,
 })
@@ -181,12 +184,18 @@ export class OrderDetailView {
     return order.orderId ? order.orderId : "Can't get order number";
   });
   isCancelling = signal(false);
+
   cancelOrder() {
     const id = this.orderResult().value().orderId;
     if (!id || this.isCancelling()) return;
+    const isGuest = !this.orderResult().value().userId;
+    console.log(isGuest);
+    const email = isGuest ? this.orderResult().value().email : null;
+    console.log(email);
 
     this.isCancelling.set(true);
-    this.orderApi.cancelOrder(id).subscribe({
+
+    this.orderApi.cancelOrder(id, email).subscribe({
       next: () => {
         this.isCancelling.set(false);
         this.hotToaster.success('Order cancelled successfully');
@@ -206,6 +215,9 @@ export class OrderDetailView {
     const da = this.orderResult().value().deliveryAddress;
     return da ? da : 'Cannot get the delivery address';
   });
+
+  fakeDeliveryAddress = signal('City, Hammamet, Nabeul');
+
   items = computed(() => {
     return this.orderResult().value().items;
   });

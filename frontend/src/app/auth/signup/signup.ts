@@ -154,14 +154,14 @@ export class Signup {
   form = this.fb.nonNullable.group({
     firstName: ['Abdelkhalek', Validators.required],
     lastName: ['Saadani', Validators.required],
-    address: ['cite Zayatine', Validators.required],
+    address: ['City', Validators.required],
     phoneNumber: ['23000999', Validators.required],
     email: ['abdelkhaleksaadani@gmail.com', [Validators.required, Validators.email]],
     password: ['password', [Validators.required, Validators.minLength(8)]],
     accountType: ['customer', Validators.required],
     storeName: ['Super market'],
     storeDescription: ['A description'],
-    storeAddress: ['cite zayatine'],
+    storeAddress: ['city'],
   });
 
   async onSubmit() {

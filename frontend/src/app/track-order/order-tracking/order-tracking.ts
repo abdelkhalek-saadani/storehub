@@ -17,12 +17,18 @@ import { LocalDateTime } from '@js-joda/core';
           <span class="text-lg md:text-[22px] font-semibold text-black-900" data-cy="order-status">
             {{ status().label }}
           </span>
-          @if (!isOrderFailed() && status().code != 'DELIVERED') {
+          @if (
+            !isOrderFailed() && status().code != 'DELIVERED' && status().code != 'VOID_REQUESTED'
+          ) {
             <span class="text-sm font-medium text-primary">Order {{ orderArriveIn() }}</span>
           }
         </div>
         <div
-          [ngClass]="isOrderFailed() ? 'bg-red-500/6 text-red-500' : 'bg-primary/6 text-primary'"
+          [ngClass]="
+            isOrderFailed()
+              ? 'bg-red-500/6 text-red-500 border-red-500'
+              : 'bg-primary/6 text-primary'
+          "
           class="py-1 px-2 md:py-2 md:px-3 flex align-center justify-center font-medium text-sm border border-primary rounded-3xl"
         >
           {{ status().label }}
@@ -61,13 +67,7 @@ import { LocalDateTime } from '@js-joda/core';
                   </div>
                 }
                 <span class="text-sm font-normal">
-                  @if (
-                    status().code == 'CREATED' ||
-                    status().code == 'AWAITING_PAYMENT' ||
-                    status().code == 'PROCESSING_PAYMENT' ||
-                    isSecondStepChecked() ||
-                    isThirdStepChecked()
-                  ) {
+                  @if (isFirstStepChecked()) {
                     {{ 'Paid' }}
                   }
                 </span>
@@ -101,7 +101,6 @@ import { LocalDateTime } from '@js-joda/core';
             ></div>
             @if (isMdDevice()) {
               <div class="ps-4 flex gap-2 items-center">
-                <div class="h-[16px] w-[16px] rounded-full border border-[#F0EEF0]"></div>
                 @if (isThirdStepChecked()) {
                   <div class="text-primary h-[16px] w-[16px] text-[16px] leading-[16px]">
                     <mat-icon [inline]="true">check_circle</mat-icon>

@@ -12,7 +12,7 @@ import { CartStore } from '../cart-store';
     <div class="flex flex-col pb-4 gap-3">
       <div class="flex flex-row gap-5 items-center">
         <div class="rounded-2xl h-26 aspect-square overflow-hidden">
-          <img src="product-img-placeholder.jpg" alt="Natural Milk" />
+          <img [src]="item().productImageUrl" alt="Natural Milk" />
         </div>
         <div class="flex flex-col gap-3">
           <div class="text-base font-medium">{{ item().productName }}</div>

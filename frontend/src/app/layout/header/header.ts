@@ -17,6 +17,7 @@ import Keycloak from 'keycloak-js';
 import { KEYCLOAK_EVENT_SIGNAL } from 'keycloak-angular';
 import { CartStore } from '../../cart/cart-store';
 import { MatBadge } from '@angular/material/badge';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-header',
@@ -34,6 +35,7 @@ import { MatBadge } from '@angular/material/badge';
     MatMenuItem,
     RouterLink,
     MatBadge,
+    DecimalPipe,
   ],
   template: `
     @if (isMobile()) {
@@ -76,7 +78,7 @@ import { MatBadge } from '@angular/material/badge';
           <div class="flex gap-4 items-center">
             <button matButton="filled" class="btn-pill-sm" routerLink="/wishlist">
               <mat-icon>favorite</mat-icon>
-              3 Products
+              0 Products
             </button>
             <button
               matButton="filled"
@@ -86,7 +88,7 @@ import { MatBadge } from '@angular/material/badge';
             >
               <div class="flex items-center gap-1">
                 <mat-icon>shopping_cart</mat-icon>
-                <span>{{ total() }} TND</span>
+                <span>{{ total() | number: '1.2-2' }} TND</span>
                 <div
                   class="flex items-center justify-center rounded-full bg-primary w-[26px] aspect-square"
                 >

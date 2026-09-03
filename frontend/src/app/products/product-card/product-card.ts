@@ -18,7 +18,7 @@ import { CartStore } from '../../cart/cart-store';
 
       <img
         mat-card-image
-        src="product-img-placeholder.jpg"
+        [src]="product.imageUrl"
         [alt]="product.name"
         class="h-48 w-full object-cover rounded-2xl"
       />
@@ -28,14 +28,7 @@ import { CartStore } from '../../cart/cart-store';
           <span class="text-base font-medium text-[#0D0C0D] leading-tight">{{ product.name }}</span>
           <span class="text-sm font-regular text-gray-400">{{ product.description }}</span>
 
-          @if (product.activeDiscount) {
-            <div class="flex items-center gap-2">
-              <span class="text-sm text-gray-400 line-through">{{ product.unitPrice }} DT</span>
-              <span class="text-lg font-semibold text-primary">{{ product.finalPrice }} DT</span>
-            </div>
-          } @else {
-            <span class="text-lg font-semibold text-primary">{{ product.unitPrice }} DT</span>
-          }
+          <span class="text-lg font-semibold text-primary">{{ product.unitPrice }} DT</span>
         </div>
       </mat-card-content>
     </mat-card>

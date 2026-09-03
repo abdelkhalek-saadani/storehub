@@ -50,6 +50,7 @@ export interface OrderItemResponse extends CartItemResponse {}
 export interface OrderResponse {
   orderId: string;
   userId: string;
+  email: string;
   storeId: string;
   originalTotal: number;
   finalTotal: number;
@@ -124,10 +125,15 @@ export class OrderApi {
     return response;
   }
 
-  cancelOrder(id: string): Observable<OrderCancelResponse> {
+  cancelOrder(id: string, email: string | null): Observable<OrderCancelResponse> {
+    let headers = new HttpHeaders();
+    console.log(email);
+    if (email) headers = headers.set('From', email);
+    console.log(headers);
     const response = this.http.post<OrderCancelResponse>(
       `${environment.orderApiUrl}/api/orders/${id}/void`,
-      {},
+      null,
+      { headers },
     );
     return response;
   }

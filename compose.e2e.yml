@@ -23,7 +23,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: catalog
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_PROFILES_ACTIVE: e2e
-      KC_BASE_URL: http://auth-server:8088
+      KC_BASE_URL: http://${KC_HOSTNAME:-auth-server}:${KC_PORT:-8088}
       ORDER_BASE_URL: http://order:8080
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost:8080}     # This important for CORS
     ports:
@@ -60,9 +60,9 @@ services:
       SPRING_DATASOURCE_USERNAME: payment
       SPRING_DATASOURCE_PASSWORD: payment
       SPRING_RABBITMQ_HOST: rabbitmq
-      PAYPAL_BASE_URL: http://wiremock:8080
+      PAYPAL_BASE_URL: ${PAYPAL_BASE_URL:-http://wiremock:8080}
       SPRING_PROFILES_ACTIVE: e2e
-      KC_BASE_URL: http://auth-server:8088
+      KC_BASE_URL: http://${KC_HOSTNAME:-auth-server}:${KC_PORT:-8088}
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
       interval: 15s
@@ -103,7 +103,7 @@ services:
       SPRING_RABBITMQ_HOST: rabbitmq
       CATALOG_BASE_URL: http://catalog:8080
       PAYMENT_BASE_URL: http://payment:8080
-      KC_BASE_URL: http://auth-server:8088
+      KC_BASE_URL: http://${KC_HOSTNAME:-auth-server}:${KC_PORT:-8088}
       SPRING_PROFILES_ACTIVE: e2e
       FRONTEND_URL: ${FRONTEND_URL:-http://localhost:8080}     # This important for CORS
     env_file:

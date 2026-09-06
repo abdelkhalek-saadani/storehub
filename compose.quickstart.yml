@@ -7,18 +7,25 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.quickstart
     image: frontend-image:quickstart
+    environment:
+      KC_PORT: ${KC_PORT:-8088}
+      KC_HOSTNAME: ${KC_HOSTNAME:-auth-server}
+      ORDER_PORT: ${ORDER_PORT:-8090}
+      CATALOG_PORT: ${CATALOG_PORT:-8100}
     ports:
       - ${FRONTEND_PORT:-4200}:4200
-
-    # add quickstart config, just add an quick start env that has the new ports
+    command: ["npm", "start", "--", "--host=0.0.0.0", "--configuration=quickstart"]
+    depends_on:
+      - order
+      - catalog
+      - auth-server
 
   auth-server:
     image: quay.io/keycloak/keycloak:26.1.1
     command: start-dev --import-realm
     environment:
-      KC_DB: postgres
       KC_HEALTH_ENABLED: "true"
       KC_METRICS_ENABLED: "true"
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN:-admin}
@@ -32,11 +39,8 @@ services:
       - ${KC_PORT:-8088}:${KC_PORT:-8088}
       - ${KC_HEALTH_PORT:-9000}:9000
     volumes:
-      - ./realm-data/:/opt/keycloak/data/import
-      - ./keycloak-themes/storehub:/opt/keycloak/themes/storehub
-    depends_on:
-      auth-server-db:
-        condition: service_healthy
+      - ./keycloak/realm-data/:/opt/keycloak/data/import
+      - ./keycloak/keycloak-themes/storehub:/opt/keycloak/themes/storehub
     healthcheck:
       test: [ "CMD-SHELL", "exec 3<>/dev/tcp/localhost/9000 && echo -e 'GET /health/live HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n' >&3 && cat <&3 | grep -q ' 200 '" ]
       interval: 10s
@@ -58,14 +62,15 @@ services:
   catalog:
     build: ./backend/catalog-service
     environment:
+      SERVER_PORT: 8080
       SPRING_DATASOURCE_URL: jdbc:postgresql://catalog-db:5432/catalog_db
       SPRING_DATASOURCE_USERNAME: catalog
       SPRING_DATASOURCE_PASSWORD: catalog
       SPRING_RABBITMQ_HOST: rabbitmq
-      SPRING_PROFILES_ACTIVE: e2e
+      SPRING_PROFILES_ACTIVE: health
       KC_BASE_URL: http://${KC_HOSTNAME:-auth-server}:${KC_PORT:-8088}
       ORDER_BASE_URL: http://order:8080
-      FRONTEND_URL: http://localhost:${FRONTEND_PORT:-8080}     # This is important for CORS
+      FRONTEND_URL: http://localhost:${FRONTEND_PORT:-4200}     # This is important for CORS
       ORDER_INTERNAL_SECRET: ${ORDER_INTERNAL_SECRET:-**********} # Order internal client secret for demo only, safe to expose, rotate freely, not production secrets
       KC_ADMIN_CLIENT_SECRET: ${KC_ADMIN_CLIENT_SECRET:-**********} # Keycloak Admin client secret for demo only, safe to expose, rotate freely, not production secrets
     ports:
@@ -96,15 +101,17 @@ services:
   payment:
     build: ./backend/payment-service
     environment:
+      SERVER_PORT: 8080
       SPRING_DATASOURCE_URL: jdbc:postgresql://payment-db:5432/payment_db
       SPRING_DATASOURCE_USERNAME: payment
       SPRING_DATASOURCE_PASSWORD: payment
       SPRING_RABBITMQ_HOST: rabbitmq
       PAYPAL_BASE_URL: ${PAYPAL_BASE_URL:-http://wiremock:8080}
-      SPRING_PROFILES_ACTIVE: e2e
+      SPRING_PROFILES_ACTIVE: health
       KC_BASE_URL: http://${KC_HOSTNAME:-auth-server}:${KC_PORT:-8088}
-      PAYPAL_CLIENT_ID: AaYcr5NvkOxKC4Kuxw927ADzt0eRO-9y3hFykTSAr1S0z_CKuWVXy5XHqhoP-S4aVY3EevLma1pH61E_ # Public sandbox demo credentials, safe to expose, rotate freely, not production secrets
-      PAYPAL_CLIENT_SECRET: EFE4CyfVMKCfq_sspIXw2FttlAzuG-nP3hQbAQRlUyNKxc_1FNUJ7SaPvciu8vUIgjFllOH4lBO9s4y_ # # Public sandbox demo credentials, safe to expose, rotate freely, not production secrets
+      PAYPAL_CLIENT_ID: ${PAYPAL_CLIENT_ID:-AaYcr5NvkOxKC4Kuxw927ADzt0eRO-9y3hFykTSAr1S0z_CKuWVXy5XHqhoP-S4aVY3EevLma1pH61E_} # Public sandbox demo credentials, safe to expose, rotate freely, not production secrets
+      PAYPAL_CLIENT_SECRET: ${PAYPAL_CLIENT_SECRET:-EFE4CyfVMKCfq_sspIXw2FttlAzuG-nP3hQbAQRlUyNKxc_1FNUJ7SaPvciu8vUIgjFllOH4lBO9s4y_} # # Public sandbox demo credentials, safe to expose, rotate freely, not production secrets
+      PAYPAL_WEBHOOK_ID: ${PAYPAL_WEBHOOK_ID:-772362731Y492950G}
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
       interval: 15s
@@ -119,8 +126,7 @@ services:
         condition: service_healthy
       auth-server:
         condition: service_healthy
-      wiremock:
-        condition: service_started
+
 
   payment-db:
     image: postgres:16-alpine
@@ -137,6 +143,7 @@ services:
   order:
     build: ./backend/order-service
     environment:
+      SERVER_PORT: 8080
       SPRING_R2DBC_URL: r2dbc:postgresql://order-db:5432/order_db
       SPRING_R2DBC_USERNAME: order
       SPRING_R2DBC_PASSWORD: order
@@ -144,12 +151,12 @@ services:
       CATALOG_BASE_URL: http://catalog:8080
       PAYMENT_BASE_URL: http://payment:8080
       KC_BASE_URL: http://${KC_HOSTNAME:-auth-server}:${KC_PORT:-8088}
-      SPRING_PROFILES_ACTIVE: e2e
-      FRONTEND_URL: http://localhost:${FRONTEND_PORT:-8080}     # This is important for CORS
+      SPRING_PROFILES_ACTIVE: health
+      FRONTEND_URL: http://localhost:${FRONTEND_PORT:-4200}     # This is important for CORS
       ORDER_INTERNAL_SECRET: ${ORDER_INTERNAL_SECRET:-**********} # Order internal client secret for demo only, safe to expose, rotate freely, not production secrets
       KC_ADMIN_CLIENT_SECRET: ${KC_ADMIN_CLIENT_SECRET:-**********} # Keycloak Admin client secret for demo only, safe to expose, rotate freely, not production secrets
     ports:
-      - ${ORDER_PORT:-8090}:8080
+                  - ${ORDER_PORT:-8090}:8080
     depends_on:
       rabbitmq:
         condition: service_healthy

@@ -24,8 +24,13 @@ public record PayPalOrderRequest(
 
     public record PayPalApplicationContext(
             @JsonProperty("return_url") String returnUrl,
-            @JsonProperty("cancel_url") String cancelUrl
-    ) {}
+            @JsonProperty("cancel_url") String cancelUrl,
+            String locale
+    ) {
+        public PayPalApplicationContext(String returnUrl, String cancelUrl){
+            this(returnUrl, cancelUrl, "en-US");
+        }
+    }
 
 
 

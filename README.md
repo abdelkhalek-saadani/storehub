@@ -207,22 +207,26 @@ TODO: add a .env.example file that has the below env variables
 Get the platform running with a demo PayPal sandbox, no PayPal account needed.
 
 \```bash
-docker compose -f compose.quickstart.yml up
+make quickstart
 \```
-TODO: try the the compose file out
 Then visit `http://localhost:4200`.
 
 > **Note:** This uses a shared demo PayPal sandbox app. You can walk through the full checkout flow( including PayPal
 > login and approval) but **order authorization won't complete**, since it depends on a webhook reaching this app, which
 > isn't possible without your own public tunnel. See [Full Checkout Setup](#full-checkout-setup) below to enable it.
 
+Here is the demo user to use for PayPal checkout(Safe to share since this is a demo account for testing): `sb-zxprs52773167@personal.example.com`:`B+]cB>6p`
+
 ---
 
 ### Full Checkout Setup (optional)
-To see the complete flow, including order authorization, use your own PayPal sandbox app and a tunnel to receive its webhook.
+
+To see the complete flow, including order authorization, use your own PayPal sandbox app and a tunnel to receive its
+webhook.
 
 1. **Create a PayPal sandbox app**
-   Sign up at [developer.paypal.com](https://developer.paypal.com) → create a sandbox REST app → copy the Client ID and Secret.
+   Sign up at [developer.paypal.com](https://developer.paypal.com) → create a sandbox REST app → copy the Client ID and
+   Secret.
 
 2. **Set your credentials**
    \```bash
@@ -231,9 +235,25 @@ To see the complete flow, including order authorization, use your own PayPal san
    \```
 
 3. **Start a tunnel** to payment service port
-   \```bash
-   ngrok http 8200
 
+```bash
+ngrok http 8200 
+```
+
+Copy the generated `https://*.ngrok-free.app` URL.
+
+4. Register the webhook
+   In your sandbox app settings, add a webhook pointing to:
+   `https://<your-ngrok-url>/api/payments/paypal/webhook`
+   Subscribe to the Checkout order approved, Payment authorization created, Payment authorization voided, Payment capture completed, Payment capture refunded, Payment order created events.
+5. Then add `PAYPAL_WEBHOOK_ID` to the env file
+6. Run the platform
+
+```bash
+make quickstart
+```
+
+Checkout will now complete end-to-end, including order authorization.
 
 ## Project Structure
 

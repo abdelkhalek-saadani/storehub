@@ -109,7 +109,7 @@ public class PayPalController {
         return ResponseEntity.ok(response);
     }
 
-    // Testing endpoints - should be removed in production or protected with profiles
+    // Testing endpoints, should be removed in production or protected with profiles
 
     @PostMapping("/{paymentId}/capture")
     public ResponseEntity<PaymentResponse> captureAuthorization(@PathVariable UUID paymentId) {

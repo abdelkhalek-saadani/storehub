@@ -16,15 +16,11 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { MatIconRegistry } from '@angular/material/icon';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { includeBearerTokenInterceptor } from 'keycloak-angular';
-import { keycloakProvider } from '@core/auth/keycloak-config';
-import { bearerInterceptorProvider } from '@core/http/bearer-interceptor-config';
 import { guestIdInterceptor } from '@core/http/guest-id-interceptor';
 import { CartMergeService } from '@shared/service/cart-merge.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    bearerInterceptorProvider,
-    keycloakProvider,
     provideHttpClient(withInterceptors([includeBearerTokenInterceptor, guestIdInterceptor])),
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),

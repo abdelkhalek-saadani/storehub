@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '@environments/environment';
 import { Store } from '@shared/models/Store';
 import { Observable } from 'rxjs';
+import { ConfigService } from '@core/config.service';
 
 export interface CreateStorePayload {
   name: string;
@@ -12,17 +13,20 @@ export interface CreateStorePayload {
 
 @Injectable({ providedIn: 'root' })
 export class StoreApi {
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private config: ConfigService,
+  ) {}
 
   getAllStores(): Observable<Store[]> {
-    return this.http.get<Store[]>(`${environment.orderApiUrl}/api/stores`);
+    return this.http.get<Store[]>(`${this.config.get().orderApiUrl}/api/stores`);
   }
 
   createStore(data: CreateStorePayload) {
-    return this.http.post(`${environment.orderApiUrl}/api/stores`, data);
+    return this.http.post(`${this.config.get().orderApiUrl}/api/stores`, data);
   }
 
   getStoreBySlug(slug: string): Observable<Store> {
-    return this.http.get<Store>(`${environment.orderApiUrl}/api/stores/by-slug/${slug}`);
+    return this.http.get<Store>(`${this.config.get().orderApiUrl}/api/stores/by-slug/${slug}`);
   }
 }

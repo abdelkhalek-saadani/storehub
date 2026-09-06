@@ -1,0 +1,5 @@
+{
+  "kcUrl": "http://${KC_HOSTNAME}:${KC_PORT}",
+  "orderApiUrl": "http://localhost:${ORDER_PORT}",
+  "catalogApiUrl": "http://localhost:${CATALOG_PORT}"
+}

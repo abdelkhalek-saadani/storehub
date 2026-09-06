@@ -11,6 +11,7 @@ import { LocalDate, LocalDateTime } from '@js-joda/core';
 import { SlotSummary } from '@shared/models/SlotSummary';
 import { DateAndDay } from '@shared/models/DateAndDay';
 import { Slot } from '../../track-order/track-order';
+import { ConfigService } from '@core/config.service';
 
 export interface ProductQuery {
   page: number;
@@ -36,10 +37,11 @@ export interface SlotDto {
 @Injectable({ providedIn: 'root' })
 export class CatalogApi {
   private http = inject(HttpClient);
-  private productsUrl = `${environment.catalogApiUrl}/api/products`;
-  private categoriesUrl = `${environment.catalogApiUrl}/api/categories/subcategories`;
-  private slotsUrl = `${environment.catalogApiUrl}/api/delivery-slots`;
-  private saleEventsUrl = `${environment.catalogApiUrl}/api/sale-events`;
+  private config = inject(ConfigService);
+  private productsUrl = `${this.config.get().catalogApiUrl}/api/products`;
+  private categoriesUrl = `${this.config.get().catalogApiUrl}/api/categories/subcategories`;
+  private slotsUrl = `${this.config.get().catalogApiUrl}/api/delivery-slots`;
+  private saleEventsUrl = `${this.config.get().catalogApiUrl}/api/sale-events`;
   private storeContext = inject(StoreContext);
 
   private getStoreId(): string {

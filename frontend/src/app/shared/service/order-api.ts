@@ -7,6 +7,7 @@ import { UpdateCartItem } from '../../cart/model/update-cart-request';
 import { CartItemResponse, CartResponse } from '../../cart/model/cart-response';
 import { LocalDateTime } from '@js-joda/core';
 import { Order } from '../../models/Order';
+import { ConfigService } from '@core/config.service';
 
 export interface OrderRequest {
   slotId: string;
@@ -77,7 +78,8 @@ export interface OrderResponse {
 @Injectable({ providedIn: 'root' })
 export class OrderApi {
   private http = inject(HttpClient);
-  private cartUrl = `${environment.orderApiUrl}/api/cart`;
+  private config = inject(ConfigService);
+  private cartUrl = `${this.config.get().orderApiUrl}/api/cart`;
   private storeContext = inject(StoreContext);
 
   private getStoreId(): string {
@@ -90,7 +92,7 @@ export class OrderApi {
 
   trackOrderStatus(orderId: string): Observable<OrderStatusDto> {
     return new Observable((subscriber) => {
-      const es = new EventSource(`${environment.orderApiUrl}/api/orders/${orderId}/track`);
+      const es = new EventSource(`${this.config.get().orderApiUrl}/api/orders/${orderId}/track`);
       es.onmessage = (event) => subscriber.next(JSON.parse(event.data));
       es.onerror = (err) => subscriber.error(err);
       return () => es.close();
@@ -100,7 +102,7 @@ export class OrderApi {
   placeOrder(idemKey: string, request: OrderRequest): Observable<OrderCreatedResponse> {
     let headers = new HttpHeaders({ 'Idempotency-Key': idemKey });
     const response = this.http.post<OrderCreatedResponse>(
-      `${environment.orderApiUrl}/api/orders`,
+      `${this.config.get().orderApiUrl}/api/orders`,
       { ...request, storeId: this.getStoreId() },
       { headers },
     );
@@ -109,7 +111,7 @@ export class OrderApi {
 
   getOrder(token: string): Observable<OrderResponse> {
     const params = new HttpParams().set('paymentOrderId', token);
-    const response = this.http.get<OrderResponse>(`${environment.orderApiUrl}/api/orders`, {
+    const response = this.http.get<OrderResponse>(`${this.config.get().orderApiUrl}/api/orders`, {
       params,
     });
     return response;
@@ -118,7 +120,7 @@ export class OrderApi {
   getGuestOrder(orderId: string, email: string): Observable<OrderResponse> {
     const body = { orderId, email };
     const response = this.http.post<OrderResponse>(
-      `${environment.orderApiUrl}/api/orders/guest`,
+      `${this.config.get().orderApiUrl}/api/orders/guest`,
       body,
       {},
     );
@@ -131,7 +133,7 @@ export class OrderApi {
     if (email) headers = headers.set('From', email);
     console.log(headers);
     const response = this.http.post<OrderCancelResponse>(
-      `${environment.orderApiUrl}/api/orders/${id}/void`,
+      `${this.config.get().orderApiUrl}/api/orders/${id}/void`,
       null,
       { headers },
     );

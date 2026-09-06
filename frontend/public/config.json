@@ -1,0 +1,5 @@
+{
+  "kcUrl": "http://auth-server:8300",
+  "orderApiUrl": "http://localhost:8090",
+  "catalogApiUrl": "http://localhost:8100"
+}

@@ -1,15 +1,23 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { SignupApi, SignupPayload, SignupResponse } from './signup-api';
-import { environment } from '@environments/environment';
 import { provideHttpClient } from '@angular/common/http';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { ConfigService } from '@core/config.service';
 
 describe('SignupApi', () => {
   let api: SignupApi;
   let httpMock: HttpTestingController;
+  let configServiceSpy: jasmine.SpyObj<ConfigService>;
 
   beforeEach(() => {
+    configServiceSpy = jasmine.createSpyObj('ConfigService', ['get']);
+    configServiceSpy.get.and.returnValue({
+      orderApiUrl: 'http://localhost:8080',
+      catalogApiUrl: 'http://localhost:8080',
+      kcUrl: 'http://localhost:8088',
+    });
+
     TestBed.configureTestingModule({
       providers: [
         provideZonelessChangeDetection(),
@@ -45,7 +53,7 @@ describe('SignupApi', () => {
       expect(res).toEqual(mockResponse);
     });
 
-    const req = httpMock.expectOne(`${environment.orderApiUrl}/api/auth/signup`);
+    const req = httpMock.expectOne(`http://localhost:8080/api/auth/signup`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(payload);
 
@@ -67,7 +75,7 @@ describe('SignupApi', () => {
       error: (err) => expect(err.status).toBe(409),
     });
 
-    const req = httpMock.expectOne(`${environment.orderApiUrl}/api/auth/signup`);
+    const req = httpMock.expectOne(`http://localhost:8080/api/auth/signup`);
     req.flush({ message: 'Email already exists' }, { status: 409, statusText: 'Conflict' });
   });
 });

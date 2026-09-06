@@ -5,12 +5,21 @@ import { environment } from '@environments/environment';
 import { Store } from '@shared/models/Store';
 import { provideHttpClient } from '@angular/common/http';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { ConfigService } from '@core/config.service';
 
 describe('StoreApi', () => {
   let service: StoreApi;
   let httpMock: HttpTestingController;
+  let configServiceSpy: jasmine.SpyObj<ConfigService>;
 
   beforeEach(() => {
+    configServiceSpy = jasmine.createSpyObj('ConfigService', ['get']);
+    configServiceSpy.get.and.returnValue({
+      orderApiUrl: 'http://localhost:8080',
+      catalogApiUrl: 'http://localhost:8080',
+      kcUrl: 'http://localhost:8088',
+    });
+
     TestBed.configureTestingModule({
       imports: [],
       providers: [
@@ -18,6 +27,7 @@ describe('StoreApi', () => {
         provideZonelessChangeDetection(),
         provideHttpClient(),
         provideHttpClientTesting(),
+        { provide: ConfigService, useValue: configServiceSpy },
       ],
     });
     service = TestBed.inject(StoreApi);
@@ -39,7 +49,7 @@ describe('StoreApi', () => {
       expect(res).toEqual(mockStores);
     });
 
-    const req = httpMock.expectOne(`${environment.orderApiUrl}/api/stores`);
+    const req = httpMock.expectOne(`http://localhost:8080/api/stores`);
     expect(req.request.method).toBe('GET');
     req.flush(mockStores);
   });
@@ -49,7 +59,7 @@ describe('StoreApi', () => {
 
     service.createStore(payload).subscribe();
 
-    const req = httpMock.expectOne(`${environment.orderApiUrl}/api/stores`);
+    const req = httpMock.expectOne(`http://localhost:8080/api/stores`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(payload);
     req.flush({});
@@ -66,7 +76,7 @@ describe('StoreApi', () => {
       expect(res).toEqual(mockStore);
     });
 
-    const req = httpMock.expectOne(`${environment.orderApiUrl}/api/stores/by-slug/super-mart`);
+    const req = httpMock.expectOne(`http://localhost:8080/api/stores/by-slug/super-mart`);
     expect(req.request.method).toBe('GET');
     req.flush(mockStore);
   });

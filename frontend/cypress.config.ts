@@ -15,7 +15,7 @@ export default defineConfig({
     env: {
       catalogServiceUrl: 'http://localhost:8100',
       orderServiceUrl: 'http://localhost:8090',
-      keycloakUrl: 'http://auth-server:8088',
+      keycloakUrl: 'http://auth-server:8300',
       paymentServiceUrl: 'http://localhost:8200',
     },
   },

@@ -5,15 +5,24 @@ import { StoreContext } from '../../store/service/store-context';
 import { environment } from '@environments/environment';
 import { provideHttpClient } from '@angular/common/http';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { ConfigService } from '@core/config.service';
 
 describe('OrderApi', () => {
   let api: OrderApi;
   let httpMock: HttpTestingController;
   let storeContextSpy: jasmine.SpyObj<StoreContext>;
+  let configServiceSpy: jasmine.SpyObj<ConfigService>;
 
   beforeEach(() => {
     storeContextSpy = jasmine.createSpyObj('StoreContext', ['storeId']);
     storeContextSpy.storeId.and.returnValue('store-1');
+
+    configServiceSpy = jasmine.createSpyObj('ConfigService', ['get']);
+    configServiceSpy.get.and.returnValue({
+      orderApiUrl: 'http://localhost:8080',
+      catalogApiUrl: 'http://localhost:8080',
+      kcUrl: 'http://localhost:8088',
+    });
 
     TestBed.configureTestingModule({
       providers: [
@@ -22,6 +31,7 @@ describe('OrderApi', () => {
         provideHttpClientTesting(),
         OrderApi,
         { provide: StoreContext, useValue: storeContextSpy },
+        { provide: ConfigService, useValue: configServiceSpy },
       ],
     });
 
@@ -40,8 +50,7 @@ describe('OrderApi', () => {
     api.getCart().subscribe();
 
     const req = httpMock.expectOne(
-      (r) =>
-        r.url === `${environment.orderApiUrl}/api/cart` && r.params.get('storeId') === 'store-1',
+      (r) => r.url === `http://localhost:8080/api/cart` && r.params.get('storeId') === 'store-1',
     );
     expect(req.request.method).toBe('GET');
     req.flush({});
@@ -51,7 +60,7 @@ describe('OrderApi', () => {
     const request: OrderRequest = { slotId: 's1', cartId: 'c1' };
     api.placeOrder('idem-123', request).subscribe();
 
-    const req = httpMock.expectOne(`${environment.orderApiUrl}/api/orders`);
+    const req = httpMock.expectOne(`http://localhost:8080/api/orders`);
     expect(req.request.method).toBe('POST');
     expect(req.request.headers.get('Idempotency-Key')).toBe('idem-123');
     expect(req.request.body).toEqual({ ...request, storeId: 'store-1' });
@@ -62,8 +71,7 @@ describe('OrderApi', () => {
     api.clearCart().subscribe();
 
     const req = httpMock.expectOne(
-      (r) =>
-        r.url === `${environment.orderApiUrl}/api/cart` && r.params.get('storeId') === 'store-1',
+      (r) => r.url === `http://localhost:8080/api/cart` && r.params.get('storeId') === 'store-1',
     );
     expect(req.request.method).toBe('DELETE');
     req.flush({});
@@ -73,7 +81,7 @@ describe('OrderApi', () => {
     const items = [{ productId: 'p1', quantity: 2 } as any];
     api.upsertItems(items).subscribe();
 
-    const req = httpMock.expectOne(`${environment.orderApiUrl}/api/cart/items`);
+    const req = httpMock.expectOne(`http://localhost:8080/api/cart/items`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual({ storeId: 'store-1', items });
     req.flush({});

@@ -1,19 +1,21 @@
 import {
-  createInterceptorCondition,
   INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
+  createInterceptorCondition,
   IncludeBearerTokenCondition,
 } from 'keycloak-angular';
-import { environment } from '@environments/environment';
+import { AppConfig } from '@core/config.service';
 
-const apiBearerCondition = createInterceptorCondition<IncludeBearerTokenCondition>({
-  urlPattern: new RegExp('^' + escapeRegex(environment.orderApiUrl) + '(/.*)?$', 'i'),
-  bearerPrefix: 'Bearer',
-});
+export function createBearerInterceptorProvider(config: AppConfig) {
+  const apiBearerCondition = createInterceptorCondition<IncludeBearerTokenCondition>({
+    urlPattern: new RegExp('^' + escapeRegex(config.orderApiUrl) + '(/.*)?$', 'i'),
+    bearerPrefix: 'Bearer',
+  });
 
-export const bearerInterceptorProvider = {
-  provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
-  useValue: [apiBearerCondition],
-};
+  return {
+    provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
+    useValue: [apiBearerCondition],
+  };
+}
 
 export function escapeRegex(str: string): string {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

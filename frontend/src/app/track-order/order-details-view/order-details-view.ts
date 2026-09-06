@@ -81,14 +81,17 @@ import { Toaster } from '@shared/service/toaster';
         </div>
       }
 
-      @if (status()?.code != 'PAYMENT_VOIDED' && status()?.code != 'PAYMENT_REFUNDED') {
+      @if (
+        status()?.code != 'PAYMENT_VOIDED' &&
+        status()?.code != 'PAYMENT_REFUNDED' &&
+        status()?.code != 'CREATED'
+      ) {
         <div
           class=" md:mt-8 p-6 md:p-8 flex flex-col md:flex-row md:justify-between items-center gap-4 border-[#F8F7F8] rounded-2xl bg-white"
         >
-          <span class="font-medium text-[14px] md:text-base"
-            >You can cancel your order before its prepared</span
-          >
-
+          <span class="font-medium text-[14px] md:text-base">
+            You can cancel your order before its prepared
+          </span>
           <button
             matButton="filled"
             class="danger w-full md:w-auto"

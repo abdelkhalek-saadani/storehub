@@ -68,7 +68,7 @@ import { DecimalPipe } from '@angular/common';
               <button matIconButton class="menu" (click)="sidenavService.toggle()">
                 <mat-icon>menu</mat-icon>
               </button>
-              <app-logo-text [width]="134" [height]="32" />
+              <app-logo-text routerLink="/" [width]="134" [height]="32" />
             </div>
             <app-store-button />
           </div>

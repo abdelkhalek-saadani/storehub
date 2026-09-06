@@ -69,6 +69,14 @@
                 }
               ]
             },
+            "quickstart": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.quickstart.ts"
+                }
+              ]
+            },
             "production": {
               "budgets": [
                 {
@@ -100,6 +108,9 @@
           "configurations": {
             "e2e": {
               "buildTarget": "frontend:build:e2e"
+            },
+            "quickstart": {
+              "buildTarget": "frontend:build:quickstart"
             },
             "production": {
               "buildTarget": "frontend:build:production"

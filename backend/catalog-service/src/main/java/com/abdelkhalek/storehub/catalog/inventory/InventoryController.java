@@ -5,6 +5,9 @@ import com.abdelkhalek.storehub.catalog.inventory.dto.Item;
 import com.abdelkhalek.storehub.catalog.inventory.dto.ReservationResponse;
 import com.abdelkhalek.storehub.catalog.inventory.dto.ReservationItem;
 import com.abdelkhalek.storehub.catalog.inventory.service.StockService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +20,12 @@ import java.util.UUID;
 @RestController
 @RequestMapping("api/inventory")
 @RequiredArgsConstructor
+@Tag(name = "Inventory", description = "Stock availability checks and reservations")
 public class InventoryController {
 
     private final StockService stockService;
 
+    @Operation(summary = "Check stock availability for a list of items")
     @PostMapping("check-availability")
     ResponseEntity<AvailabilityResponse> checkAvailability(
             @RequestParam UUID storeId,
@@ -30,6 +35,8 @@ public class InventoryController {
         return ResponseEntity.ok(new AvailabilityResponse(stockService.checkStock(storeId, items)));
     }
 
+    @Operation(summary = "Reserve stock for an order")
+    @ApiResponse(responseCode = "200", description = "Items reserved")
     @PostMapping("reservations")
     ResponseEntity<ReservationResponse> reservations(
             @RequestParam UUID storeId,

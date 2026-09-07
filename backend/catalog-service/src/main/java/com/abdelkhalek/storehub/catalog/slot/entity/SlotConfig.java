@@ -7,6 +7,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,6 +30,8 @@ public class SlotConfig {
     private UUID storeId;
 
     // 0 = Sunday ... 6 = Saturday (matches java.time.DayOfWeek.getValue() % 7)
+    @Min(0)
+    @Max(6)
     @Column(name = "day_of_week", nullable = false)
     private Integer dayOfWeek;
 
@@ -37,6 +41,8 @@ public class SlotConfig {
     @Column(name = "end_time", nullable = false)
     private LocalTime endTime;
 
+    @Min(0)
+    @Max(1440)
     @Column(name = "slot_duration_min", nullable = false)
     private Integer slotDurationMin;
 
@@ -44,6 +50,8 @@ public class SlotConfig {
     private Integer maxCapacity;
 
     @Column(name = "cutoff_minutes", nullable = false)
+    @Min(0)
+    @Max(1440)
     private Integer cutoffMinutes;
 
     @Column(name = "extra_fee")

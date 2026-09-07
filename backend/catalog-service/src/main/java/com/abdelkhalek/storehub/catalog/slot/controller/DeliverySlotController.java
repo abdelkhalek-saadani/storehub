@@ -11,6 +11,9 @@ import com.abdelkhalek.storehub.catalog.slot.repository.DeliverySlotRepository;
 import com.abdelkhalek.storehub.catalog.slot.service.SlotBookingService;
 import com.abdelkhalek.storehub.catalog.slot.service.SlotService;
 import com.abdelkhalek.storehub.catalog.store.service.StoreService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +32,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/delivery-slots")
 @RequiredArgsConstructor
+@Tag(name = "Delivery Slots", description = "Browse, reserve, and manage delivery slots")
 public class DeliverySlotController {
 
     private final DeliverySlotRepository deliverySlotRepository;
@@ -36,6 +40,9 @@ public class DeliverySlotController {
     private final StoreService storeService;
     private final SlotService slotService;
 
+    @Operation(summary = "Get a delivery slot by ID")
+    @ApiResponse(responseCode = "200", description = "Slot found")
+    @ApiResponse(responseCode = "404", description = "Slot not found")
     @GetMapping("{slotId}")
     public ResponseEntity<DeliverySlot> get(@PathVariable UUID slotId) {
         DeliverySlot s = slotService.getById(slotId);
@@ -46,6 +53,10 @@ public class DeliverySlotController {
         return ResponseEntity.ok(s);
     }
 
+    @Operation(summary = "List available slots for a store on a given date",
+            description = "For today's date, only returns slots starting after the current time.")
+    @ApiResponse(responseCode = "200", description = "Slots found")
+    @ApiResponse(responseCode = "404", description = "No available slots for the given store/date")
     @GetMapping
     public ResponseEntity<List<SlotDto>> getAvailableSlots(
             @RequestParam UUID storeId,
@@ -66,6 +77,8 @@ public class DeliverySlotController {
         return ResponseEntity.ok(slotDtos);
     }
 
+    @Operation(summary = "Check which days in a range have available slots",
+            description = "If 'from'/'to' are omitted, a default range is used.")
     @GetMapping("check-days")
     public ResponseEntity<List<LocalDate>> checkDays(
             @RequestParam UUID storeId,
@@ -76,6 +89,7 @@ public class DeliverySlotController {
         return ResponseEntity.ok(slotService.checkDays(storeId, from, to));
     }
 
+    @Operation(summary = "Check whether a specific slot is currently available for booking")
     @GetMapping("check-availability")
     public ResponseEntity<AvailabilityResponse> checkAvailability(
             @RequestParam UUID storeId,
@@ -84,6 +98,9 @@ public class DeliverySlotController {
                 .body(new AvailabilityResponse(slotBookingService.isAvailable(storeId, slotId)));
     }
 
+    @Operation(summary = "Reserve a delivery slot")
+    @ApiResponse(responseCode = "201", description = "Slot reserved")
+    @ApiResponse(responseCode = "400", description = "Invalid request body")
     @PostMapping("/reserve")
     @ResponseStatus(HttpStatus.CREATED)
     public ReserveSlotResponse reserve(
@@ -93,6 +110,8 @@ public class DeliverySlotController {
         return new ReserveSlotResponse(reservedSlot.getId());
     }
 
+    @Operation(summary = "Release a previously reserved slot")
+    @ApiResponse(responseCode = "204", description = "Reservation released")
     @PostMapping("/reservations/{reservationId}/release")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void release(
@@ -106,6 +125,10 @@ public class DeliverySlotController {
      * capacity cut). Sets manualOverride=true so neither the nightly
      * generation job nor a future config sync will ever touch this row again.
      */
+    @Operation(summary = "Manually override a slot's capacity or status",
+            description = "Marks the slot as manually overridden so automated jobs will not modify it afterward.")
+    @ApiResponse(responseCode = "200", description = "Slot updated")
+    @ApiResponse(responseCode = "404", description = "Slot not found for this store")
     @PatchMapping("/{slotId}/override")
     public DeliverySlot manualOverride(
             @AuthenticationPrincipal Jwt jwt,

@@ -9,6 +9,10 @@ import com.abdelkhalek.storehub.catalog.product.service.CategoryService;
 import com.abdelkhalek.storehub.catalog.product.service.ProductService;
 import com.abdelkhalek.storehub.catalog.product.service.SaleEventService;
 import com.abdelkhalek.storehub.catalog.store.service.StoreService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +33,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("api")
 @RequiredArgsConstructor
+@Tag(name = "Products", description = "Products, categories, and sale events")
 public class ProductController {
 
     private final ProductRepository productRepository;
@@ -38,6 +43,9 @@ public class ProductController {
     private final SaleEventService saleEventService;
     private final StoreService storeService;
 
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Create a new product")
+    @ApiResponse(responseCode = "201", description = "Product created")
     @PostMapping("products")
     public ResponseEntity<CreateProductDto> create(@AuthenticationPrincipal Jwt jwt,
                                                    @RequestBody CreateProductDto request) {
@@ -47,6 +55,7 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @Operation(summary = "List products with filtering and pagination")
     @GetMapping("products")
     public ResponseEntity<Page<ProductResponse>> findAll(
             @RequestParam UUID storeId,
@@ -68,21 +77,23 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Get curated products for storefront display",
+            description = "Returns best sellers or general products depending on the params " +
+                    "provided.")
     @GetMapping("products/explorer")
     public ResponseEntity<List<ProductResponse>> explorer(
             @RequestParam @NotNull UUID storeId,
-            @RequestParam(required = false) UUID saleEventId,
             @RequestParam(required = false) Boolean isBestSeller,
             @RequestParam(required = false, defaultValue = "20") @Min(1) Integer count
     ) {
         if (isBestSeller) {
             return ResponseEntity.ok(productService.getBestSellerProducts(storeId, count));
         }
-        List<ProductResponse> products = saleEventId != null ? productService.getProducts(storeId,
-                saleEventId, count) : productService.getProducts(storeId, count);
+        List<ProductResponse> products = productService.getProducts(storeId, count);
         return ResponseEntity.ok(products);
     }
 
+    @Operation(summary = "List subcategories for a store")
     @GetMapping("categories/subcategories")
     public ResponseEntity<List<SubCategoryDTO>> getSubCategories(@RequestParam UUID storeId,
                                                                  @RequestParam(required = false) @Min(1) Integer count) {
@@ -93,6 +104,8 @@ public class ProductController {
         return ResponseEntity.ok(subCategories);
     }
 
+    @Operation(summary = "Create a new subcategory")
+    @ApiResponse(responseCode = "201", description = "Subcategory created")
     @PostMapping("categories/subcategories")
     public ResponseEntity<SubCategoryDTO> createSubCategory(@AuthenticationPrincipal Jwt jwt,
                                                             @RequestBody SubCategoryDTO request) {
@@ -102,11 +115,13 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @Operation(summary = "List parent categories with their subcategories")
     @GetMapping("categories/parents")
     public ResponseEntity<List<ParentCategoryDTO>> getParentsWithSubs(@RequestParam UUID storeId) {
         return ResponseEntity.ok(categoryService.getParentCategories(storeId));
     }
 
+    @Operation(summary = "List sale events for a store")
     @GetMapping("sale-events")
     public ResponseEntity<List<SaleEvent>> getSaleEvents(@RequestParam UUID storeId,
                                                          @RequestParam(required = false,
@@ -114,9 +129,11 @@ public class ProductController {
         return ResponseEntity.ok(saleEventService.getSaleEvents(storeId, count));
     }
 
+    @Operation(summary = "Create a new sale event")
+    @ApiResponse(responseCode = "201", description = "Sale event created")
     @PostMapping("sale-events")
     public ResponseEntity<CreateSaleEventDto> createSaleEvent(@AuthenticationPrincipal Jwt jwt,
-                                                     @RequestBody CreateSaleEventDto request){
+                                                              @RequestBody CreateSaleEventDto request) {
         UUID storeId = storeService.getStoreId(jwt.getSubject());
         CreateSaleEventDto created = saleEventService.create(storeId, request.name(), request.imageUrl());
         return ResponseEntity.status(HttpStatus.CREATED).body(created);

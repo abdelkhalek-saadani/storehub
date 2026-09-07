@@ -38,6 +38,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable) // stateless JWT API, no cookies
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/swagger-ui/**","/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/products").hasRole("STORE_OWNER")
                         .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers(HttpMethod.GET,

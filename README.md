@@ -159,19 +159,20 @@ job for stores, a scheduled job run each day and grab a of store from order and 
 ## Tech Stack
 
 The project is built with spring boot for backend and angular for frontend, with postgres as the DBMS and RAbbitMQ as
-the event broker and wiremock for sever mocking and keyclaok for auth
-order-serice: Spring Boot, Webflux, R2DBC (
+the event broker and wiremock for sever mocking and keyclaok for auth.
+
+- `order-serice`: Spring Boot, Webflux, R2DBC (
 with [spring-r2dbc-relationships](https://github.com/JoseLion/spring-r2dbc-relationships) for entities relationships),
 Spring Security, webclient
-catalog-service: Spring Boot, Servlet, JDBC, restClient
-payment-service: Spring Boot, Servlet, JDBC and PayPal as the payment service provider
-Message broker: Rabbit MQ
-Mock server for local development and end to end testing: wiremock
-Database Management System: Postgres
-frontend: Angular with angular Material, Tailwind Css and signal store as the state management solution
-Authentication: self-hosted Keycloak as the IAM server
-Containerization: Docker and docker compose to manage the different system component in one place
-Testing: Mockito, wiremock, mvcTestClient
+- `catalog-service`: Spring Boot, Servlet, JDBC, restClient
+- `payment-service`: Spring Boot, Servlet, JDBC and PayPal as the payment service provider
+- Message broker: Rabbit MQ
+- Mock server for local development and end-to-end testing: wiremock
+- Database Management System: Postgres
+- frontend: Angular with angular Material, Tailwind Css and signal store as the state management solution
+- Authentication: self-hosted Keycloak as the IAM server
+- Containerization: Docker and docker compose to manage the different system component in one place
+- Testing: Mockito, wiremock, mvcTestClient
 
 ## Getting Started
 
@@ -186,10 +187,9 @@ Add this entry to your hosts file (required for Keycloak OAuth redirects):
 
 Default ports are below. If any conflict with services already running on your machine, override them in `.env`:
 
-\```bash
+```bash
 cp .env.example .env
-\```
-TODO: add a .env.example file that has the below env variables
+```
 
 | Service                            | Default Port | Env Var        |
 |------------------------------------|--------------|----------------|
@@ -206,9 +206,9 @@ TODO: add a .env.example file that has the below env variables
 
 Get the platform running with a demo PayPal sandbox, no PayPal account needed.
 
-\```bash
+```bash
 make quickstart
-\```
+```
 Then visit `http://localhost:4200`.
 
 > **Note:** This uses a shared demo PayPal sandbox app. You can walk through the full checkout flow( including PayPal
@@ -229,10 +229,10 @@ webhook.
    Secret.
 
 2. **Set your credentials**
-   \```bash
+   ```bash
    cp .env.example .env
    # fill in PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET
-   \```
+   ```
 
 3. **Start a tunnel** to payment service port
 
@@ -242,12 +242,12 @@ ngrok http 8200
 
 Copy the generated `https://*.ngrok-free.app` URL.
 
-4. Register the webhook
+4. **Register the webhook**
    In your sandbox app settings, add a webhook pointing to:
    `https://<your-ngrok-url>/api/payments/paypal/webhook`
    Subscribe to the Checkout order approved, Payment authorization created, Payment authorization voided, Payment capture completed, Payment capture refunded, Payment order created events.
 5. Then add `PAYPAL_WEBHOOK_ID` to the env file
-6. Run the platform
+6. **Run the platform**
 
 ```bash
 make quickstart
@@ -257,14 +257,23 @@ Checkout will now complete end-to-end, including order authorization.
 
 ## Project Structure
 
+```text
 storehub  
 \_backend
-| \_catalog-service
+| \_catalog-service        
 | \_order-service
 | \_payment-service
 \_frontend
 \_keycloak
-\_wiremock
+\_wiremock                 // mock server used for e2e
+\_scripts                  // for scripts, currently it contains seed script for quickstart
+\_compose.e2e.yml          // compose file for e2e testing
+\_compose.quickstart.yml   // compose file for quickstart
+\_frontend.override.yml    // override used by compose.e2e
+\_Makefile
+
+```
+
 
 ## API Docs
 

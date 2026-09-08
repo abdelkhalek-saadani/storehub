@@ -135,7 +135,7 @@ public class SlotGenerationService {
                 counter++;
             } else {
                 // If it already exists we skip silently, this is what protects
-                // manually-overridden or already-booked slots from generation re-runs.
+                // manually created slots from generation re-runs.
                 log.debug("Slot already exists: {}, skipping generation for this slot", slotStart);
             }
 

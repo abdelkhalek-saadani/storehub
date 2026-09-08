@@ -13,6 +13,7 @@ import com.abdelkhalek.storehub.catalog.slot.service.SlotService;
 import com.abdelkhalek.storehub.catalog.store.service.StoreService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -125,6 +126,7 @@ public class DeliverySlotController {
      * capacity cut). Sets manualOverride=true so neither the nightly
      * generation job nor a future config sync will ever touch this row again.
      */
+    @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Manually override a slot's capacity or status",
             description = "Marks the slot as manually overridden so automated jobs will not modify it afterward.")
     @ApiResponse(responseCode = "200", description = "Slot updated")

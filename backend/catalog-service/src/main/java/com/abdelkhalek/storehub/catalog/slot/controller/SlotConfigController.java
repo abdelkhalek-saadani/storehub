@@ -7,6 +7,7 @@ import com.abdelkhalek.storehub.catalog.store.service.StoreService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,7 @@ public class SlotConfigController {
     private final SlotConfigService slotConfigService;
     private final StoreService storeService;
 
+    @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Create a new slot config for store owned by the authenticated user")
     @ApiResponse(responseCode = "200", description = "Config created")
     @ApiResponse(responseCode = "400", description = "Invalid request body")
@@ -42,6 +44,7 @@ public class SlotConfigController {
     /*
      * Updates the rule and syncs future, unbooked, non-overridden slots automatically.
      */
+    @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Update a slot config",
             description = "Automatically syncs future, unbooked, non-overridden slots to match the updated rule.")
     @ApiResponse(responseCode = "200", description = "Config updated")

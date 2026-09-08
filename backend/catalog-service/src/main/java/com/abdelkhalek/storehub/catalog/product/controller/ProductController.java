@@ -104,6 +104,7 @@ public class ProductController {
         return ResponseEntity.ok(subCategories);
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Create a new subcategory")
     @ApiResponse(responseCode = "201", description = "Subcategory created")
     @PostMapping("categories/subcategories")
@@ -129,6 +130,7 @@ public class ProductController {
         return ResponseEntity.ok(saleEventService.getSaleEvents(storeId, count));
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Create a new sale event")
     @ApiResponse(responseCode = "201", description = "Sale event created")
     @PostMapping("sale-events")

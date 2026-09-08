@@ -10,6 +10,11 @@ import com.abdelkhalek.storehub.payment.model.PaymentFilter;
 import com.abdelkhalek.storehub.payment.repository.PaymentSpecifications;
 import com.abdelkhalek.storehub.payment.service.PaymentService;
 import com.abdelkhalek.storehub.payment.webhook.WebhookHandler;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -34,13 +39,17 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/payments/paypal")
 @RequiredArgsConstructor
+@Tag(name = "PayPal Payments", description = "PayPal payment lifecycle and webhook handling")
+@SecurityRequirement(name = "bearerAuth")
 public class PayPalController {
 
     private final PaymentService paymentService;
     private final WebhookHandler webhookHandler;
 
 
-
+    @Operation(summary = "Get the status of a payment")
+    @ApiResponse(responseCode = "200", description = "Status found")
+    @ApiResponse(responseCode = "404", description = "Payment not found")
     @GetMapping("/{paymentId}/status")
     public ResponseEntity<?> getPaymentStatus(@PathVariable UUID paymentId) {
         PaymentEntity payment = paymentService.getPaymentById(paymentId);
@@ -53,6 +62,9 @@ public class PayPalController {
         );
     }
 
+    @Operation(summary = "Get a payment by ID")
+    @ApiResponse(responseCode = "200", description = "Payment found")
+    @ApiResponse(responseCode = "404", description = "Payment not found")
     @GetMapping("/{paymentId}")
     public ResponseEntity<?> getPaymentById(@PathVariable UUID paymentId) {
         PaymentEntity payment = paymentService.getPaymentById(paymentId);
@@ -63,6 +75,8 @@ public class PayPalController {
 
     }
 
+    @Operation(summary = "Create a PayPal order for an order",
+            description = "This is called by order service at the end of order creation pipeline")
     @PostMapping
     public ResponseEntity<PaymentResponse> createOrder(
             @Valid @RequestBody CreatePaymentRequest request) {
@@ -78,6 +92,8 @@ public class PayPalController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Void a payment authorization")
+    @ApiResponse(responseCode = "404", description = "Payment not found")
     @PostMapping("/{paymentId}/void")
     public ResponseEntity<PaymentResponse> voidAuthorization(@PathVariable UUID paymentId) {
         PaymentEntity payment;
@@ -94,6 +110,8 @@ public class PayPalController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Refund a captured payment")
+    @ApiResponse(responseCode = "404", description = "Payment not found")
     @PostMapping("/{paymentId}/refund")
     public ResponseEntity<PaymentResponse> refundCapture(@PathVariable UUID paymentId) {
         PaymentEntity payment;
@@ -111,6 +129,9 @@ public class PayPalController {
 
     // Testing endpoints, should be removed in production or protected with profiles
 
+    @Operation(summary = "Capture an authorized payment",
+            description = "Testing endpoint, should be removed or profile-gated in production.")
+    @ApiResponse(responseCode = "404", description = "Payment not found")
     @PostMapping("/{paymentId}/capture")
     public ResponseEntity<PaymentResponse> captureAuthorization(@PathVariable UUID paymentId) {
         PaymentEntity payment;
@@ -128,6 +149,10 @@ public class PayPalController {
         PaymentResponse response = paymentService.captureAuthorization(authorizationId);
         return ResponseEntity.ok(response);
     }
+
+    @Operation(summary = "Authorize a PayPal order",
+            description = "Testing endpoint, should be removed or profile-gated in production.")
+    @ApiResponse(responseCode = "404", description = "Payment not found")
     @PostMapping("/{paymentId}/authorize")
     public ResponseEntity<PaymentResponse> authorizeOrder(@PathVariable UUID paymentId) {
         PaymentEntity payment;
@@ -144,6 +169,8 @@ public class PayPalController {
         return ResponseEntity.ok(response);
     }
 
+    @SecurityRequirements()
+    @Operation(summary = "Handle incoming PayPal webhook events")
     @PostMapping("/webhook")
     public ResponseEntity<Void> handleWebhook(
             @RequestBody String payload,
@@ -159,6 +186,7 @@ public class PayPalController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation(summary = "List payments with filtering and pagination")
     @GetMapping
     public ResponseEntity<PagedResponse<PaymentEntity>> getPayments(
             @RequestParam(required = false) String captureId,

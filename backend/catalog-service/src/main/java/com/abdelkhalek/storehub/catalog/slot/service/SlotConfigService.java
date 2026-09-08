@@ -49,8 +49,6 @@ public class SlotConfigService {
         SlotConfig existing = slotConfigRepository.findByIdAndStoreId(configId, storeId)
                 .orElseThrow(() -> new EntityNotFoundException("Slot config not found: " + configId));
 
-        LocalTime oldStartTime = existing.getStartTime();
-
         existing.setStartTime(updated.getStartTime());
         existing.setEndTime(updated.getEndTime());
         existing.setSlotDurationMin(updated.getSlotDurationMin());
@@ -60,7 +58,7 @@ public class SlotConfigService {
         existing.setActive(updated.isActive());
         slotConfigRepository.save(existing);
 
-        syncFutureSlots(existing, oldStartTime);
+        syncFutureSlots(existing);
         return existing;
     }
 
@@ -72,9 +70,8 @@ public class SlotConfigService {
      * July 10:00 and there is already a slot with that characteristics, It ignores it silently and
      * pass to next slot (e.g creating Sunday, 5 July 10:30)
      * @param config
-     * @param oldStartTime
      */
-    private void syncFutureSlots(SlotConfig config, LocalTime oldStartTime) {
+    private void syncFutureSlots(SlotConfig config) {
         List<DeliverySlot> safeToUpdate = deliverySlotRepository
                 .findBySlotConfigIdAndStoreIdAndSlotDateGreaterThanEqualAndManualOverrideFalseAndBookedCount(
                         config.getId(), config.getStoreId(), LocalDate.now(), 0);

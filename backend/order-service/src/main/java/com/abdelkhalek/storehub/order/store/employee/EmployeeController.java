@@ -1,11 +1,15 @@
 package com.abdelkhalek.storehub.order.store.employee;
 
 import com.abdelkhalek.storehub.order.common.identity.KeycloakAdminService;
+import com.abdelkhalek.storehub.order.store.entity.StoreMembership;
+import com.abdelkhalek.storehub.order.store.model.MembershipRole;
+import com.abdelkhalek.storehub.order.store.repository.StoreMembershipRepository;
 import com.abdelkhalek.storehub.order.user.entity.User;
 import com.abdelkhalek.storehub.order.user.repository.UserRepository;
-import com.abdelkhalek.storehub.order.store.model.MembershipRole;
-import com.abdelkhalek.storehub.order.store.entity.StoreMembership;
-import com.abdelkhalek.storehub.order.store.repository.StoreMembershipRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +26,8 @@ import java.util.UUID;
  */
 @RestController
 @RequestMapping("/api/stores/{storeId}/employees")
+@Tag(name = "Employees",
+        description = "Store employee invitation and management (feature not complete yet)")
 public class EmployeeController {
 
     private final UserRepository userRepository;
@@ -39,6 +45,13 @@ public class EmployeeController {
         this.keycloakAdminService = keycloakAdminService;
     }
 
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Invite an employee to a store",
+            description = "Only callable by the store owner; assigns the EMPLOYEE role and rolls back on failure.")
+    @ApiResponse(responseCode = "201", description = "Employee invited")
+    @ApiResponse(responseCode = "404", description = "Caller not found, or no account exists for the given email")
+    @ApiResponse(responseCode = "409", description = "User is already a member of this store")
+    @ApiResponse(responseCode = "500", description = "Employee assignment failed, please retry")
     @PostMapping
     public Mono<ResponseEntity<StoreMembership>> inviteEmployee(
             @PathVariable UUID storeId,
@@ -74,7 +87,8 @@ public class EmployeeController {
         return membershipRepository.save(membership)
                 .flatMap(savedMembership ->
                         keycloakAdminService.addRealmRole(targetUser.getKeycloakId(), MembershipRole.EMPLOYEE.name())
-                                .thenReturn(ResponseEntity.status(HttpStatus.CREATED).body(savedMembership))
+                                .thenReturn(ResponseEntity.status(HttpStatus.CREATED)
+                                        .body(savedMembership))
                                 .onErrorResume(err -> rollback(savedMembership, targetUser.getKeycloakId()))
                 );
     }

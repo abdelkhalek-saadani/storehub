@@ -2,9 +2,12 @@ package com.abdelkhalek.storehub.order.order;
 
 import com.abdelkhalek.storehub.order.order.dto.*;
 import com.abdelkhalek.storehub.order.order.mapper.OrderMapper;
-import com.abdelkhalek.storehub.order.shared.model.ServiceResult;
 import com.abdelkhalek.storehub.order.order.service.OrderService;
 import com.abdelkhalek.storehub.order.order.service.OrderStatusService;
+import com.abdelkhalek.storehub.order.shared.model.ServiceResult;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -20,13 +23,16 @@ import java.util.UUID;
 @RestController
 @RequestMapping("api/orders")
 @RequiredArgsConstructor
+@Tag(name = "Orders", description = "Order placement, tracking, and cancellation")
 public class OrderController {
 
     private final OrderService orderService;
     private final OrderStatusService orderStatusService;
     private final OrderMapper orderMapper;
 
-
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Place a new order with online payment",
+            description = "Requires an idempotency key to prevent duplicate order creation.")
     @PostMapping
     Mono<OrderCreatedResponse> placeOrder(@RequestHeader("Idempotency-Key") UUID idempotencyKey,
                                           @RequestHeader(value = "X-Guest-Id", required = false) UUID guestId,
@@ -42,6 +48,8 @@ public class OrderController {
                 .map(ServiceResult::body);
     }
 
+    @Operation(summary = "Stream real-time order status updates",
+            description = "Server-Sent Events stream; emits the current status followed by live updates.")
     @GetMapping(value = "/{orderId}/track", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ServerSentEvent<OrderStatusDto>> track(@PathVariable UUID orderId) {
         log.debug("orderId: {}", orderId);
@@ -53,6 +61,9 @@ public class OrderController {
         return Flux.concat(current, live);
     }
 
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Cancel an order",
+            description = "Guests provide their email to authorize cancellation; authenticated users are resolved from context.")
     @PostMapping("/{orderId}/void")
     Mono<OrderCancelResponse> cancelOrder(
             @PathVariable UUID orderId,
@@ -68,11 +79,14 @@ public class OrderController {
         return orderService.cancelOrder(orderId);
     }
 
+    @Operation(summary = "Get an order by ID")
     @GetMapping("/{orderId}")
     Mono<OrderDto> getOrder(@PathVariable UUID orderId) {
         return orderService.getOrder(orderId);
     }
 
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Get an order by payment order ID")
     @GetMapping
     Mono<OrderDto> getOrderByToken(@RequestParam String paymentOrderId) {
         // Get the order with payment order id
@@ -80,6 +94,7 @@ public class OrderController {
         return orderService.getOrderByToken(paymentOrderId);
     }
 
+    @Operation(summary = "Get a guest order by order ID and email")
     @PostMapping("/guest")
     Mono<OrderDto> getGuestOrder(@RequestBody TrackOrderRequest trackOrderRequest) {
         //Do the same reactive pipeline as the getOrderByToken, just change the check from userId

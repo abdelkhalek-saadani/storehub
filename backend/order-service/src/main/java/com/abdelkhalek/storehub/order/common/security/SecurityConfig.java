@@ -40,6 +40,7 @@ public class SecurityConfig {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable) // stateless JWT API, no cookies
                 .authorizeExchange(exchange -> exchange
+                        .pathMatchers("/swagger-ui/**","/v3/api-docs/**").permitAll()
                         .pathMatchers("/actuator/**").permitAll()
                         .pathMatchers("/api/stores/by-slug/**").permitAll()
                         .pathMatchers(HttpMethod.GET,"/api/stores/**").permitAll()

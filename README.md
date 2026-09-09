@@ -1,10 +1,9 @@
 # StoreHub
 
 StoreHub is a multi-tenant e-commerce SaaS enabling vendors to launch independent storefronts — vendors list products
-and accept
-payments, customers browse multi-store catalogs and place orders.
+and accept payments, customers browse multi-store catalogs and place orders.
 
-Below a demo video for the checkout flow for a connected user and a guest user.
+Below is a demo video of the checkout flow for a connected user and a guest user.
 [![Demo Video](https://img.youtube.com/vi/oHGmZVkBGxE/maxresdefault.jpg)](https://www.youtube.com/watch?v=oHGmZVkBGxE)
 
 This diagram present an overview of the different system component and how they communicate.
@@ -12,56 +11,56 @@ This diagram present an overview of the different system component and how they 
 ```mermaid
 flowchart TB
     MQ@{ shape: h-cyl, label: "RabbitMQ"}
-    
-    FE["Angular Frontend"] -->|"REST"| CAT["catalog-service"]
-    FE -->|REST| ORD["order-service"]
-    FE -->|Request JWT for users| KC["Keycloak"]
-    
-    ORD -->|REST| PAY["payment-service"]
-    ORD <-->|REST| CAT
-    ORD -->|Request JWT for svc-to-svc + validate| KC
-    ORD <-.-> MQ
 
-    
-    MQ -.-> CAT
-    CAT -->|Request JWT for svc-to-svc + validate| KC
+FE["Angular Frontend"] -->|" REST "|CAT["catalog-service"]
+FE -->|REST| ORD["order-service"]
+FE -->|Request JWT for users|KC["Keycloak"]
 
-    PAY -->|REST| PP[["PayPal"]]
-    PAY -.-> MQ
-    PP -->|Webhook| PAY
+ORD -->|REST|PAY["payment-service"]
+ORD <-->|REST| CAT
+ORD -->|Request JWT for svc -to - svc + validate|KC
+ORD <-.-> MQ
+
+
+MQ -.-> CAT
+CAT -->|Request JWT for svc - to - svc + validate|KC
+
+PAY -->|REST| PP[["PayPal"]]
+PAY -.-> MQ
+PP -->|Webhook|PAY
 
 ```
 
 ## Features
 
 - Create a customer account
-- Create owner account
-- Create Store
-- Browse stores catalog of products
+- Create an owner account
+- Create a store
+- Browse a store's catalog of products
 - Apply filters to products
 - Shareable pages and filters
-- Browse products as guest or connected
+- Browse products as a guest or connected user
 - Persistent cart across devices
-- Responsive Design, it works on desktop (1440px) and mobile screens (375px) screens.
+- Responsive design, works on desktop (1440px) and mobile (375px) screens
 - Place orders
 - Cancel a paid order and get a refund
 - Browse and choose stores
-- Track order state realtime , for guest and connected user
+- Track order status in real time, for guest and connected users
 - Benefit from available discounts
-- Online payment with PayPal
-- Specify a delivery slot to your order
+- Pay online with PayPal
+- Specify a delivery slot for an order
 
 ## Backend Capabilities
 
-Here is a list of store owners operations
+Store owner operations:
 
-- Create products with initial quantity
-- Update products stock
-- Create products categories
+- Create products with initial stock
+- Update product stock
+- Create product categories
 - Create sale events
-- Create and update slot configurations, and have materialized slots generated automatically
+- Create and update slot configurations, with materialized slots generated automatically
 - Override specific generated slots (e.g. edit capacity)
-- refund a captured payment
+- Refund a captured payment
 - Capture an authorized payment
 - Authorize an approved payment
 
@@ -78,57 +77,56 @@ flowchart LR
         FE["Angular Frontend<br/>(Storefront, Material+Tailwind)"]
     end
 
-
     KC["Keycloak<br/>(Auth Server / JWT issuer)"]
     MQ@{ shape: h-cyl, label: "RabbitMQ"}
 
-    subgraph Services
-        CAT["catalog-service<br/>(Spring MVC, imperative)"]
-        ORD["order-service<br/>(Spring WebFlux + R2DBC, reactive)"]
-        PAY["payment-service<br/>(Spring MVC, imperative)<br/>→ PayPal"]
-    end
+subgraph Services
+CAT["catalog-service<br/>(Spring MVC, imperative)"]
+ORD["order-service<br/>(Spring WebFlux + R2DBC, reactive)"]
+PAY["payment-service<br/>(Spring MVC, imperative)<br/>→ PayPal"]
+end
 
-    PP[["PayPal"]]
+PP[["PayPal"]]
 
-    FE -- "get token" --> KC
-    FE -- "REST (JWT)" --> CAT
-    FE -- "REST (JWT)" --> ORD
-    FE -- "SSE (order status)" --> ORD
+FE -- " get token " --> KC
+FE -- " REST (JWT) " --> CAT
+FE -- "REST (JWT) " --> ORD
+FE -- " SSE (order status) " --> ORD
 
-    ORD -- "sync REST: reserve resources" --> CAT
-  
-    ORD -. "async: release resources, store created, user created" .-> MQ
+ORD -- "sync REST: reserve resources " --> CAT
 
-    MQ -. "async: release resources, store created, user created" .-> CAT
+ORD -. " async: release resources, store created, user created " .-> MQ
+
+MQ -. " async: release resources, store created, user created " .-> CAT
 
 
 
-    ORD -- "sync REST: create/void payment" --> PAY
-    PP -- "webhook" --> PAY
-    
-    PAY -. "async: PaymentCompleted/Failed" .-> MQ
-    PAY -- "sync REST: create/authorize/capture/void paypal checkout order via v2 rest api" --> PP
+ORD -- " sync REST: create/void payment " --> PAY
+PP -- " webhook " --> PAY
 
-    MQ -. "async: PaymentCompleted/Failed" .-> ORD
+PAY -. " async: PaymentCompleted/Failed " .-> MQ
+PAY -- " sync REST: create/authorize/capture/void paypal checkout order via v2 rest api " --> PP
 
-    CAT -- "JWKS validation + service token" --> KC
-    CAT -- "sync REST: store reconcilliation job" --> ORD
+MQ -. " async: PaymentCompleted/Failed " .-> ORD
 
-    ORD -- "JWKS validation + service token" --> KC
-    PAY -- "JWKS validation" --> KC
-    
+CAT -- " JWKS validation + service token " --> KC
+CAT -- " sync REST: store reconcilliation job " --> ORD
+
+ORD -- " JWKS validation + service token " --> KC
+PAY -- " JWKS validation" --> KC
+
 ```
 
 ### Why these choices
 
 **Microservices, deliberately, for a portfolio project**
 Chosen to practice service boundaries and polyglot communication (blocking REST +
-reactive) — accepting the added deployment and operational complexity that comes with it. At this scale, a real
+reactive), accepting the added deployment and operational complexity that comes with it. At this scale, a real
 production system would likely start as a modular monolith and split only once actual scaling or team-ownership pressure
 justified it.
 
 **WebFlux for order-service, Spring MVC for catalog and payment services**
-order-service acts as the orchestrator — it interacts with nearly every other component (catalog, payment, RabbitMQ) —
+order-service acts as the orchestrator, it interacts with nearly every other component (catalog, payment, RabbitMQ) —
 making a non-blocking stack a good fit for coordinating multiple concurrent downstream calls without tying up threads.
 It was also a deliberate opportunity to get hands-on with reactive programming and R2DBC.
 
@@ -158,21 +156,21 @@ job for stores, a scheduled job run each day and grab a of store from order and 
 
 ## Tech Stack
 
-The project is built with spring boot for backend and angular for frontend, with postgres as the DBMS and RAbbitMQ as
-the event broker and wiremock for sever mocking and keyclaok for auth.
+The project is built with Spring Boot for the backend and Angular for the frontend, with Postgres as the DBMS,
+RabbitMQ as the event broker, WireMock for server mocking, and Keycloak for authentication.
 
-- `order-serice`: Spring Boot, Webflux, R2DBC (
-with [spring-r2dbc-relationships](https://github.com/JoseLion/spring-r2dbc-relationships) for entities relationships),
-Spring Security, webclient
-- `catalog-service`: Spring Boot, Servlet, JDBC, restClient
-- `payment-service`: Spring Boot, Servlet, JDBC and PayPal as the payment service provider
-- Message broker: Rabbit MQ
-- Mock server for local development and end-to-end testing: wiremock
-- Database Management System: Postgres
-- frontend: Angular with angular Material, Tailwind Css and signal store as the state management solution
+- `order-service`: Spring Boot, WebFlux, R2DBC (
+  with [spring-r2dbc-relationships](https://github.com/JoseLion/spring-r2dbc-relationships) for entity relationships),
+  Spring Security, WebClient
+- `catalog-service`: Spring Boot, Servlet, JDBC, RestClient
+- `payment-service`: Spring Boot, Servlet, JDBC, with PayPal as the payment service provider
+- Message broker: RabbitMQ
+- Mock server for local development and end-to-end testing: WireMock
+- Database management system: Postgres
+- Frontend: Angular with Angular Material, Tailwind CSS, and SignalStore as the state management solution
 - Authentication: self-hosted Keycloak as the IAM server
-- Containerization: Docker and docker compose to manage the different system component in one place
-- Testing: Mockito, wiremock, mvcTestClient
+- Containerization: Docker and Docker Compose to manage the system's components in one place
+- Testing: Mockito, WireMock, MockMvc/WebTestClient and StepVerifier for reactive code.
 
 ## Getting Started
 
@@ -196,11 +194,11 @@ cp .env.example .env
 | Frontend                           | 4200         | FRONTEND_PORT  |
 | Order Service                      | 8090         | ORDER_PORT     |
 | Payment Service                    | 8200         | PAYMENT_PORT   |
+| Catalog Service                    | 8100         | CATALOG_PORT   |
+| Keycloak                           | 8088         | KC_PORT        |
 | Rabbit MQ Client Messaging         | 5672         | MQ_PORT_CLIENT |
 | Rabbit MQ Management Web Interface | 15627        | MQ_PORT_WEB    |
-| Keycloak                           | 8088         | KC_PORT        |
 | Keycloak Management Interface      | 9000         | KC_HEALTH_PORT |
-| Catalog Service                    | 8100         | CATALOG_PORT   |
 
 ### Quick Start
 
@@ -209,13 +207,17 @@ Get the platform running with a demo PayPal sandbox, no PayPal account needed.
 ```bash
 make quickstart
 ```
+
 Then visit `http://localhost:4200`.
 
 > **Note:** This uses a shared demo PayPal sandbox app. You can walk through the full checkout flow( including PayPal
 > login and approval) but **order authorization won't complete**, since it depends on a webhook reaching this app, which
-> isn't possible without your own public tunnel. See [Full Checkout Setup](#full-checkout-setup) below to enable it.
+> isn't possible without your own public tunnel. See [Full Checkout Setup](#full-checkout-setup-optional) below to
+> enable it.
 
-Here is the demo user to use for PayPal checkout(Safe to share since this is a demo account for testing): `sb-zxprs52773167@personal.example.com`:`B+]cB>6p`
+Demo user to use for PayPal checkout(safe to share since this is a demo account for testing):
+
+- `sb-zxprs52773167@personal.example.com`:`B+]cB>6p`
 
 ---
 
@@ -245,7 +247,15 @@ Copy the generated `https://*.ngrok-free.app` URL.
 4. **Register the webhook**
    In your sandbox app settings, add a webhook pointing to:
    `https://<your-ngrok-url>/api/payments/paypal/webhook`
-   Subscribe to the Checkout order approved, Payment authorization created, Payment authorization voided, Payment capture completed, Payment capture refunded, Payment order created events.
+   Subscribe to these events:
+
+- Checkout order approved
+- Payment authorization created
+- Payment authorization voided
+- Payment capture completed
+- Payment capture refunded
+- Payment order created .
+
 5. Then add `PAYPAL_WEBHOOK_ID` to the env file
 6. **Run the platform**
 
@@ -253,122 +263,9 @@ Copy the generated `https://*.ngrok-free.app` URL.
 make quickstart
 ```
 
-Checkout will now complete end-to-end, including order authorization.
+Checkout will now complete end-to-end, including payment authorization.
 
-## Project Structure
-
-```text
-storehub  
-\_backend
-| \_catalog-service        
-| \_order-service
-| \_payment-service
-\_frontend
-\_keycloak
-\_wiremock                 // mock server used for e2e
-\_scripts                  // for scripts, currently it contains seed script for quickstart
-\_compose.e2e.yml          // compose file for e2e testing
-\_compose.quickstart.yml   // compose file for quickstart
-\_frontend.override.yml    // override used by compose.e2e
-\_Makefile
-
-```
-
-
-## API Docs
-
-(Swagger/OpenAPI links)
-
-## Testing
-
-In this section, end to end testing is discussed, for microservices independent tests, go to each microservice docs
-
-## End-to-end testing
-
-E2e testing is done with `cypress`.
-`compose.e2e.yml` spins up the infrastructure needed to run e2e tests.
-Since no migration strategy is set for `order-service`, manual setup is needed each time the schema changes.
-The current approach uses the postgres image's `/docker-entrypoint-initdb.d` to run an init script.
-The init script lives at `./backend/order-service/src/main/resources/init-scripts` and is generated with:
-
-```shell
-pg_dump \
-  -h localhost \
-  -p 5432 \
-  -U postgres \
-  -d order_db \
-  --schema-only \
-  --no-owner \
-  --no-privileges \
-  --no-tablespaces \
-  --no-comments \
-  -f schema_dump.sql
-```
-
-The checkout flow e2e test assumes the pre-existence of two stores, two users, and products — that's why the seed
-script (`cypress/e2e/seed/seed.cy.ts`) must be run before the checkout flow test.
-The checkout flow tests are designed to run sequentially; they are not independent.
-
-### Run checkout flow end-to-end test
-
-This test does the following, in order:
-
-- Visits the `/welcome` page and asserts it shows the two CTAs: Login and Create An Account.
-- Tries to create an account with an already existing email and asserts that an error is shown.
-- Signs up with a new email, then logs in through Keycloak, asserting the login succeeded.
-- Asserts a redirect to `/welcome-pick-store` happens, and picks a store.
-- Performs actions on the cart, then clicks the continue checkout button.
-- Fills in the checkout form and places the order (`*`).
-- Intercepts the response from the order service and replaces the value of `paymentApprovalUrl` into
-  the track order URL, so the frontend skips the redirect and goes straight to the track order page.
-- Asserts the order status is `CREATED` on the track order page.
-- Simulates a PayPal webhook and watches for order status changes, to test SSE and live status updates.
-
-To run the test, the app needs data (stores, users, products, etc.), so we run the seed script first.
-To perform the end-to-end test, run:
-
-```shell
-docker compose -f compose.e2e.yml -f frontend.override.yml down
-docker compose -f compose.e2e.yml -f frontend.override.yml up -d --build
-cd frontend/ && npx cypress run --spec "cypress/e2e/seed/seed.cy.ts"
-npx cypress run --spec "cypress/e2e/checkout-flow/checkout-flow.cy.ts"
-```
-
-or
-
-```shell
-make e2e
-```
-
-`*`: PayPal is mocked using WireMock for the order creation endpoint, OAuth token, and webhook verification. The mock
-returns a mocked approval URL containing a token; the order service saves that token alongside the order. When the
-frontend receives the redirect URL, it replaces it with the track order page URL, passing the payment token as a query
-param (`paymentOrderId`).
-
-## Seed
-
-To seed the running `compose.e2e.yml` project with stores, users, and products, run (from the frontend directory):
-
-```shell
-cd frontend
-npx cypress run --config baseUrl=http://localhost:4200 --spec "cypress/e2e/seed/seed.cy.ts"
-```
-
-## Frontend dev using e2e compose file and seed script
-
-To run your dev frontend:
-
-```shell
-ng serve --configuration e2e
-export FRONTEND_URL=http://localhost:4200
-export PAYPAL_BASE_URL=https://api.sandbox.paypal.com
-docker compose -f compose.e2e.yml -f frontend.override.yml up -d
-docker compose -f compose.e2e.yml -f frontend.override.yml stop frontend
-```
-
-Note: make sure to set `FRONTEND_URL`, or the order and catalog services will reject frontend requests due to CORS.
-
-## Auth setup for local/e2e
+### Auth Configuration (Local/E2E)
 
 Keycloak must be reachable at the same hostname:port from both the browser and backend containers, or JWTs will fail
 issuer validation (401 "iss claim is not valid").
@@ -384,7 +281,156 @@ issuer validation (401 "iss claim is not valid").
 2. Keycloak's internal listening port must match its published port (see `keycloak/compose.e2e.yml`:
    `KC_HTTP_PORT=8088`, `ports: "8088:8088"`).
 
-3. All backend services and the frontend must use `http://auth-server:8088/realms/storehub` as the Keycloak base URL —
-   not `localhost`, not port `8080`.
+3. All backend services and the frontend must use `http://auth-server:8088/realms/storehub` as the Keycloak base URL,
+   not `localhost`.
+
+### Developing Frontend Against E2E Stack
+
+To run your dev frontend:
+
+```shell
+ng serve --configuration e2e                                            # start dev server
+export FRONTEND_URL=http://localhost:4200                               # allowed origins by order service and catalog service
+export PAYPAL_BASE_URL=https://api.sandbox.paypal.com                   # domain payment service hit to create payment orders etc...
+docker compose -f compose.e2e.yml -f frontend.override.yml up -d        # run compose project
+docker compose -f compose.e2e.yml -f frontend.override.yml stop frontend  # frontend service not needed
+```
+
+Note: make sure to set `FRONTEND_URL`, or the order and catalog services will reject frontend requests due to CORS.
+
+## Project Structure
+
+```text
+storehub/
+├── backend/
+│   ├── catalog-service/
+│   ├── order-service/
+│   └── payment-service/
+├── frontend/
+├── keycloak/
+├── wiremock/                    # mock server used for e2e
+├── scripts/                     # currently contains the seed script for quickstart
+├── compose.e2e.yml              # compose file for e2e testing
+├── compose.quickstart.yml       # compose file for quickstart
+├── frontend.override.yml        # override used by compose.e2e
+└── Makefile
+
+```
+
+## API Docs
+
+Each service exposes its own OpenAPI/Swagger UI when running locally:
+
+| Service         | Swagger UI                                    |
+|-----------------|-----------------------------------------------|
+| catalog-service | `http://localhost:8100/swagger-ui/index.html` |
+| order-service   | `http://localhost:8090/swagger-ui/index.html` |
+| payment-service | `http://localhost:8200/swagger-ui/index.html` |
+
+
+## Testing
+
+This section covers end-to-end testing. For each microservice's unit/integration tests, see its own docs:
+
+- Link to order-service test section
+- Link to catalog-service test section
+- Link to payment-service test section
+- Link to frontend test section
+
+### End-to-End Testing
+
+E2e testing is done with `cypress`.
+`compose.e2e.yml` spins up the infrastructure needed to run e2e tests.
+`order-service` currently requires manual schema setup for e2e — see the
+[order-service docs](backend/order-service/README.md#schema-setup-for-e2e) for details.
+
+The checkout flow e2e test assumes the pre-existence of two stores, two users, and products, which is why the seed
+script (`cypress/e2e/seed/seed.cy.ts`) must be run before the checkout flow test.
+The checkout flow tests are designed to run sequentially — they are not independent.
+
+#### Seeding Test Data
+
+To seed the running `compose.e2e.yml` project with stores, users, and products, run (from the frontend directory):
+
+```shell
+cd frontend
+npx cypress run --config baseUrl=http://localhost:4200 --spec "cypress/e2e/seed/seed.cy.ts"
+```
+
+#### Running the Checkout Flow Test
+
+This test does the following, in order:
+
+- Visits the `/welcome` page and asserts it shows the two CTAs: Login and Create An Account.
+- Tries to create an account with an already existing email and asserts that an error is shown.
+- Signs up with a new email, then logs in through Keycloak, asserting the login succeeded.
+- Asserts a redirect to `/welcome-pick-store` happens, and picks a store.
+- Performs actions on the cart, then clicks the continue checkout button.
+- Fills in the checkout form and places the order. At this step, order-service calls payment-service to create the
+  payment, which in turn calls PayPal. Since PayPal is an external dependency, it is mocked to keep the test
+  deterministic — see [Payment Mocking](#payment-mocking).
+- Intercepts the response from order-service and replaces the value of `paymentApprovalUrl` in the track-order URL,
+  so the frontend skips the redirect and goes straight to the track order page.
+- Asserts the order status is `CREATED` on the track order page.
+- Simulates a PayPal webhook and watches for order status changes, to test SSE and live status updates.
+
+To run the test, the app needs data (stores, users, products, etc.), so the seed script must run before the test
+script.
+To perform the end-to-end test, run:
+
+```shell
+docker compose -f compose.e2e.yml -f frontend.override.yml down
+docker compose -f compose.e2e.yml -f frontend.override.yml up -d --build
+cd frontend/ && npx cypress run --spec "cypress/e2e/seed/seed.cy.ts"
+npx cypress run --spec "cypress/e2e/checkout-flow/checkout-flow.cy.ts"
+```
+
+or simply:
+
+```shell
+make e2e
+```
+
+#### Payment Mocking
+
+PayPal is mocked using WireMock for the order creation endpoint, OAuth token, and webhook verification. When order
+creation endpoint is hit, the mock returns a mocked approval URL containing a token; order-service saves that token
+alongside the order. When the frontend receives the redirect URL, it replaces it with the track-order page URL, passing
+the payment token as a query param (`paymentOrderId`).
 
 ## Roadmap
+
+There is missing pieces that needs to be done before calling this project as completed, also there is things that are
+not necessary but will serve as good improvements.
+
+### Planned Features
+
+The main piece not yet built is the admin panel. Some of its backend logic already exists
+([Backend Capabilities](#backend-capabilities)), but no frontend has been built for it yet. Admin features will be
+tackled after the customer-facing features are complete.
+
+**Decision: separate Angular app, within an Nx workspace**
+
+The admin backoffice will be built as a separate Angular application rather than integrated into the existing
+customer-facing app, using an Nx workspace to manage both projects together. Reasons:
+
+- Different bundle-size needs, the customer storefront must ship lean for SEO/mobile; the admin panel doesn't
+- Different deploy cadences and risk, a bad admin deploy shouldn't be able to affect checkout
+- Cleaner routing/guards, no risk of admin routes leaking into the public bundle
+- Independent restarts, an admin-only change won't require restarting the customer app
+
+The trade-off accepted: running two apps adds some operational overhead (two builds, two deploy targets) compared to
+a single shared app, but this is judged worth it given how little logic is actually shared between admin and
+customer flows, and the reasons listed above.
+
+### Improvements
+
+Nice-to-haves that aren't required for completion but would strengthen the project:
+
+- **Caching between order-service and catalog-service**: avoid calling catalog-service on every cart update by
+  caching product details in order-service. The cache would only be updated when a product becomes unavailable, with
+  catalog-service signaling the change; a direct call to catalog-service would then only be needed at checkout.
+  (Details to move to order-service docs.)
+- **Rate limiting per IP**
+- **Employee accounts**: allow a store owner to add employees: users with permission to manage products, update
+  stock, and view the order list, without full owner access.

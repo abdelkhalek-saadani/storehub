@@ -156,7 +156,7 @@ services:
       ORDER_INTERNAL_SECRET: ${ORDER_INTERNAL_SECRET:-**********} # Order internal client secret for demo only, safe to expose, rotate freely, not production secrets
       KC_ADMIN_CLIENT_SECRET: ${KC_ADMIN_CLIENT_SECRET:-**********} # Keycloak Admin client secret for demo only, safe to expose, rotate freely, not production secrets
     ports:
-                  - ${ORDER_PORT:-8090}:8080
+      - ${ORDER_PORT:-8090}:8080
     depends_on:
       rabbitmq:
         condition: service_healthy

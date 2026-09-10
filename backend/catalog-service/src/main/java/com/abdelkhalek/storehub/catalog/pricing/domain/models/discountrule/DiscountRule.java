@@ -4,7 +4,7 @@ package com.abdelkhalek.storehub.catalog.pricing.domain.models.discountrule;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "ruleType")
+@JsonTypeInfo(property = "ruleType", use = JsonTypeInfo.Id.NAME)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = PercentageOff.class, name = "PERCENTAGE_OFF"),
         @JsonSubTypes.Type(value = FixedAmountOff.class, name = "FIXED_AMOUNT_OFF"),

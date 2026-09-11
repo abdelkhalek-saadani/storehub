@@ -78,8 +78,6 @@ public class SlotBookingService {
 
     /**
      * <b>Note: </b>Not used in the codebase yet, will be wired to order shipped event
-     * <p>
-     * Called by the order-creation flow once payment(or the order) is confirmed.
      */
     @Transactional
     public void confirmReservation(UUID storeId, UUID reservationId, UUID orderId) {

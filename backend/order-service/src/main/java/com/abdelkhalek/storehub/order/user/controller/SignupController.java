@@ -1,6 +1,6 @@
 package com.abdelkhalek.storehub.order.user.controller;
 
-import com.abdelkhalek.storehub.order.common.identity.KeycloakAdminService;
+import com.abdelkhalek.storehub.order.user.service.KeycloakAdminService;
 import com.abdelkhalek.storehub.order.user.UserEventPublisher;
 import com.abdelkhalek.storehub.order.user.dto.SignupRequest;
 import com.abdelkhalek.storehub.order.user.entity.User;

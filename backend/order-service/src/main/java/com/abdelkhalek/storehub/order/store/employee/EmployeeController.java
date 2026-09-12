@@ -1,6 +1,6 @@
 package com.abdelkhalek.storehub.order.store.employee;
 
-import com.abdelkhalek.storehub.order.common.identity.KeycloakAdminService;
+import com.abdelkhalek.storehub.order.user.service.KeycloakAdminService;
 import com.abdelkhalek.storehub.order.store.entity.StoreMembership;
 import com.abdelkhalek.storehub.order.store.model.MembershipRole;
 import com.abdelkhalek.storehub.order.store.repository.StoreMembershipRepository;

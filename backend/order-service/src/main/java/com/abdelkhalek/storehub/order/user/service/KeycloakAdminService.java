@@ -1,4 +1,4 @@
-package com.abdelkhalek.storehub.order.common.identity;
+package com.abdelkhalek.storehub.order.user.service;
 
 import com.abdelkhalek.storehub.order.common.config.StorehubProperties;
 import com.abdelkhalek.storehub.order.user.dto.SignupRequest;

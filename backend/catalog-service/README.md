@@ -1,5 +1,6 @@
 # catalog-service
 
+Role: manages products, inventory, delivery slots, pricing, and discounts.  
 The code follows a feature-package structure, where top-level packages represent features, and nested directories
 represent the technical split (services, entities, etc.).
 
@@ -129,4 +130,21 @@ The shadow table is kept in sync with order-service via events received on every
 job, similar to the store shadow's, is planned for the future.
 
 ## Testing
-nahke briefly 3a testing lehne, wel command to run tests
+
+Unit and integration tests live under `src/test`.
+
+Notable practices:
+
+- **ArgumentCaptor**: used to capture arguments passed to mocked services and repositories.
+- **ReflectionTestUtils**: used to manually inject a `StockService` spy into itself, for testing the self-injection
+  behavior described in [Reservation & Release Logic](#reservation--release-logic).
+- **Testcontainers**: used to spin up a database and a broker for integration tests of the store event listener and
+  user event listener.
+- **Awaitility (`await().untilAsserted(...)`)**: used for async operations, particularly in integration tests that
+  simulate sending an event and assert on the listener's resulting side effects.
+
+To run tests:
+
+```shell
+mvn test
+```

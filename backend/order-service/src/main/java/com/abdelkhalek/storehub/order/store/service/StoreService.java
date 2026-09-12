@@ -1,6 +1,6 @@
 package com.abdelkhalek.storehub.order.store.service;
 
-import com.abdelkhalek.storehub.order.common.identity.KeycloakAdminService;
+import com.abdelkhalek.storehub.order.user.service.KeycloakAdminService;
 import com.abdelkhalek.storehub.order.store.StoreEventPublisher;
 import com.abdelkhalek.storehub.order.store.dto.CreateStoreRequest;
 import com.abdelkhalek.storehub.order.store.model.MembershipRole;

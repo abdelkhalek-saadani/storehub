@@ -63,6 +63,90 @@ private Mono<CartEntity> createEmptyCart(CartOwner owner, UUID storeId) {
 }
 ```
 
+## Order
+
+Role: processes order requests and creates orders.
+
+### Order Processing Pipeline
+
+An order request goes through a pipeline that processes, checks, and saves the order. The request references a
+cart rather than carrying a list of items directly:
+
+1. Check order existence by idempotency key: return the existing order if found, otherwise continue.
+2. Process the order request:
+    1. Check resource availability (items and slot) by calling catalog-service: return an error if unavailable,
+       otherwise continue.
+    2. Resolve the owner (guest or connected user).
+    3. Retain resources (items and slot) by calling catalog-service.
+    4. Create the order:
+        1. Look up the cart to extract its items.
+        2. Build the order object from the cart items and the order request fields.
+        3. Calculate order prices by calling catalog-service, and populate the order and its items with the fetched
+           prices.
+        4. Save the order to the database.
+        5. Publish an `Order Created` event via RabbitMQ.
+            - On error, release the retained resources by publishing `Items Released` and `Slot Released` events to
+              catalog-service.
+3. Attach payment by calling payment-service, and save the result.
+4. Clear the cart.
+5. Return the response (order ID, payment link).
+
+### Idempotency
+
+Each order carries an idempotency key generated client-side, by the checkout form. It's used to prevent duplicate
+order processing if the checkout submit button is clicked multiple times.
+
+### Live Status Updates (SSE)
+
+Live order status updates are implemented with Server-Sent Events. A sinks map holds one status sink per order,
+keyed by order ID. This map lives in `StatusService`, which encapsulates the logic to emit events into a sink and
+to subscribe to one.
+
+The frontend hits the track status endpoint and receives a stream: first the current status looked up from the
+database, then subsequent events from that order's sink. All order status updates go through `StatusService`, to
+guarantee that every status update is both saved to the database and emitted to the corresponding sink.
+
+### Parallel Resource Retention
+
+`Mono.zip()` is used to run slot retention and item retention in parallel. The system has exactly two consistent
+end states after these two operations: either both are retained (and processing continues to the next step), or
+both are released. Partial retention (only the slot or only the items) is never permitted, since it would leave
+the system holding resources for nothing.
+
+By default, if one operation in a `zip` fails, the other is discarded, the whole chain short-circuits, and the
+error propagates, the thrown exception acts as a flow-control signal rather than data. To avoid that, each
+operation is wrapped in a container holding its outcome (success or failure) rather than letting it throw. This
+way, `zip` always completes for both operations, since neither emits an error anymore, and the downstream step can
+inspect both outcomes and perform a partial rollback if either operation failed, bringing the system back to a
+state where all resources for that order are free.
+
+The container is the `Result<T>` record:
+
+```java
+record Result<T>(T value, Throwable error, boolean isSuccess) {
+    public static <T> Result<T> success(T value) {
+        return new Result<>(value, null, true);
+    }
+
+    public static <T> Result<T> failure(Throwable error) {
+        return new Result<>(null, error, false);
+    }
+}
+```
+
+`wrap` adapts a `Mono<T>` into a `Mono<Result<T>>`:
+
+```java
+private <T> Mono<Result<T>> wrap(Mono<T> operation, String errorMessage) {
+    return operation
+            .map(Result::success)
+            .onErrorResume(e -> {
+                log.error("{}: {}", errorMessage, e.getClass().getSimpleName());
+                return Mono.just(Result.failure(e));
+            });
+}
+```
+
 ## Persistence
 
 ### Address as JSON
@@ -79,26 +163,6 @@ can't be used here, since it's a Hibernate-specific annotation and this service 
 support them natively]
 
 ## Schema Setup for E2E
-
-Since no migration strategy is set for `order-service`, manual setup is needed each time the schema changes.
-The current approach uses the Postgres image's `/docker-entrypoint-initdb.d` to run an init script.
-The init script lives at `./backend/order-service/src/main/resources/init-scripts` and is generated with:
-
-```shell
-pg_dump \
-  -h localhost \
-  -p 5432 \
-  -U postgres \
-  -d order_db \
-  --schema-only \
-  --no-owner \
-  --no-privileges \
-  --no-tablespaces \
-  --no-comments \
-  -f schema_dump.sql
-```
-
-## Schema setup for e2e
 
 Since no migration strategy is set for `order-service`, manual setup is needed each time the schema changes.
 The current approach uses the postgres image's `/docker-entrypoint-initdb.d` to run an init script.

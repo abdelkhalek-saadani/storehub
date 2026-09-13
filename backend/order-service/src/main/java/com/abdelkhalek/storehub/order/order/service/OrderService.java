@@ -35,22 +35,6 @@ public class OrderService {
     private final OwnerResolver ownerResolver;
     private final CartService cartService;
 
-    public Mono<Order> placeOrder(OrderRequest orderRequest, UUID idempotencyKey, UUID guestId) {
-        return orderCreationService.checkAvailability(orderRequest.storeId(), orderRequest.cartId(), orderRequest.slotId())
-                .flatMap(isAvailable -> {
-                    if (!isAvailable) {
-                        log.debug("Unavailable items in cart {} or slot {}", orderRequest.cartId(),
-                                orderRequest.slotId());
-                        return Mono.error(new UnavailableException("Unavailable items or slot"));
-                    }
-                    return ownerResolver.resolveOwner(guestId)
-                            .flatMap(owner -> retentionService.retainAll(
-                                            orderRequest.storeId(), orderRequest.cartId(), orderRequest.slotId())
-                                    .flatMap(retention -> orderCreationService.createOrder(owner,
-                                            orderRequest, retention, idempotencyKey)));
-                });
-    }
-
     public Mono<ServiceResult<OrderCreatedResponse>> placeOrderWithOnlinePayment(UUID idempotencyKey,
                                                                                  OrderRequest orderRequest,
                                                                                  UUID guestId) {
@@ -80,6 +64,22 @@ public class OrderService {
                                             ServiceResult.forUser(ocr);
                                 })
                 );
+    }
+
+    public Mono<Order> placeOrder(OrderRequest orderRequest, UUID idempotencyKey, UUID guestId) {
+        return orderCreationService.checkAvailability(orderRequest.storeId(), orderRequest.cartId(), orderRequest.slotId())
+                .flatMap(isAvailable -> {
+                    if (!isAvailable) {
+                        log.debug("Unavailable items in cart {} or slot {}", orderRequest.cartId(),
+                                orderRequest.slotId());
+                        return Mono.error(new UnavailableException("Unavailable items or slot"));
+                    }
+                    return ownerResolver.resolveOwner(guestId)
+                            .flatMap(owner -> retentionService.retainAll(
+                                            orderRequest.storeId(), orderRequest.cartId(), orderRequest.slotId())
+                                    .flatMap(retention -> orderCreationService.createOrder(owner,
+                                            orderRequest, retention, idempotencyKey)));
+                });
     }
 
     public Mono<OrderDto> getOrder(UUID orderId) {

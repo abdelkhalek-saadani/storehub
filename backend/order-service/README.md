@@ -147,6 +147,26 @@ private <T> Mono<Result<T>> wrap(Mono<T> operation, String errorMessage) {
 }
 ```
 
+## Store
+
+Role: creates stores and assigns owners.
+
+Ownership is modeled with a record in the `store_membership` table, holding `storeId`, `userId`, and `role` set to
+`OWNER`. Each store has exactly one owner, and each owner has exactly one store.
+
+Employee support has been partially started, with a record in `store_membership` using `role` set to `EMPLOYEE`;
+the feature is planned to be completed in the future.
+
+Store creation includes: creating the store, adding a `store_membership` entry with role `OWNER`, adding the
+`STORE_OWNER` role in Keycloak.
+
+## User
+
+Role: creates users.
+
+Calls Keycloak to create the user there with role `CUSTOMER`. A local user record is stored in the database and
+linked to its Keycloak user via `keycloakId`.
+
 ## Persistence
 
 ### Address as JSON
@@ -181,3 +201,10 @@ pg_dump \
   --no-comments \
   -f schema_dump.sql
 ```
+
+## Testing
+
+- `Jwt.withTokenValue`: used to test `OwnerResolver`.
+- `WebTestClient`: used for controller integration tests.
+- WireMock: used to stub external endpoints.
+- `StepVerifier`: used to test reactive streams.

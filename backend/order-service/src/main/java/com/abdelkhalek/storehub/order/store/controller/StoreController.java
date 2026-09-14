@@ -1,6 +1,5 @@
 package com.abdelkhalek.storehub.order.store.controller;
 
-import com.abdelkhalek.storehub.order.user.service.KeycloakAdminService;
 import com.abdelkhalek.storehub.order.store.dto.CreateStoreRequest;
 import com.abdelkhalek.storehub.order.store.dto.StoreDto;
 import com.abdelkhalek.storehub.order.store.entity.Store;
@@ -35,7 +34,6 @@ public class StoreController {
     private final StoreRepository storeRepository;
     private final StoreMembershipRepository membershipRepository;
     private final UserRepository userRepository;
-    private final KeycloakAdminService keycloakAdminService;
     private final StoreService storeService;
 
 

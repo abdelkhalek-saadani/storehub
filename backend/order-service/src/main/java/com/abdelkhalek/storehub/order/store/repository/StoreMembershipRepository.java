@@ -12,7 +12,6 @@ public interface StoreMembershipRepository extends ReactiveCrudRepository<StoreM
 
     Mono<Boolean> existsByUserIdAndStoreIdAndRole(UUID userId, UUID storeId, MembershipRole role);
     Mono<Boolean> existsByUserIdAndStoreId(UUID userId, UUID storeId);
-    Mono<StoreMembership> findByUserIdAndStoreId(UUID userId, UUID storeId);
 
     Mono<StoreMembership> findByStoreIdAndRole(UUID storeId, MembershipRole role);
 }

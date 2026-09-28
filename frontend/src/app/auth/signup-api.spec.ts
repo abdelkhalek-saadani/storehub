@@ -24,6 +24,7 @@ describe('SignupApi', () => {
         SignupApi,
         provideHttpClient(),
         provideHttpClientTesting(),
+        { provide: ConfigService, useValue: configServiceSpy },
       ],
     });
     api = TestBed.inject(SignupApi);

@@ -98,11 +98,11 @@ describe('CheckoutFormService', () => {
           email: 'abdelkhalek@gmail.com',
           deliveryAddress: jasmine.objectContaining({
             type: AddressType.home,
-            street: 'zuhur street',
+            street: 'Zuhur Street',
             city: 'city',
             apartmentNumber: '11',
             zipCode: '9050',
-            deliveryInstructions: 'Jawk behi',
+            deliveryInstructions: '',
           }),
         }),
       );

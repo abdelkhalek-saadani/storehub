@@ -264,7 +264,7 @@ describe('OrderDetailView', () => {
       await setOrderResult(buildOrderResponse());
       component.slot.set({
         startTime: LocalDateTime.now(),
-        endTime: LocalDateTime.now().plusMinutes(30),
+        endTime: LocalDateTime.now().plusMinutes(30).plusSeconds(30),
       });
 
       expect(component.orderArriveIn()).toBe('Arrive in 30 minutes');
@@ -313,7 +313,7 @@ describe('OrderDetailView', () => {
 
       component.cancelOrder();
 
-      expect(orderApiSpy.cancelOrder).toHaveBeenCalledWith('order-1');
+      expect(orderApiSpy.cancelOrder).toHaveBeenCalledWith('order-1', null);
       expect(component.isCancelling()).toBeFalse();
       expect(toasterSpy.success).toHaveBeenCalledWith('Order cancelled successfully');
       expect(resourceRef.reload).toHaveBeenCalled();
@@ -335,9 +335,10 @@ describe('OrderDetailView', () => {
       const subject = new Subject<OrderCancelResponse>();
       orderApiSpy.cancelOrder.and.returnValue(subject);
 
+      component.trackingResult.value.set({ code: 'SHIPPED', label: 'shipped' });
       component.cancelOrder();
-      expect(component.isCancelling()).toBeTrue();
 
+      expect(component.isCancelling()).toBeTrue();
       fixture.detectChanges();
 
       const button: HTMLButtonElement = fixture.nativeElement.querySelector(
@@ -370,9 +371,13 @@ describe('OrderDetailView', () => {
 
     it('shows the Cancel Order button, disabled and relabeled, while cancelling', async () => {
       await setOrderResult(buildOrderResponse({ orderId: 'order-1' }));
+      component.trackingResult.value.set({ code: 'SHIPPED', label: 'shipped' });
+
       component.isCancelling.set(true);
       fixture.detectChanges();
       await fixture.whenStable();
+
+      console.log(fixture.nativeElement);
 
       const button: HTMLButtonElement = fixture.nativeElement.querySelector('button.danger');
       expect(button.disabled).toBeTrue();
@@ -381,11 +386,18 @@ describe('OrderDetailView', () => {
 
     it('clicking Cancel Order calls cancelOrder()', async () => {
       await setOrderResult(buildOrderResponse({ orderId: 'order-1' }));
-      orderApiSpy.cancelOrder.and.returnValue(of(buildOrderCancelResponse()));
-      spyOn(component, 'cancelOrder').and.callThrough();
 
-      const button: HTMLButtonElement = fixture.nativeElement.querySelector('button.danger');
+      orderApiSpy.cancelOrder.and.returnValue(of(buildOrderCancelResponse()));
+      component.trackingResult.value.set({ code: 'SHIPPED', label: 'shipped' });
+
+      spyOn(component, 'cancelOrder').and.callThrough();
+      fixture.detectChanges();
+      await fixture.whenStable();
+      const button: HTMLButtonElement = fixture.nativeElement.querySelector(
+        'button[matButton="filled"]',
+      );
       button.click();
+      fixture.detectChanges();
       await fixture.whenStable();
 
       expect(component.cancelOrder).toHaveBeenCalled();

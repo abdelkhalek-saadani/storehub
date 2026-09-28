@@ -26,6 +26,7 @@ function buildProduct(overrides?: Partial<Product>): Product {
     unitPrice: 10,
     finalPrice: 10,
     activeDiscount: null,
+    imageUrl: 'https://link-to-image.png',
     ...overrides,
   };
 }

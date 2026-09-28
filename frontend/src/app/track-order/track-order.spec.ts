@@ -20,6 +20,7 @@ function buildOrderResponse(overrides: Partial<any> = {}) {
   return {
     orderId: 'order-1',
     userId: 'user-1',
+    email: 'email',
     storeId: 'store-1',
     originalTotal: 10,
     finalTotal: 10,

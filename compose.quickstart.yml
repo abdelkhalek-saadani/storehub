@@ -106,7 +106,7 @@ services:
       SPRING_DATASOURCE_USERNAME: payment
       SPRING_DATASOURCE_PASSWORD: payment
       SPRING_RABBITMQ_HOST: rabbitmq
-      PAYPAL_BASE_URL: ${PAYPAL_BASE_URL:-http://wiremock:8080}
+      PAYPAL_BASE_URL: ${PAYPAL_BASE_URL:-https://api.sandbox.paypal.com}
       SPRING_PROFILES_ACTIVE: health
       KC_BASE_URL: http://${KC_HOSTNAME:-auth-server}:${KC_PORT:-8088}
       PAYPAL_CLIENT_ID: ${PAYPAL_CLIENT_ID:-AaYcr5NvkOxKC4Kuxw927ADzt0eRO-9y3hFykTSAr1S0z_CKuWVXy5XHqhoP-S4aVY3EevLma1pH61E_} # Public sandbox demo credentials, safe to expose, rotate freely, not production secrets

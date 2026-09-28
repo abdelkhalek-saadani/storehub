@@ -332,10 +332,10 @@ Each service exposes its own OpenAPI/Swagger UI when running locally:
 
 This section covers end-to-end testing. For each microservice's unit/integration tests, see its own docs:
 
-- Link to order-service test section
-- Link to catalog-service test section
-- Link to payment-service test section
-- Link to frontend test section
+- [Order Service Tests](/backend/order-service/README.md#testing)
+- [Catalog Service Tests](/backend/catalog-service/README.md#testing)
+- [Payment Service Tests](/backend/payment-service/README.md#testing)
+- [Frontend Tests](/frontend/README.md#testing)
 
 ### End-to-End Testing
 

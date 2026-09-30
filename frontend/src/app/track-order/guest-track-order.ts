@@ -7,6 +7,7 @@ import { OrderApi, OrderResponse } from '@shared/service/order-api';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatError, MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { buildEmptyOrderResponse } from './track-order';
 
 export interface formValue {
   email: string;
@@ -120,23 +121,6 @@ export default class GuestTrackOrderPage implements OnInit {
   orderResult: ResourceRef<OrderResponse> = rxResource({
     params: () => this.searchParams(),
     stream: ({ params }) => this.orderApi.getGuestOrder(params.orderId, params.email),
-    defaultValue: {
-      orderId: '',
-      userId: '',
-      storeId: '',
-      originalTotal: 0,
-      finalTotal: 0,
-      totalDiscount: 0,
-      items: [],
-      deliveryAddress: '',
-      billingAddress: '',
-      slotId: '',
-      deliveryFee: '',
-      status: { code: '', label: '' },
-      paymentId: '',
-      paymentApprovalLink: '',
-      createdAt: '',
-      email: '',
-    },
+    defaultValue: buildEmptyOrderResponse(),
   });
 }

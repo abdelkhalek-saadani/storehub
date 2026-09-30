@@ -49,35 +49,39 @@ export default class TrackOrderPage implements OnInit {
   token = signal<string | null>(null);
   destroyRef = inject(DestroyRef);
 
+  ngOnInit() {
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((paramMap) => {
+      this.token.set(paramMap.get('token'));
+    });
+  }
+
   orderResult: ResourceRef<OrderResponse> = rxResource({
     params: () => {
       const t = this.token();
       return t ? { token: t } : undefined;
     },
     stream: ({ params }) => this.orderApi.getOrder(params.token),
-    defaultValue: {
-      orderId: '',
-      userId: '',
-      storeId: '',
-      originalTotal: 0,
-      finalTotal: 0,
-      totalDiscount: 0,
-      items: [],
-      deliveryAddress: '',
-      billingAddress: '',
-      slotId: '',
-      deliveryFee: '',
-      status: { code: '', label: '' },
-      paymentId: '',
-      paymentApprovalLink: '',
-      createdAt: '',
-      email: '',
-    },
+    defaultValue: buildEmptyOrderResponse(),
   });
+}
 
-  ngOnInit() {
-    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((paramMap) => {
-      this.token.set(paramMap.get('token'));
-    });
-  }
+export function buildEmptyOrderResponse(): OrderResponse {
+  return {
+    orderId: '',
+    userId: '',
+    storeId: '',
+    originalTotal: 0,
+    finalTotal: 0,
+    totalDiscount: 0,
+    items: [],
+    deliveryAddress: '',
+    billingAddress: '',
+    slotId: '',
+    deliveryFee: '',
+    status: { code: '', label: '' },
+    paymentId: '',
+    paymentApprovalLink: '',
+    createdAt: '',
+    email: '',
+  };
 }

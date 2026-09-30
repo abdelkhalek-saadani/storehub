@@ -106,15 +106,18 @@ and payment-service with dummy data):
 
 ```shell
 cd ..
-export FRONTEND_URL=http://localhost:4200
-make quickstart
-docker compose -f compose.quickstart.yml stop frontend
+export FRONTEND_URL=http://localhost:4200               # allowed origins by order service and catalog service
+make quickstart                                         # spin up the compose project and execute the seed script
+docker compose -f compose.quickstart.yml stop frontend  # remove the frontend service from the stack because it is not needed(optional)
 cd frontend 
-ng serve --configuration quickstart
+ng serve --configuration quickstart                     # run angular with hot reload                  
 ```  
 
 For more details about the quickstart setup see [Quickstart Section](../README.md/#quick-start)
 
 This runs the frontend on port 4200 with hot reload, backed by order-service, catalog-service, payment-service and auth server.
 `FRONTEND_URL` is required for CORS on order-service and catalog-service. The `quickstart` configuration points the
-frontend at the correct service ports for the quickstart setup.
+frontend at the correct service ports for the quickstart setup.  
+
+Note: make sure to set `FRONTEND_URL`, or the order and catalog services will reject frontend requests due to CORS.
+

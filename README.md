@@ -1,12 +1,12 @@
 # StoreHub
 
-StoreHub is a multi-tenant e-commerce SaaS enabling vendors to launch independent storefronts — vendors list products
-and accept payments, customers browse multi-store catalogs and place orders.
+StoreHub is a multi-tenant e-commerce SaaS enabling vendors to launch independent storefronts. Vendors list products
+and accept payments, customers browse store catalogs and place orders.
 
 Below is a demo video of the checkout flow for a connected user and a guest user.
 [![Demo Video](https://img.youtube.com/vi/oHGmZVkBGxE/maxresdefault.jpg)](https://www.youtube.com/watch?v=oHGmZVkBGxE)
 
-This diagram present an overview of the different system component and how they communicate.
+This diagram presents an overview of the different system component and how they communicate.
 
 ```mermaid
 flowchart TB
@@ -66,7 +66,7 @@ Store owner operations:
 
 ## Architecture
 
-The system is composed of three independently deployable Spring Boot services plus an Angular frontend, coordinating
+The system is composed of three independently deployable Spring Boot services, authorization service plus an Angular frontend, coordinating
 through a mix of synchronous REST and asynchronous messaging.
 
 ### Detailed Diagram
@@ -146,13 +146,13 @@ databases. Simpler to operate and query across tenants, at the cost of relying o
 
 **Database for each service**
 Each microservice has a database, this splits each microservice boundaries, they're linked via resource ids.
-Though catalog service has as shadow for user and store tables of order service, because the creation of those are done
+Though catalog service has a shadow for user and store tables of order service, because the creation of those are done
 in order
 service but the catalog service needs them for admin business logic(adding a product, or slot config etc...), catalog is
 updated via
 events emitted by order for each new store or user creation, this way catalog is in sync with order state. As a safety
 net , catalog has a reconciliation
-job for stores, a scheduled job run each day and grab a of store from order and compare state
+job for stores, a scheduled job runs each day and grabs a list of store from order and compares state
 
 ## Tech Stack
 
@@ -265,7 +265,7 @@ make quickstart
 
 Checkout will now complete end-to-end, including payment authorization.
 
-### Auth Configuration (Local/E2E)
+### Auth Configuration (Local/E2E/Quickstart)
 
 Keycloak must be reachable at the same hostname:port from both the browser and backend containers, or JWTs will fail
 issuer validation (401 "iss claim is not valid").
@@ -284,19 +284,9 @@ issuer validation (401 "iss claim is not valid").
 3. All backend services and the frontend must use `http://auth-server:8088/realms/storehub` as the Keycloak base URL,
    not `localhost`.
 
-### Developing Frontend Against E2E Stack
+### Developing Frontend Against QuickStart Stack
 
-To run your dev frontend:
-
-```shell
-ng serve --configuration e2e                                            # start dev server
-export FRONTEND_URL=http://localhost:4200                               # allowed origins by order service and catalog service
-export PAYPAL_BASE_URL=https://api.sandbox.paypal.com                   # domain payment service hit to create payment orders etc...
-docker compose -f compose.e2e.yml -f frontend.override.yml up -d        # run compose project
-docker compose -f compose.e2e.yml -f frontend.override.yml stop frontend  # frontend service not needed
-```
-
-Note: make sure to set `FRONTEND_URL`, or the order and catalog services will reject frontend requests due to CORS.
+see [Development Against QuickStart stack](./frontend/README.md#development-against-the-quickstart-stack)
 
 ## Project Structure
 

@@ -179,8 +179,19 @@ can't be used here, since it's a Hibernate-specific annotation and this service 
 
 ### Entity Relationships
 
-[expand: how spring-r2dbc-relationships (JoseLion) is used to model entity relationships, since R2DBC doesn't
-support them natively]
+R2DBC doesn't model entity relationships the way Hibernate does with annotations (`@OneToMany`, `@ManyToMany`,
+etc.). Moving from Hibernate to R2DBC means moving from *declaring* relationships and their fetch/save behavior via
+annotations, to actually *implementing* that behavior yourself.
+
+Without extra tooling, operations like fetching a parent with its children, or saving a parent and having its
+updated children saved automatically, need to be implemented manually in the service layer which adds complexity that grows
+with the number of relationships between entities.
+
+To avoid this, this service uses [spring-r2dbc-relationships](https://github.com/JoseLion/spring-r2dbc-relationships),
+an unofficial but practical library that provides annotations for entity relationships, saving significant time and
+reducing boilerplate.
+
+
 
 ## Schema Setup for E2E
 

@@ -5,7 +5,7 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.amqp.RabbitConnectionDetails;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,19 +21,14 @@ public class RabbitConfig {
 
 
     @Bean
-    Mono<Connection> rabbitConnectionMono(
-            @Value("${spring.rabbitmq.host}") String host,
-            @Value("${spring.rabbitmq.port}") int port,
-            @Value("${spring.rabbitmq.username}") String username,
-            @Value("${spring.rabbitmq.password}") String password) {
-
+    Mono<Connection> rabbitConnectionMono(RabbitConnectionDetails details) {
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(host);
-        factory.setPort(port);
-        factory.setUsername(username);
-        factory.setPassword(password);
+        RabbitConnectionDetails.Address addr = details.getFirstAddress();
+        factory.setHost(addr.host());
+        factory.setPort(addr.port());
+        factory.setUsername(details.getUsername());
+        factory.setPassword(details.getPassword());
         factory.useNio();
-
         return Mono.fromCallable(factory::newConnection).cache();
     }
 

@@ -57,7 +57,7 @@ class OrderControllerIT {
     @Container
     @ServiceConnection
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16-alpine")
-            .withInitScript("init.sql");
+            .withInitScript("init-scripts/init.sql");
     @Container
     @ServiceConnection
     static RabbitMQContainer rabbit = new RabbitMQContainer("rabbitmq:3.13-management-alpine");

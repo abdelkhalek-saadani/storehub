@@ -60,7 +60,7 @@ public class OrderService {
                                 .map(order -> {
                                     OrderCreatedResponse ocr = OrderCreatedResponse.from(order);
                                     return order.getGuestId() != null ?
-                                            ServiceResult.forGuest(ocr, guestId) :
+                                            ServiceResult.forGuest(ocr, order.getGuestId()) :
                                             ServiceResult.forUser(ocr);
                                 })
                 );

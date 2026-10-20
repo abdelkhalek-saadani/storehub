@@ -1,12 +1,13 @@
 services:
   frontend:
+    image: ghcr.io/abdelkhalek-saadani/storehub/frontend:${IMAGE_TAG:-e2e}
     build:
       context: .
       dockerfile: Dockerfile
-    image: frontend-image
     environment:
-      KC_PORT: ${KC_PORT:-8088}
-      KC_HOSTNAME: ${KC_HOSTNAME:-auth-server}
+      KC_URL: ${KC_URL:-http://auth-server:8088}
+      ORDER_URL: ${ORDER_URL:-http://localhost:8090}
+      CATALOG_URL: ${CATALOG_URL:-http://localhost:8100}
     ports:
       - "8080:8080"
 

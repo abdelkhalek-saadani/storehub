@@ -1,10 +1,9 @@
-const ORDER_PORT = process.env.ORDER_PORT || '8090';
-const orderUrl = `http://localhost:${ORDER_PORT}`;
-const KC_PORT = process.env.KC_PORT || '8088';
-const KC_HOSTNAME = process.env.KC_HOSTNAME || 'auth-server';
-const keycloakUrl = `http://${KC_HOSTNAME}:${KC_PORT}`;
-const CATALOG_PORT = process.env.CATALOG_PORT || '8100';
-const catalogUrl = `http://localhost:${CATALOG_PORT}`;
+const ORDER_URL = process.env.ORDER_URL || 'http://localhost:8090'
+const orderUrl = ORDER_URL;
+const KC_URL = process.env.KC_URL || 'http://auth-server:8088'
+const keycloakUrl = KC_URL;
+const CATALOG_URL = process.env.CATALOG_URL || 'http://localhost:8100';
+const catalogUrl = CATALOG_URL;
 
 console.log('Seed demo data');
 

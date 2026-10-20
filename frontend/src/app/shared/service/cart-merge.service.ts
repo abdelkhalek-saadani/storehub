@@ -1,5 +1,5 @@
-import { inject, Injectable, effect } from '@angular/core';
-import { KEYCLOAK_EVENT_SIGNAL, typeEventArgs, KeycloakEventType } from 'keycloak-angular';
+import { effect, inject, Injectable } from '@angular/core';
+import { KEYCLOAK_EVENT_SIGNAL, KeycloakEventType } from 'keycloak-angular';
 import { GUEST_ID_KEY } from '@core/http/guest-id-interceptor';
 import { OrderApi } from '@shared/service/order-api';
 
@@ -26,7 +26,6 @@ export class CartMergeService {
 
     this.orderApi.mergeCart().subscribe({
       next: () => localStorage.removeItem(GUEST_ID_KEY),
-      error: () => {},
     });
   }
 }

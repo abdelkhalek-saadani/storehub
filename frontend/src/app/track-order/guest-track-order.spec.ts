@@ -1,6 +1,6 @@
-import { Component, provideZonelessChangeDetection } from '@angular/core';
+import { Component, input, provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { of, throwError, Subject } from 'rxjs';
+import { Observable, of, Subject, throwError } from 'rxjs';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import GuestTrackOrderPage from './guest-track-order';
 import { OrderApi, OrderResponse } from '@shared/service/order-api';
@@ -10,16 +10,16 @@ import { OrderDetailView } from './order-details-view/order-details-view';
   selector: 'app-order-detail-view',
   template: '',
   standalone: true,
-  inputs: ['orderResult'],
 })
 class OrderDetailViewStub {
-  orderResult: unknown;
+  orderResult = input<unknown>();
 }
 
 function buildOrderResponse(overrides: Partial<OrderResponse> = {}) {
   return {
     orderId: 'order-1',
     userId: 'user-1',
+    email: 'email-1',
     storeId: 'store-1',
     originalTotal: 10,
     finalTotal: 10,
@@ -43,7 +43,10 @@ describe('GuestTrackOrderPage', () => {
   let orderApiSpy: jasmine.SpyObj<OrderApi>;
 
   async function setup(
-    options: { queryParams?: Record<string, string>; getGuestOrder$?: any } = {},
+    options: {
+      queryParams?: Record<string, string>;
+      getGuestOrder$?: Observable<OrderResponse>;
+    } = {},
   ) {
     orderApiSpy = jasmine.createSpyObj('OrderApi', ['getGuestOrder']);
     orderApiSpy.getGuestOrder.and.returnValue(options.getGuestOrder$ ?? of(buildOrderResponse()));
@@ -136,7 +139,7 @@ describe('GuestTrackOrderPage', () => {
     });
 
     it('disables the submit button and shows "Searching..." while the resource is loading', async () => {
-      const subject = new Subject<any>();
+      const subject = new Subject<OrderResponse>();
       await setup({ getGuestOrder$: subject.asObservable() });
 
       component.form.setValue({ orderId: 'order-1', email: 'test@example.com' });

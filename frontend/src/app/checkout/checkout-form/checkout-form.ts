@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatDivider } from '@angular/material/divider';
 import { MatError, MatInput, MatLabel } from '@angular/material/input';
 import { MatFormField } from '@angular/material/form-field';

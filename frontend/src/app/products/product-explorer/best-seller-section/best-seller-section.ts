@@ -1,22 +1,12 @@
-import {
-  Component,
-  computed,
-  ElementRef,
-  inject,
-  OnInit,
-  resource,
-  signal,
-  ViewChild,
-} from '@angular/core';
-import { MatButton, MatIconButton } from '@angular/material/button';
+import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
+import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NgClass } from '@angular/common';
 import { ScrollArrows } from '../scroll-arrows/scroll-arrows';
 import { ProductCard } from '../../product-card/product-card';
 import { CatalogApi } from '@shared/service/catalog-api';
-import { catchError, of } from 'rxjs';
 import { RouterLink } from '@angular/router';
 
 @Component({

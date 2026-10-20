@@ -1,4 +1,10 @@
-import { Component, provideZonelessChangeDetection, signal, WritableSignal } from '@angular/core';
+import {
+  Component,
+  input,
+  provideZonelessChangeDetection,
+  signal,
+  WritableSignal,
+} from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BehaviorSubject } from 'rxjs';
 import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
@@ -9,9 +15,9 @@ import { ReviewOrder } from '@shared/components/review-order/review-order';
 import { CheckoutDetails } from './checkout-details/checkout-details';
 import { CheckoutForm } from './checkout-form/checkout-form';
 
-@Component({ selector: 'app-review-order', template: '', standalone: true, inputs: ['items'] })
+@Component({ selector: 'app-review-order', template: '', standalone: true })
 class ReviewOrderStub {
-  items: unknown;
+  items = input<unknown>();
 }
 
 @Component({ selector: 'app-checkout-details', template: '', standalone: true })

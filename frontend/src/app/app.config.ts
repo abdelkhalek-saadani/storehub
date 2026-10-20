@@ -11,7 +11,7 @@ import { routes } from './app.routes';
 import { provideHotToastConfig } from '@ngxpert/hot-toast';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material/dialog';
-import { DomSanitizer, provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import { DomSanitizer } from '@angular/platform-browser';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { MatIconRegistry } from '@angular/material/icon';
 import { provideNativeDateAdapter } from '@angular/material/core';

@@ -1,7 +1,6 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { StoreContext } from '../service/store-context';
-import { StorePickerService } from '../service/store-picker';
 
 export const storeRequiredGuard: CanActivateFn = (_route, state) => {
   const storeContext = inject(StoreContext);

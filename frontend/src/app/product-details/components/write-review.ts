@@ -1,12 +1,10 @@
 import { Component, inject, input, output, signal } from '@angular/core';
 import { ViewPanel } from '../directives/view-panel';
-import { MatFormField } from '@angular/material/form-field';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInput } from '@angular/material/input';
-import { MatSelect } from '@angular/material/select';
+import { MatOption, MatSelect } from '@angular/material/select';
 import { MatButton } from '@angular/material/button';
-import { MatOption } from '@angular/material/select';
-import { MatLabel } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-write-review',
@@ -94,15 +92,13 @@ export class WriteReview {
       this.reviewForm.markAsTouched();
       return;
     }
-    // console.log('passe dvalidation')
-    const { title, comment, rating } = this.reviewForm.getRawValue();
     console.log('passed the values get');
 
     this.reviewAdded.emit();
   }
 }
 
-type OptionItem = {
+interface OptionItem {
   label: string;
   value: number;
-};
+}

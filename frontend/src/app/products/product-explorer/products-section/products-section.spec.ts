@@ -1,4 +1,4 @@
-import { Component, ElementRef, provideZonelessChangeDetection } from '@angular/core';
+import { Component, ElementRef, input, provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
@@ -12,9 +12,9 @@ import { provideRouter } from '@angular/router';
 @Component({ selector: 'app-scroll-arrows', template: '', standalone: true })
 class ScrollArrowsStub {}
 
-@Component({ selector: 'app-product-card', template: '', standalone: true, inputs: ['product'] })
+@Component({ selector: 'app-product-card', template: '', standalone: true })
 class ProductCardStub {
-  product: unknown;
+  product = input<unknown>();
 }
 
 function buildProduct(overrides?: Partial<Product>): Product {

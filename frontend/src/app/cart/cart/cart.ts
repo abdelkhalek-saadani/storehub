@@ -35,7 +35,7 @@ import { DecimalPipe } from '@angular/common';
             <span class="text-[18px] font-semibold"
               >{{ store.finalTotal() | number: '1.2-2' }} TND</span
             >
-            @if (store.finalTotal() != store.originalTotal()) {
+            @if (store.finalTotal() !== store.originalTotal()) {
               <div class="text-xl font-regular text-[#A2A2A2] line-through">
                 {{ store.originalTotal() | number: '1.2-2' }} TND
               </div>
@@ -77,6 +77,7 @@ export class Cart implements OnInit {
   isMobile = signal(false);
   cartSidenavService = inject(CartSidenav);
   storeContext = inject(StoreContext);
+  bpo = inject(BreakpointObserver);
   protected store = inject(CartStore);
 
   items = this.store.items;
@@ -89,8 +90,8 @@ export class Cart implements OnInit {
     this.store.loadCart();
   }
 
-  constructor(bpo: BreakpointObserver) {
-    bpo
+  constructor() {
+    this.bpo
       .observe('(max-width: 768px)')
       .pipe(takeUntilDestroyed())
       .subscribe((res) => this.isMobile.set(res.matches));

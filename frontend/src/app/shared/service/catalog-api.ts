@@ -1,16 +1,13 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
-import { environment } from '@environments/environment';
+import { inject, Injectable } from '@angular/core';
+import { map, Observable } from 'rxjs';
 import { PagedResponse } from '../../products/models/page-response';
 import { Product } from '../../products/models/product';
 import { StoreContext } from '../../store/service/store-context';
-import { map } from 'rxjs';
 import { Offer } from '@shared/models/Offer';
-import { LocalDate, LocalDateTime } from '@js-joda/core';
+import { LocalDate } from '@js-joda/core';
 import { SlotSummary } from '@shared/models/SlotSummary';
 import { DateAndDay } from '@shared/models/DateAndDay';
-import { Slot } from '../../track-order/track-order';
 import { ConfigService } from '@core/config.service';
 
 export interface ProductQuery {
@@ -80,14 +77,14 @@ export class CatalogApi {
   }
 
   getBestSellerProducts(): Observable<Product[]> {
-    let params = new HttpParams().set('storeId', this.getStoreId()).set('isBestSeller', true);
+    const params = new HttpParams().set('storeId', this.getStoreId()).set('isBestSeller', true);
 
     const response = this.http.get<Product[]>(`${this.productsUrl}/explorer`, { params });
     return response;
   }
 
   getSaleEvent(): Observable<Offer[]> {
-    let params = new HttpParams().set('storeId', this.getStoreId()).set('count', 6);
+    const params = new HttpParams().set('storeId', this.getStoreId()).set('count', 6);
 
     const response = this.http.get<Offer[]>(this.saleEventsUrl, { params });
     return response;

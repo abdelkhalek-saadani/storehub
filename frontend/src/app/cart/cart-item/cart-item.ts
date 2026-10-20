@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { DecimalPipe } from '@angular/common';
@@ -27,7 +27,7 @@ import { CartStore } from '../cart-store';
       <div class="flex flex-row gap-6 justify-between items-center">
         <div class="flex flex-row gap-3 items-center">
           <div class="font-semibold text-base">{{ item().finalLineTotal | number: '1.2-2' }}</div>
-          @if (item().originalLineTotal != item().finalLineTotal) {
+          @if (item().originalLineTotal !== item().finalLineTotal) {
             <div class="text-xl font-regular text-[#A2A2A2] line-through">
               {{ item().originalLineTotal | number: '1.2-2' }}
             </div>

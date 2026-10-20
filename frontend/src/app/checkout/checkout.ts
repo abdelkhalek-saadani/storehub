@@ -2,7 +2,6 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { FormsModule } from '@angular/forms';
-import { DatePipe } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -50,11 +49,12 @@ import { CartStore } from '../cart/cart-store';
 export default class CheckoutPage {
   isMobile = signal(false);
   cartStore = inject(CartStore);
+  bpo = inject(BreakpointObserver);
 
   cartItems = computed(() => this.cartStore.items());
 
-  constructor(bpo: BreakpointObserver) {
-    bpo
+  constructor() {
+    this.bpo
       .observe('(max-width: 768px)')
       .pipe(takeUntilDestroyed())
       .subscribe((res) => this.isMobile.set(res.matches));

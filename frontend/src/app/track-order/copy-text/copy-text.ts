@@ -12,9 +12,13 @@ import { Clipboard } from '@angular/cdk/clipboard';
       class="flex items-center gap-1 cursor-pointer text-primary text-[12px]"
       (click)="copy()"
       [matTooltip]="copied() ? 'Copied!' : 'Copy'"
+      tabindex="0"
+      (keydown)="copy()"
     >
       <mat-icon [inline]="true">{{ copied() ? 'check' : 'content_copy' }}</mat-icon>
-      <span (click)="copy()" class="">#{{ text().slice(0, 8) }}...</span>
+      <span tabindex="0" (keydown)="copy()" (click)="copy()" class=""
+        >#{{ text().slice(0, 8) }}...</span
+      >
     </div>
   `,
 })

@@ -1,22 +1,12 @@
-import {
-  Component,
-  computed,
-  DestroyRef,
-  effect,
-  inject,
-  OnInit,
-  ResourceRef,
-  Signal,
-  signal,
-} from '@angular/core';
-import { MatButton, MatIconButton } from '@angular/material/button';
+import { Component, DestroyRef, inject, OnInit, ResourceRef, signal } from '@angular/core';
+import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { ActivatedRoute } from '@angular/router';
-import { OrderApi, OrderResponse, OrderStatusDto } from '@shared/service/order-api';
+import { OrderApi, OrderResponse } from '@shared/service/order-api';
 
-import { Duration, LocalDateTime } from '@js-joda/core';
+import { LocalDateTime } from '@js-joda/core';
 import { OrderDetailView } from './order-details-view/order-details-view';
 
 export interface Slot {

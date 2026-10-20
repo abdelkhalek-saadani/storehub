@@ -1,12 +1,12 @@
-export type User = {
+export interface User {
   name: string;
   email: string;
-  password: string
+  password: string;
 }
 
-export type SignUpParams = {
+export interface SignUpParams {
   name: string;
   email: string;
-  password: string
+  password: string;
 }
 export type SignInParams = Omit<SignUpParams, 'name'>;

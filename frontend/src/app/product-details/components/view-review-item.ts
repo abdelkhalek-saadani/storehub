@@ -1,5 +1,4 @@
 import { Component, input } from '@angular/core';
-import { MatIcon } from '@angular/material/icon';
 import { StarRating } from './star-rating';
 import { ViewPanel } from '../directives/view-panel';
 import { Review } from '../../models/Review';

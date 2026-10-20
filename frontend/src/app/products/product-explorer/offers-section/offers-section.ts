@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { OffersMasonry } from './offers-masonry';
@@ -30,8 +30,8 @@ export class OffersSection {
       .subscribe((result) => this.isMobile.set(result.matches));
   }
 
-  offers = rxResource<Offer[], any>({
-    stream: (params) => this.catalogApi.getSaleEvent(),
+  offers = rxResource<Offer[], unknown>({
+    stream: () => this.catalogApi.getSaleEvent(),
     defaultValue: [],
   });
 }

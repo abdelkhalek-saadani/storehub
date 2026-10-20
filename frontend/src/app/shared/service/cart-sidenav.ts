@@ -1,6 +1,6 @@
 import { DestroyRef, inject, Injectable } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
-import { NavigationEnd, Router, Event } from '@angular/router';
+import { Event, NavigationEnd, Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs/operators';
 
@@ -18,7 +18,7 @@ export class CartSidenav {
         filter((event: Event): event is NavigationEnd => event instanceof NavigationEnd),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe((event: NavigationEnd) => {
+      .subscribe(() => {
         if (this.sidenav) this.close();
       });
   }

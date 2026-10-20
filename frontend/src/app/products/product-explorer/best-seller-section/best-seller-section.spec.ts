@@ -1,4 +1,4 @@
-import { Component, ElementRef, provideZonelessChangeDetection } from '@angular/core';
+import { Component, ElementRef, input, provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BehaviorSubject, of, throwError } from 'rxjs';
 import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
@@ -7,13 +7,14 @@ import { CatalogApi } from '@shared/service/catalog-api';
 import { ScrollArrows } from '../scroll-arrows/scroll-arrows';
 import { ProductCard } from '../../product-card/product-card';
 import { provideRouter } from '@angular/router';
+import { Product } from '../../models/product';
 
 @Component({ selector: 'app-scroll-arrows', template: '', standalone: true })
 class ScrollArrowsStub {}
 
-@Component({ selector: 'app-product-card', template: '', standalone: true, inputs: ['product'] })
+@Component({ selector: 'app-product-card', template: '', standalone: true })
 class ProductCardStub {
-  product: unknown;
+  product = input<unknown>();
 }
 
 describe('BestSellerSection', () => {
@@ -104,7 +105,7 @@ describe('BestSellerSection', () => {
 
     it('renders one product card per best seller on success', async () => {
       catalogApiSpy.getBestSellerProducts.and.returnValue(
-        of([{ id: 'p1' } as any, { id: 'p2' }, { id: 'p3' }]),
+        of([buildProduct({ id: 'p1' }), buildProduct({ id: 'p2' }), buildProduct({ id: 'p3' })]),
       );
       createComponent();
       await fixture.whenStable();
@@ -130,3 +131,17 @@ describe('BestSellerSection', () => {
     });
   });
 });
+
+function buildProduct(overrides: Partial<Product>) {
+  return {
+    id: '01',
+    storeId: '01',
+    name: 'productName',
+    description: 'description',
+    unitPrice: 10,
+    activeDiscount: null,
+    finalPrice: 10,
+    imageUrl: 'pathtoimage.png',
+    ...overrides,
+  };
+}

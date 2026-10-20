@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { OffersSection } from './offers-section/offers-section';
 import { CategoryBar } from './category-bar/category-bar';
 import { BestSellerSection } from './best-seller-section/best-seller-section';

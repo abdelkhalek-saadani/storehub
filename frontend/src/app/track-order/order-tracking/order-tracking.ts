@@ -1,11 +1,10 @@
-import { Component, computed, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Breakpoints } from '@core/constants/breakpoints';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { OrderStatusDto } from '@shared/service/order-api';
 import { DatePipe, NgClass } from '@angular/common';
-import { LocalDateTime } from '@js-joda/core';
 
 @Component({
   selector: 'app-order-tracking',
@@ -18,7 +17,7 @@ import { LocalDateTime } from '@js-joda/core';
             {{ status().label }}
           </span>
           @if (
-            !isOrderFailed() && status().code != 'DELIVERED' && status().code != 'VOID_REQUESTED'
+            !isOrderFailed() && status().code !== 'DELIVERED' && status().code !== 'VOID_REQUESTED'
           ) {
             <span class="text-sm font-medium text-primary">Order {{ orderArriveIn() }}</span>
           }
@@ -125,6 +124,7 @@ export class OrderTracking {
   status = input.required<OrderStatusDto>();
   createdAt = input.required<Date>();
   orderArriveIn = input.required();
+  bpo = inject(BreakpointObserver);
 
   isOrderFailed = computed(() => {
     const s = this.status();
@@ -154,8 +154,8 @@ export class OrderTracking {
     return !s || s.code == 'DELIVERED';
   });
 
-  constructor(bpo: BreakpointObserver) {
-    bpo
+  constructor() {
+    this.bpo
       .observe(Breakpoints.md)
       .pipe(takeUntilDestroyed())
       .subscribe((result) => this.isMdDevice.set(result.matches));

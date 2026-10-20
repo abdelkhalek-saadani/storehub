@@ -6,7 +6,7 @@ import { MatIcon } from '@angular/material/icon';
   selector: 'app-action-buttons',
   imports: [MatButton, MatIcon, MatIconButton],
   template: `
-    @if (type() == 'desktop') {
+    @if (type() === 'desktop') {
       <div class="flex gap-6 items-center">
         <button matButton="filled" class="btn-md whitespace-nowrap">
           <mat-icon> shopping_cart</mat-icon>

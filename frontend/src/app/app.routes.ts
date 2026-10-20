@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import Layout from './layout/layout/layout';
 import { authGuard } from '@core/auth/auth-guard';
 import { guestOnlyGuard } from '@core/auth/guest-only.guard';
 import { storeResolver } from './store/store-resolver';

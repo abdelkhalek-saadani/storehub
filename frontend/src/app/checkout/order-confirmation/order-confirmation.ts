@@ -1,17 +1,16 @@
 import { Component, inject, input } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { StoreContext } from '../../store/service/store-context';
-import { StorePickerModal } from '../../store/modal/store-picker.modal';
 import { StorePickerService } from '../../store/service/store-picker';
 
 @Component({
   selector: 'app-order-confirmation',
-  imports: [MatButton, MatIcon, RouterLink],
+  imports: [MatButton, MatIcon],
   template: `
     <div class="flex flex-col w-fit items-center">
-      @if (state() == 'success') {
+      @if (state() === 'success') {
         <div class="h-54 w-74 mb-6">
           <img src="success-order.png" alt="Order success image" />
         </div>

@@ -2,7 +2,7 @@ import { ResolveFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { StoreContext } from './service/store-context';
 
-import { of, tap, map, catchError, switchMap } from 'rxjs';
+import { catchError, map, tap } from 'rxjs';
 import { StoreApi } from './service/store-api';
 import { StorePickerService } from './service/store-picker';
 

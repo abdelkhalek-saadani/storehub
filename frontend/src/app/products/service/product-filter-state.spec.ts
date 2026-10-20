@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { BehaviorSubject } from 'rxjs';
-import { ActivatedRoute, Router, convertToParamMap, ParamMap } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, ParamMap, Router } from '@angular/router';
 import { ProductFilterState } from './product-filter-state';
 import { provideZonelessChangeDetection } from '@angular/core';
 

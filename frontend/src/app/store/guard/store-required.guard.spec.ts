@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Router, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { storeRequiredGuard } from './store-required.guard';
 import { StoreContext } from '../service/store-context';
 import { provideZonelessChangeDetection } from '@angular/core';
@@ -25,7 +25,9 @@ describe('storeRequiredGuard', () => {
   it('redirects to the cached store slug when a store is cached', () => {
     storeContextMock.getCurrentStore.and.returnValue({ slug: 'super-mart' });
 
-    TestBed.runInInjectionContext(() => storeRequiredGuard({} as any, { url: '/products' } as any));
+    TestBed.runInInjectionContext(() =>
+      storeRequiredGuard({} as ActivatedRouteSnapshot, { url: '/products' } as RouterStateSnapshot),
+    );
 
     expect(routerSpy.parseUrl).toHaveBeenCalledWith('/store/super-mart/products');
   });
@@ -34,7 +36,10 @@ describe('storeRequiredGuard', () => {
     storeContextMock.getCurrentStore.and.returnValue(null);
 
     TestBed.runInInjectionContext(() =>
-      storeRequiredGuard({} as any, { url: '/products?foo=bar' } as any),
+      storeRequiredGuard(
+        {} as unknown as ActivatedRouteSnapshot,
+        { url: '/products?foo=bar' } as unknown as RouterStateSnapshot,
+      ),
     );
 
     expect(routerSpy.parseUrl).toHaveBeenCalledWith(
@@ -45,7 +50,12 @@ describe('storeRequiredGuard', () => {
   it('redirects to the store picker when the cached store has no slug', () => {
     storeContextMock.getCurrentStore.and.returnValue({ slug: null });
 
-    TestBed.runInInjectionContext(() => storeRequiredGuard({} as any, { url: '/products' } as any));
+    TestBed.runInInjectionContext(() =>
+      storeRequiredGuard(
+        {} as unknown as ActivatedRouteSnapshot,
+        { url: '/products' } as unknown as RouterStateSnapshot,
+      ),
+    );
 
     expect(routerSpy.parseUrl).toHaveBeenCalledWith(
       `/welcome-pick-store?returnUrl=${encodeURIComponent('/products')}`,

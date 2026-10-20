@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, OnInit, Signal, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { MatExpansionPanel, MatExpansionPanelHeader } from '@angular/material/expansion';
 import { DecimalPipe, TitleCasePipe } from '@angular/common';
 import { BreakpointObserver } from '@angular/cdk/layout';
@@ -36,7 +36,7 @@ import { CartItemResponse } from '../../../cart/model/cart-response';
                   />
                 </div>
               }
-              @if (headerItems().length != orderedItems().length) {
+              @if (headerItems().length !== orderedItems().length) {
                 <div class="w-16 rounded-2xl h-16 aspect-square flex items-center justify-center">
                   + {{ items().length - headerItems().length }}
                 </div>
@@ -66,7 +66,7 @@ import { CartItemResponse } from '../../../cart/model/cart-response';
                     <div class="font-medium text-base">
                       {{ item.finalLineTotal / item.quantity | number: '1.2-2' }}DT
                     </div>
-                    @if (item.discountAmount != 0) {
+                    @if (item.discountAmount !== 0) {
                       <div class="line-through text-xs font-regular text-black/60">
                         {{ item.originalLineTotal / item.quantity | number: '1.2-2' }}DT
                       </div>
@@ -83,15 +83,16 @@ import { CartItemResponse } from '../../../cart/model/cart-response';
   `,
   styles: ``,
 })
-export class ReviewOrder implements OnInit {
+export class ReviewOrder {
   isOpen = signal(false);
 
   items = input.required<CartItemResponse[] | OrderItemResponse[]>();
 
   isXSMobile = signal(false);
+  bpo = inject(BreakpointObserver);
 
-  constructor(bpo: BreakpointObserver) {
-    bpo
+  constructor() {
+    this.bpo
       .observe(Breakpoints.sm)
       .pipe(takeUntilDestroyed())
       .subscribe((result) => this.isXSMobile.set(result.matches));
@@ -107,6 +108,4 @@ export class ReviewOrder implements OnInit {
     }
     return this.items().slice(0, 5);
   });
-
-  ngOnInit(): void {}
 }

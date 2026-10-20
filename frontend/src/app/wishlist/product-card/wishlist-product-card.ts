@@ -1,10 +1,7 @@
-import { Component, signal } from '@angular/core';
-import { MatIcon } from '@angular/material/icon';
-import { MatButton, MatIconButton } from '@angular/material/button';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { Component, inject, signal } from '@angular/core';
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Breakpoints as Bp } from '@core/constants/breakpoints';
-import { NgClass } from '@angular/common';
 import { ActionButtons } from './action-buttons/action-buttons';
 
 @Component({
@@ -40,9 +37,9 @@ import { ActionButtons } from './action-buttons/action-buttons';
 })
 export class WishlistProductCard {
   isMdDevice = signal(false);
-  constructor(bpo: BreakpointObserver) {
-    bpo
-      // .observe([Breakpoints.Handset, Breakpoints.TabletPortrait])
+  bpo = inject(BreakpointObserver);
+  constructor() {
+    this.bpo
       .observe(Bp.md)
       .pipe(takeUntilDestroyed())
       .subscribe((result) => this.isMdDevice.set(result.matches));

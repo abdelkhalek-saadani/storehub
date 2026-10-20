@@ -1,6 +1,5 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '@environments/environment';
 import { Store } from '@shared/models/Store';
 import { Observable } from 'rxjs';
 import { ConfigService } from '@core/config.service';
@@ -11,19 +10,25 @@ export interface CreateStorePayload {
   address?: string;
 }
 
+export interface CreateStoreResponse {
+  id: string;
+  name: string;
+  description: string;
+  address: string;
+  slug: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class StoreApi {
-  constructor(
-    private http: HttpClient,
-    private config: ConfigService,
-  ) {}
+  private http = inject(HttpClient);
+  private config = inject(ConfigService);
 
   getAllStores(): Observable<Store[]> {
     return this.http.get<Store[]>(`${this.config.get().orderApiUrl}/api/stores`);
   }
 
-  createStore(data: CreateStorePayload) {
-    return this.http.post(`${this.config.get().orderApiUrl}/api/stores`, data);
+  createStore(data: CreateStorePayload): Observable<CreateStoreResponse> {
+    return this.http.post<CreateStoreResponse>(`${this.config.get().orderApiUrl}/api/stores`, data);
   }
 
   getStoreBySlug(slug: string): Observable<Store> {

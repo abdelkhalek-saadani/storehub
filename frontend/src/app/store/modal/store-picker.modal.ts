@@ -31,6 +31,8 @@ import { MatIcon } from '@angular/material/icon';
         <ul class="list-none m-0 p-0 min-w-[320px]">
           @for (store of stores(); track store.storeId) {
             <li
+              tabindex="0"
+              (keydown)="select(store)"
               class="flex items-center gap-3 py-[10px] px-2 rounded-lg cursor-pointer  [transition:background_0.15s_ease] hover:bg-black/4"
               (click)="select(store)"
               [attr.data-cy]="'store-card-' + store.storeSlug"

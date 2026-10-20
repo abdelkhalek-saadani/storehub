@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, inject, input, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, inject, signal, ViewChild } from '@angular/core';
 import { MatDivider, MatListItem, MatNavList } from '@angular/material/list';
 import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
 import { RouterLink, RouterOutlet } from '@angular/router';
@@ -10,7 +10,7 @@ import {
   MatExpansionPanelTitle,
 } from '@angular/material/expansion';
 import { MatCheckbox } from '@angular/material/checkbox';
-import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
 import { MatDialogClose } from '@angular/material/dialog';
 import { CartSidenav } from '@shared/service/cart-sidenav';
 import { BreakpointObserver } from '@angular/cdk/layout';
@@ -111,9 +111,10 @@ export default class Layout implements AfterViewInit {
   ];
 
   isMobile = signal(false);
+  bpo = inject(BreakpointObserver);
 
-  constructor(bpo: BreakpointObserver) {
-    bpo
+  constructor() {
+    this.bpo
       .observe('(max-width: 768px)')
       .pipe(takeUntilDestroyed())
       .subscribe((res) => this.isMobile.set(res.matches));

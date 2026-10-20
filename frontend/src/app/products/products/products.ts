@@ -1,5 +1,5 @@
-import { Component, computed, inject, Signal, signal } from '@angular/core';
-import { rxResource, takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { Component, inject, signal } from '@angular/core';
+import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { NgClass } from '@angular/common';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
@@ -7,7 +7,7 @@ import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
-import { ProductQuery, CatalogApi } from '@shared/service/catalog-api';
+import { CatalogApi, ProductQuery } from '@shared/service/catalog-api';
 import { PagedResponse } from '../models/page-response';
 import { Product } from '../models/product';
 import { ProductCard } from '../product-card/product-card';

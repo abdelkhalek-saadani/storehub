@@ -1,5 +1,4 @@
-import { Component, computed, input, Input } from '@angular/core';
-import { MatIcon } from '@angular/material/icon';
+import { Component, computed, input } from '@angular/core';
 import { StarRating } from './star-rating';
 import { Review } from '../../models/Review';
 import { DecimalPipe } from '@angular/common';

@@ -7,7 +7,7 @@ import { HotToastService } from '@ngxpert/hot-toast';
 export class Toaster {
   toaster = inject(HotToastService);
 
-  success(message: string, duration: number = 3000) {
+  success(message: string, duration = 3000) {
     this.toaster.success(message, { duration: duration });
   }
 

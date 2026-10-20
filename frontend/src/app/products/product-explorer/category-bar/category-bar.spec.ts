@@ -1,6 +1,6 @@
-import { Component, provideZonelessChangeDetection } from '@angular/core';
+import { Component, input, provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { BehaviorSubject, of, Subject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 import { CategoryBar } from './category-bar';
 import { CatalogApi, CategoryResponse } from '@shared/service/catalog-api';
@@ -10,10 +10,9 @@ import { CategorySquaredButton } from '../category-bar-squared-button/category-s
   selector: 'app-category-squared-button',
   template: '',
   standalone: true,
-  inputs: ['category'],
 })
 class CategorySquaredButtonStub {
-  category: unknown;
+  category = input<unknown>;
 }
 
 function buildCategory(overrides: Partial<CategoryResponse> = {}): CategoryResponse {

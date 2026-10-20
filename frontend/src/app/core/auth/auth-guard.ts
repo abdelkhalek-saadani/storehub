@@ -1,10 +1,4 @@
-import {
-  ActivatedRouteSnapshot,
-  CanActivateFn,
-  Router,
-  RouterStateSnapshot,
-  UrlTree,
-} from '@angular/router';
+import { CanActivateFn, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { AuthGuardData, createAuthGuard } from 'keycloak-angular';
 import { inject } from '@angular/core';
 

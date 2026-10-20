@@ -44,9 +44,10 @@ export class ProductCard {
   });
 
   onQuantityUpdate(event: UpdateNature) {
-    event === 'increment'
-      ? this.cartStore.upsertItems([{ productId: this.product.id, quantity: this.quantity() + 1 }])
-      : this.cartStore.upsertItems([{ productId: this.product.id, quantity: this.quantity() - 1 }]);
+    if (event === 'increment')
+      this.cartStore.upsertItems([{ productId: this.product.id, quantity: this.quantity() + 1 }]);
+    else
+      this.cartStore.upsertItems([{ productId: this.product.id, quantity: this.quantity() - 1 }]);
   }
 }
 

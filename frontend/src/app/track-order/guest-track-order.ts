@@ -4,7 +4,7 @@ import { MatButton, MatIconButton } from '@angular/material/button';
 import { OrderDetailView } from './order-details-view/order-details-view';
 import { ActivatedRoute } from '@angular/router';
 import { OrderApi, OrderResponse } from '@shared/service/order-api';
-import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { MatError, MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { buildEmptyOrderResponse } from './track-order';

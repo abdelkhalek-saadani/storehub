@@ -1,7 +1,6 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '@environments/environment';
 import { ConfigService } from '@core/config.service';
 
 export interface SignupPayload {
@@ -19,10 +18,8 @@ export interface SignupResponse {
 
 @Injectable({ providedIn: 'root' })
 export class SignupApi {
-  constructor(
-    private http: HttpClient,
-    private config: ConfigService,
-  ) {}
+  private http = inject(HttpClient);
+  private config = inject(ConfigService);
 
   signup(data: SignupPayload): Observable<SignupResponse> {
     return this.http.post<SignupResponse>(`${this.config.get().orderApiUrl}/api/auth/signup`, data);

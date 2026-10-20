@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
-import { Router } from '@angular/router';
+import { firstValueFrom, isObservable, of, throwError } from 'rxjs';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { StoreContext } from './service/store-context';
 import { StoreApi } from './service/store-api';
 import { StorePickerService } from './service/store-picker';
@@ -50,7 +50,10 @@ describe('storeResolver', () => {
 
   function runResolver(paramMapGet: string, url: string) {
     return TestBed.runInInjectionContext(() =>
-      storeResolver({ paramMap: { get: () => paramMapGet } } as any, { url } as any),
+      storeResolver(
+        { paramMap: { get: () => paramMapGet } } as unknown as ActivatedRouteSnapshot,
+        { url } as unknown as RouterStateSnapshot,
+      ),
     );
   }
 
@@ -58,61 +61,55 @@ describe('storeResolver', () => {
     storeContextMock.storeSlug.and.returnValue('super-mart');
     storeContextMock.storeId.and.returnValue('store-1');
 
-    const result: any = runResolver('super-mart', '/store/super-mart/products');
+    const result = runResolver('super-mart', '/store/super-mart/products');
 
     expect(result).toBe('store-1');
     expect(storeApiSpy.getStoreBySlug).not.toHaveBeenCalled();
   });
 
-  it('fetches the store by slug and caches it when the slug changed', (done) => {
+  it('fetches the store by slug and caches it when the slug changed', async () => {
     storeContextMock.storeSlug.and.returnValue('other-store');
     storeContextMock.storeId.and.returnValue('old-id');
     storeApiSpy.getStoreBySlug.and.returnValue(of(buildStore({ storeId: 'store-2' })));
 
-    const result$: any = runResolver('super-mart', '/store/super-mart/products');
+    const result = runResolver('super-mart', '/store/super-mart/products');
+    const storeId = await (isObservable(result) ? firstValueFrom(result) : result);
 
-    result$.subscribe((storeId: string) => {
-      expect(storeApiSpy.getStoreBySlug).toHaveBeenCalledWith('super-mart');
-      expect(storeContextMock.setStore).toHaveBeenCalledWith(
-        jasmine.objectContaining({ storeId: 'store-2' }),
-      );
-      expect(storeId).toBe('store-2');
-      done();
-    });
+    expect(storeApiSpy.getStoreBySlug).toHaveBeenCalledWith('super-mart');
+    expect(storeContextMock.setStore).toHaveBeenCalledWith(
+      jasmine.objectContaining({ storeId: 'store-2' }),
+    );
+    expect(storeId).toBe('store-2');
   });
 
-  it('fetches even when the slug matches but storeId is missing from cache', (done) => {
+  it('fetches even when the slug matches but storeId is missing from cache', async () => {
     storeContextMock.storeSlug.and.returnValue('super-mart');
     storeContextMock.storeId.and.returnValue(null);
     storeApiSpy.getStoreBySlug.and.returnValue(of(buildStore({ storeId: 'store-1' })));
 
-    const result$: any = runResolver('super-mart', '/store/super-mart/products');
+    const result = runResolver('super-mart', '/store/super-mart/products');
+    const storeId = await (isObservable(result) ? firstValueFrom(result) : result);
 
-    result$.subscribe((storeId: string) => {
-      expect(storeApiSpy.getStoreBySlug).toHaveBeenCalledWith('super-mart');
-      expect(storeContextMock.setStore).toHaveBeenCalledWith(
-        jasmine.objectContaining({ storeId: 'store-1' }),
-      );
-      expect(storeId).toBe('store-1');
-      done();
-    });
+    expect(storeApiSpy.getStoreBySlug).toHaveBeenCalledWith('super-mart');
+    expect(storeContextMock.setStore).toHaveBeenCalledWith(
+      jasmine.objectContaining({ storeId: 'store-1' }),
+    );
+    expect(storeId).toBe('store-1');
   });
 
-  it('falls back to the store picker when the fetch fails, caches the picked store, and re-navigates', (done) => {
+  it('falls back to the store picker when the fetch fails, caches the picked store, and re-navigates', async () => {
     storeContextMock.storeSlug.and.returnValue('other');
     storeContextMock.storeId.and.returnValue(null);
     storeApiSpy.getStoreBySlug.and.returnValue(throwError(() => new Error('not found')));
     const pickedStore = buildStore({ storeId: 'store-9', storeSlug: 'picked-store' });
     pickerSpy.pickStore.and.returnValue(of(pickedStore));
 
-    const result$: any = runResolver('missing-slug', '/store/missing-slug/products');
+    const result = runResolver('missing-slug', '/store/missing-slug/products');
+    const storeId = await (isObservable(result) ? firstValueFrom(result) : result);
 
-    result$.subscribe((storeId: string) => {
-      expect(pickerSpy.pickStore).toHaveBeenCalled();
-      expect(storeContextMock.setStore).toHaveBeenCalledWith(pickedStore);
-      expect(routerSpy.navigate).toHaveBeenCalledWith(['/store/picked-store/products']);
-      expect(storeId).toBe('store-9');
-      done();
-    });
+    expect(pickerSpy.pickStore).toHaveBeenCalled();
+    expect(storeContextMock.setStore).toHaveBeenCalledWith(pickedStore);
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/store/picked-store/products']);
+    expect(storeId).toBe('store-9');
   });
 });

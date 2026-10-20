@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { PostLogin } from './post-login';
-import { StoreApi } from '../../store/service/store-api';
+import { CreateStoreResponse, StoreApi } from '../../store/service/store-api';
 import { PendingStoreStorage } from '../pending-store-storage';
 import { provideZonelessChangeDetection } from '@angular/core';
 
@@ -52,7 +52,7 @@ describe('PostLogin', () => {
   it('creates the pending store, clears it, then navigates', async () => {
     const pending = { name: 'Store', description: 'desc', address: 'addr' };
     pendingStoreStorageSpy.getPendingStore.and.returnValue(pending);
-    storeApiSpy.createStore.and.returnValue(of({} as any));
+    storeApiSpy.createStore.and.returnValue(of({} as CreateStoreResponse));
 
     await component.ngOnInit();
 

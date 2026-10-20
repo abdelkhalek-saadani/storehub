@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { StoreApi } from '../../store/service/store-api';
 import { PendingStoreStorage } from '../pending-store-storage';

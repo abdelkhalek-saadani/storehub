@@ -1,9 +1,8 @@
 import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import Keycloak from 'keycloak-js';
 import { MatButton } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
 import { LogoText } from '@shared/components/logo-text/logo-text';
 import { Divider } from '../component/divider';
 

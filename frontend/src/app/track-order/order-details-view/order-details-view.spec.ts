@@ -1,12 +1,11 @@
-import { Component, provideZonelessChangeDetection } from '@angular/core';
+import { Component, input, provideZonelessChangeDetection, ResourceRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { of, throwError, Subject } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { LocalDateTime } from '@js-joda/core';
 import { OrderDetailView } from './order-details-view';
-import { OrderApi, OrderCancelResponse } from '@shared/service/order-api';
+import { OrderApi, OrderCancelResponse, OrderResponse } from '@shared/service/order-api';
 import { CatalogApi } from '@shared/service/catalog-api';
 import { Toaster } from '@shared/service/toaster';
 import { OrderTracking } from '../order-tracking/order-tracking';
@@ -21,12 +20,11 @@ import { InvoiceDownload } from '../invoice-download/invoice-download';
   selector: 'app-order-tracking',
   template: '',
   standalone: true,
-  inputs: ['status', 'createdAt', 'orderArriveIn'],
 })
 class OrderTrackingStub {
-  status: unknown;
-  createdAt: unknown;
-  orderArriveIn: unknown;
+  status = input<unknown>();
+  createdAt = input<unknown>();
+  orderArriveIn = input<unknown>();
 }
 
 @Component({ selector: 'app-payment-summary', template: '', standalone: true })
@@ -36,32 +34,30 @@ class PaymentSummaryStub {}
   selector: 'app-location-summary',
   template: '',
   standalone: true,
-  inputs: ['deliveryAddress'],
 })
 class LocationSummaryStub {
-  deliveryAddress: unknown;
+  deliveryAddress = input<unknown>();
 }
 
 @Component({
   selector: 'app-order-summary',
   template: '',
   standalone: true,
-  inputs: ['orderNumber', 'itemsTotal'],
 })
 class OrderSummaryStub {
-  orderNumber: unknown;
-  itemsTotal: unknown;
+  orderNumber = input<unknown>();
+  itemsTotal = input<unknown>();
 }
 
-@Component({ selector: 'app-review-order', template: '', standalone: true, inputs: ['items'] })
+@Component({ selector: 'app-review-order', template: '', standalone: true })
 class ReviewOrderStub {
-  items: unknown;
+  items = input<unknown>();
 }
 
 @Component({ selector: 'app-invoice-download', template: '', standalone: true })
 class InvoiceDownloadStub {}
 
-function buildOrderResponse(overrides: Partial<any> = {}) {
+function buildOrderResponse(overrides: Partial<OrderResponse> = {}) {
   return {
     orderId: 'order-1',
     userId: 'user-1',
@@ -82,13 +78,13 @@ function buildOrderResponse(overrides: Partial<any> = {}) {
   };
 }
 
-function buildResourceRef(value: any, error: unknown = undefined) {
+function buildResourceRef(value: unknown, error: unknown = undefined) {
   return {
     value: () => value,
     error: () => error,
     reload: jasmine.createSpy('reload'),
     isLoading: () => false,
-  } as any;
+  } as unknown as ResourceRef<unknown>;
 }
 
 function buildOrderCancelResponse(): OrderCancelResponse {
@@ -159,7 +155,7 @@ describe('OrderDetailView', () => {
     component = fixture.componentInstance;
   });
 
-  async function setOrderResult(value: any, error: unknown = undefined) {
+  async function setOrderResult(value: unknown, error: unknown = undefined) {
     fixture.componentRef.setInput('orderResult', buildResourceRef(value, error));
     await fixture.whenStable();
   }

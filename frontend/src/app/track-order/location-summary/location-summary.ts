@@ -1,4 +1,4 @@
-import { Component, input, Input, OnInit } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 
 @Component({
@@ -15,8 +15,6 @@ import { MatIcon } from '@angular/material/icon';
   `,
   styles: ``,
 })
-export class LocationSummary implements OnInit {
+export class LocationSummary {
   deliveryAddress = input<string | null>();
-
-  ngOnInit() {}
 }

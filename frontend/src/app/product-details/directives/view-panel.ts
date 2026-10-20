@@ -6,6 +6,4 @@ import { Directive } from '@angular/core';
     class: 'rounded-xl p-6 bg-white',
   },
 })
-export class ViewPanel {
-  constructor() {}
-}
+export class ViewPanel {}

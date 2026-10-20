@@ -1,11 +1,10 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { MatButton, MatFabButton, MatIconButton, MatMiniFabButton } from '@angular/material/button';
+import { Component, inject, signal } from '@angular/core';
+import { MatButton, MatFabButton, MatIconButton } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatInput } from '@angular/material/input';
-import { MatFormField } from '@angular/material/form-field';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-toggle';
 import {
   MatDatepicker,
@@ -26,11 +25,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CategoryBar } from '../products/product-explorer/category-bar/category-bar';
 import { Breakpoints } from '@core/constants/breakpoints';
 import { WishlistProductCard } from '../wishlist/product-card/wishlist-product-card';
-import { OrderTracking } from '../track-order/order-tracking/order-tracking';
 import { Gallery } from '../product-details/components/gallery';
 import Keycloak from 'keycloak-js';
 import { CheckoutForm } from '../checkout/checkout-form/checkout-form';
-import { ReviewOrder } from '@shared/components/review-order/review-order';
 import { CheckoutDetails } from '../checkout/checkout-details/checkout-details';
 import { OrderConfirmation } from '../checkout/order-confirmation/order-confirmation';
 import { StoreContext } from '../store/service/store-context';
@@ -38,6 +35,7 @@ import { DeliveryAddressForm } from '../checkout/delivery-address-form/delivery-
 import ProductDetails from '../product-details/product-details';
 import { Logo } from '@shared/components/logo/logo';
 import { LogoText } from '@shared/components/logo-text/logo-text';
+
 @Component({
   selector: 'app-dev',
   imports: [
@@ -605,16 +603,17 @@ import { LogoText } from '@shared/components/logo-text/logo-text';
     }
   `,
 })
-export default class Dev implements OnInit {
+export default class Dev {
   value!: Date;
 
   keycloak = inject(Keycloak);
   isMdDevice = signal(false);
   quantity = signal(5);
   storeContext = inject(StoreContext);
+  bpo = inject(BreakpointObserver);
 
-  constructor(bpo: BreakpointObserver) {
-    bpo
+  constructor() {
+    this.bpo
       .observe(Breakpoints.md)
       .pipe(takeUntilDestroyed())
       .subscribe((result) => this.isMdDevice.set(result.matches));
@@ -624,16 +623,13 @@ export default class Dev implements OnInit {
       storeName: 'Store Slug',
     });
   }
-  ngOnInit() {}
   activeTab = signal('email');
 
   toggleActiveTab() {
     if (this.activeTab() === 'phone') {
-      this.activeTab.update((at) => '');
+      this.activeTab.update(() => '');
       return;
     }
-    this.activeTab.update((at) => 'phone');
+    this.activeTab.update(() => 'phone');
   }
-
-  protected readonly Date = Date;
 }

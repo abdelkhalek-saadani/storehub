@@ -2,10 +2,10 @@ import { TestBed } from '@angular/core/testing';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { OrderApi, OrderRequest } from './order-api';
 import { StoreContext } from '../../store/service/store-context';
-import { environment } from '@environments/environment';
 import { provideHttpClient } from '@angular/common/http';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ConfigService } from '@core/config.service';
+import { UpdateCartItem } from '../../cart/model/update-cart-request';
 
 describe('OrderApi', () => {
   let api: OrderApi;
@@ -78,7 +78,7 @@ describe('OrderApi', () => {
   });
 
   it('upsertItems sends POST with storeId and items in body', () => {
-    const items = [{ productId: 'p1', quantity: 2 } as any];
+    const items = [{ productId: 'p1', quantity: 2 } as UpdateCartItem];
     api.upsertItems(items).subscribe();
 
     const req = httpMock.expectOne(`http://localhost:8080/api/cart/items`);

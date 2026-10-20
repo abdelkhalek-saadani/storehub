@@ -1,5 +1,4 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { HttpParams } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { StoreContext } from '../../store/service/store-context';
 import Keycloak from 'keycloak-js';

@@ -1,12 +1,11 @@
-import { signalStore, withState, withComputed, withMethods, patchState } from '@ngrx/signals';
+import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { computed, inject } from '@angular/core';
-import { pipe, switchMap, tap, debounceTime } from 'rxjs';
+import { debounceTime, pipe, switchMap, tap } from 'rxjs';
 import { CartItemResponse, CartResponse } from './model/cart-response';
 import { OrderApi } from '@shared/service/order-api';
 import { UpdateCartItem } from './model/update-cart-request';
 import { tapResponse } from '@ngrx/operators';
-import { CartItem } from './cart-item/cart-item';
 
 interface CartState {
   cartId: string | null;
@@ -104,7 +103,7 @@ export const CartStore = signalStore(
 
 function applyLocalUpsert(items: CartItemResponse[], newItems: UpdateCartItem[]) {
   let existent: CartItemResponse | undefined;
-  let itemsToAdd: CartItemResponse[] = [];
+  const itemsToAdd: CartItemResponse[] = [];
   for (const newItem of newItems) {
     existent = items.find((i) => i.productId === newItem.productId);
     if (existent) {

@@ -1,6 +1,6 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Observable, filter } from 'rxjs';
+import { filter, Observable } from 'rxjs';
 import { StorePickerModal } from '../modal/store-picker.modal';
 import { Store } from '@shared/models/Store';
 

@@ -1,8 +1,8 @@
-import { Component, input, AfterViewInit, ElementRef, viewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, input, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Offer } from '@shared/models/Offer';
 import Swiper from 'swiper';
-import { Pagination, A11y } from 'swiper/modules';
+import { A11y, Pagination } from 'swiper/modules';
 
 @Component({
   selector: 'app-offers-slider',

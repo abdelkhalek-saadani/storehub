@@ -1,5 +1,4 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { MatToolbar } from '@angular/material/toolbar';
 import { MatIcon } from '@angular/material/icon';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { SidenavService } from '../sidenav.service';
@@ -99,7 +98,7 @@ import { DecimalPipe } from '@angular/common';
 
             @if (isAuthenticated()) {
               <button matIconButton [matMenuTriggerFor]="profileMenu">
-                <img src="avatar.png" class="w-8 h-8 rounded-full object-cover" />
+                <img src="avatar.png" class="w-8 h-8 rounded-full object-cover" alt="profile pic" />
               </button>
 
               <mat-menu #profileMenu="matMenu">
@@ -145,9 +144,10 @@ export class Header {
   });
 
   isMobile = signal(false);
+  bpo = inject(BreakpointObserver);
 
-  constructor(bpo: BreakpointObserver) {
-    bpo
+  constructor() {
+    this.bpo
       .observe([Breakpoints.XSmall, Breakpoints.Small])
       .pipe(takeUntilDestroyed())
       .subscribe((res) => this.isMobile.set(res.matches));

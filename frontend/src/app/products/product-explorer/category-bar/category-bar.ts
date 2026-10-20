@@ -1,9 +1,9 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { CategorySquaredButton } from '../category-bar-squared-button/category-squared-button';
-import { MatChip, MatChipAvatar, MatChipSet } from '@angular/material/chips';
+import { MatChip, MatChipAvatar } from '@angular/material/chips';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { CategoryResponse, CatalogApi } from '@shared/service/catalog-api';
+import { CatalogApi, CategoryResponse } from '@shared/service/catalog-api';
 
 @Component({
   selector: 'app-category-bar',
@@ -52,9 +52,10 @@ import { CategoryResponse, CatalogApi } from '@shared/service/catalog-api';
 export class CategoryBar {
   isSquaredButton = signal(false);
   catalogApi = inject(CatalogApi);
+  bpo = inject(BreakpointObserver);
 
-  constructor(bpo: BreakpointObserver) {
-    bpo
+  constructor() {
+    this.bpo
       .observe('(max-width: 1040px)')
       .pipe(takeUntilDestroyed())
       .subscribe((result) => this.isSquaredButton.set(result.matches));

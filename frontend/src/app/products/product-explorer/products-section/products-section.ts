@@ -1,4 +1,4 @@
-import { Component, computed, ElementRef, inject, Signal, signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { BreakpointObserver } from '@angular/cdk/layout';
@@ -8,7 +8,7 @@ import { ScrollArrows } from '../scroll-arrows/scroll-arrows';
 import { ProductCard } from '../../product-card/product-card';
 import { PagedResponse } from '../../models/page-response';
 import { Product } from '../../models/product';
-import { ProductQuery, CatalogApi } from '@shared/service/catalog-api';
+import { CatalogApi, ProductQuery } from '@shared/service/catalog-api';
 import { RouterLink } from '@angular/router';
 
 @Component({

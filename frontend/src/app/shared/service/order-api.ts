@@ -1,12 +1,9 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
-import { Observable, tap } from 'rxjs';
-import { environment } from '@environments/environment';
+import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { StoreContext } from '../../store/service/store-context';
 import { UpdateCartItem } from '../../cart/model/update-cart-request';
 import { CartItemResponse, CartResponse } from '../../cart/model/cart-response';
-import { LocalDateTime } from '@js-joda/core';
-import { Order } from '../../models/Order';
 import { ConfigService } from '@core/config.service';
 
 export interface OrderRequest {
@@ -46,7 +43,7 @@ export interface OrderCancelResponse {
   message: string;
 }
 
-export interface OrderItemResponse extends CartItemResponse {}
+export type OrderItemResponse = CartItemResponse;
 
 export interface OrderResponse {
   orderId: string;
@@ -100,7 +97,7 @@ export class OrderApi {
   }
 
   placeOrder(idemKey: string, request: OrderRequest): Observable<OrderCreatedResponse> {
-    let headers = new HttpHeaders({ 'Idempotency-Key': idemKey });
+    const headers = new HttpHeaders({ 'Idempotency-Key': idemKey });
     const response = this.http.post<OrderCreatedResponse>(
       `${this.config.get().orderApiUrl}/api/orders`,
       { ...request, storeId: this.getStoreId() },
@@ -141,14 +138,14 @@ export class OrderApi {
   }
 
   getCart(): Observable<CartResponse> {
-    let params = new HttpParams().set('storeId', this.getStoreId());
+    const params = new HttpParams().set('storeId', this.getStoreId());
 
     const response = this.http.get<CartResponse>(this.cartUrl, { params });
     return response;
   }
 
   upsertItems(items: UpdateCartItem[]): Observable<CartResponse> {
-    let requestBody = {
+    const requestBody = {
       storeId: this.getStoreId(),
       items: items,
     };
@@ -157,13 +154,13 @@ export class OrderApi {
   }
 
   mergeCart() {
-    let params = new HttpParams().set('storeId', this.getStoreId());
+    const params = new HttpParams().set('storeId', this.getStoreId());
     const response = this.http.get<CartResponse>(`${this.cartUrl}/merge`, { params });
     return response;
   }
 
   clearCart(): Observable<CartResponse> {
-    let params = new HttpParams().set('storeId', this.getStoreId());
+    const params = new HttpParams().set('storeId', this.getStoreId());
     const response = this.http.delete<CartResponse>(this.cartUrl, { params });
     return response;
   }

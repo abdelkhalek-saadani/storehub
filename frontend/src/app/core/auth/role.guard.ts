@@ -1,4 +1,4 @@
-import { CanActivateFn, Router, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivateFn, Router, UrlTree } from '@angular/router';
 import { AuthGuardData, createAuthGuard } from 'keycloak-angular';
 import { inject } from '@angular/core';
 
@@ -10,7 +10,7 @@ import { inject } from '@angular/core';
  * @param authData
  */
 const hasRequiredRole = async (
-  route: any,
+  route: ActivatedRouteSnapshot,
   _state: unknown,
   authData: AuthGuardData,
 ): Promise<boolean | UrlTree> => {

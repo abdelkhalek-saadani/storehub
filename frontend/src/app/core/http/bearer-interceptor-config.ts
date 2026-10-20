@@ -1,6 +1,6 @@
 import {
-  INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
   createInterceptorCondition,
+  INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
   IncludeBearerTokenCondition,
 } from 'keycloak-angular';
 import { AppConfig } from '@core/config.service';

@@ -23,7 +23,6 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { Duration, LocalDateTime } from '@js-joda/core';
 import { Slot } from '../track-order';
 import { CatalogApi } from '@shared/service/catalog-api';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Toaster } from '@shared/service/toaster';
 
 @Component({
@@ -82,9 +81,9 @@ import { Toaster } from '@shared/service/toaster';
       }
 
       @if (
-        status()?.code != 'PAYMENT_VOIDED' &&
-        status()?.code != 'PAYMENT_REFUNDED' &&
-        status()?.code != 'CREATED'
+        status()?.code !== 'PAYMENT_VOIDED' &&
+        status()?.code !== 'PAYMENT_REFUNDED' &&
+        status()?.code !== 'CREATED'
       ) {
         <div
           class=" md:mt-8 p-6 md:p-8 flex flex-col md:flex-row md:justify-between items-center gap-4 border-[#F8F7F8] rounded-2xl bg-white"
@@ -115,9 +114,10 @@ export class OrderDetailView {
   isMobile = signal(false);
   orderApi = inject(OrderApi);
   catalogApi = inject(CatalogApi);
+  bpo = inject(BreakpointObserver);
 
-  constructor(bpo: BreakpointObserver) {
-    bpo
+  constructor() {
+    this.bpo
       .observe('(max-width: 768px)')
       .pipe(takeUntilDestroyed())
       .subscribe((res) => this.isMobile.set(res.matches));

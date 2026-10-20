@@ -1,4 +1,4 @@
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
 import { CartStore } from './cart-store';
 import { OrderApi } from '@shared/service/order-api';
@@ -76,7 +76,7 @@ describe('CartStore', () => {
     orderApiSpy.upsertItems.and.returnValue(of(mockCartResponse));
     const store = setup();
 
-    store.upsertItems([{ productId: 'p1', quantity: 2 } as any]);
+    store.upsertItems([{ productId: 'p1', quantity: 2 }]);
     expect(orderApiSpy.upsertItems).not.toHaveBeenCalled();
 
     setTimeout(() => {

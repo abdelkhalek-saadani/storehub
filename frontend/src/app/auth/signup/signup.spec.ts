@@ -7,6 +7,7 @@ import { Signup } from './signup';
 import { SignupApi } from '../signup-api';
 import { PendingStoreStorage } from '../pending-store-storage';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 
 describe('Signup', () => {
   let component: Signup;
@@ -135,7 +136,13 @@ describe('Signup', () => {
 
     it('sets errorMessage and resets isSubmitting when signup fails', async () => {
       signupServiceSpy.signup.and.returnValue(
-        throwError(() => ({ error: { message: 'Email already exists' } })),
+        throwError(
+          (): HttpErrorResponse =>
+            new HttpErrorResponse({
+              status: 409,
+              error: { message: 'Email already exists' },
+            }),
+        ),
       );
 
       await component.onSubmit();
@@ -145,7 +152,14 @@ describe('Signup', () => {
     });
 
     it('falls back to a generic error message when none is provided', async () => {
-      signupServiceSpy.signup.and.returnValue(throwError(() => ({})));
+      signupServiceSpy.signup.and.returnValue(
+        throwError(
+          (): HttpErrorResponse =>
+            new HttpErrorResponse({
+              error: { message: null },
+            }),
+        ),
+      );
 
       await component.onSubmit();
 

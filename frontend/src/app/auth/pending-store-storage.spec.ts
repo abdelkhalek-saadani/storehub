@@ -1,4 +1,4 @@
-import { PendingStoreStorage, PendingStore, STORAGE_KEY } from './pending-store-storage';
+import { PendingStore, PendingStoreStorage, STORAGE_KEY } from './pending-store-storage';
 
 describe('PendingStoreStorage', () => {
   let service: PendingStoreStorage;

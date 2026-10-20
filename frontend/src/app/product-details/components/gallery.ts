@@ -1,4 +1,4 @@
-import { Component, signal, computed, input } from '@angular/core';
+import { Component, computed, input, signal } from '@angular/core';
 
 @Component({
   selector: 'app-gallery',
@@ -17,10 +17,14 @@ import { Component, signal, computed, input } from '@angular/core';
           <div
             class="rounded-2xl overflow-hidden aspect-square h-13 md:aspect-none md:w-19 md:h-25 cursor-pointer"
             (click)="selectImage(image.id)"
+            (keyup.enter)="selectImage(image.id)"
+            (focus)="selectImage(image.id)"
             [class.ring-2]="selectedImageId() === image.id"
             [class.ring-primary]="selectedImageId() === image.id"
             [class.opacity-100]="selectedImageId() === image.id"
             [class.opacity-50]="selectedImageId() !== image.id"
+            tabindex="0"
+            (keydown.enter)="selectImage(image.id)"
           >
             <img
               [src]="image.imgUrl"

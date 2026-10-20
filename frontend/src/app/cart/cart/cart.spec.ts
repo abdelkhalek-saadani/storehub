@@ -7,7 +7,7 @@ import { CartStore } from '../cart-store';
 import { CartSidenav } from '@shared/service/cart-sidenav';
 import { StoreContext } from '../../store/service/store-context';
 import { CartItemResponse } from '../model/cart-response';
-import { provideRouter, RouterLink } from '@angular/router';
+import { provideRouter } from '@angular/router';
 
 function buildItem(overrides: Partial<CartItemResponse> = {}): CartItemResponse {
   return {

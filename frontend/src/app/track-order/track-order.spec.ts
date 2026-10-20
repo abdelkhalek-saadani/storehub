@@ -1,22 +1,21 @@
-import { Component, provideZonelessChangeDetection } from '@angular/core';
+import { Component, input, provideZonelessChangeDetection } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, Subject } from 'rxjs';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import TrackOrderPage from './track-order';
-import { OrderApi } from '@shared/service/order-api';
+import { OrderApi, OrderResponse } from '@shared/service/order-api';
 import { OrderDetailView } from './order-details-view/order-details-view';
 
 @Component({
   selector: 'app-order-detail-view',
   template: '',
   standalone: true,
-  inputs: ['orderResult'],
 })
 class OrderDetailViewStub {
-  orderResult: unknown;
+  orderResult = input<unknown>();
 }
 
-function buildOrderResponse(overrides: Partial<any> = {}) {
+function buildOrderResponse(overrides: Partial<OrderResponse> = {}) {
   return {
     orderId: 'order-1',
     userId: 'user-1',
@@ -42,7 +41,7 @@ describe('TrackOrderPage', () => {
   let component: TrackOrderPage;
   let fixture: ComponentFixture<TrackOrderPage>;
   let orderApiSpy: jasmine.SpyObj<OrderApi>;
-  let queryParamMapSubject: Subject<any>;
+  let queryParamMapSubject: Subject<unknown>;
 
   beforeEach(async () => {
     orderApiSpy = jasmine.createSpyObj('OrderApi', ['getOrder']);

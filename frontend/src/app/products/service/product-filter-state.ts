@@ -1,4 +1,4 @@
-import { Injectable, inject, computed } from '@angular/core';
+import { computed, inject, Injectable } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductFilters } from '../models/product-filters';
@@ -18,7 +18,7 @@ export class ProductFilterState {
     const minPrice = params.get('minPrice');
     const maxPrice = params.get('maxPrice');
     const saleEvent = params.get('saleEvent');
-    let isBestSeller = params.get('isBestSeller');
+    const isBestSeller = params.get('isBestSeller');
 
     return {
       categories: categories ? categories.split(',') : [],

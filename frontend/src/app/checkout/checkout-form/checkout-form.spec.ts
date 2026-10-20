@@ -10,7 +10,6 @@ import { PhoneInput } from '../phone-input/phone-input';
 import { DeliveryAddressForm } from '../delivery-address-form/delivery-address-form';
 import { DateAndDay } from '@shared/models/DateAndDay';
 import { DayOfWeek, LocalDate } from '@js-joda/core';
-import IntlTelInput from '@intl-tel-input/angular';
 
 @Component({ selector: 'app-phone-input', template: '', standalone: true })
 class PhoneInputStub {}

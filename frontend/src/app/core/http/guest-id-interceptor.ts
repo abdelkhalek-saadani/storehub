@@ -1,5 +1,4 @@
 import { HttpInterceptorFn, HttpResponse } from '@angular/common/http';
-import { environment } from '@environments/environment';
 import { tap } from 'rxjs';
 import { escapeRegex } from './bearer-interceptor-config';
 import { inject } from '@angular/core';

@@ -34,7 +34,12 @@ import { ProductFilterState } from '../service/product-filter-state';
       </button>
 
       <mat-menu #categoryMenu>
-        <div class="px-4 py-2 flex flex-col gap-2" (click)="$event.stopPropagation()">
+        <div
+          class="px-4 py-2 flex flex-col gap-2"
+          (click)="$event.stopPropagation()"
+          (keydown)="$event.stopPropagation()"
+          tabindex="0"
+        >
           <span class="text-sm text-gray-500">Filter by category</span>
 
           @for (category of categories; track $index) {
@@ -58,7 +63,12 @@ import { ProductFilterState } from '../service/product-filter-state';
       </button>
 
       <mat-menu #priceMenu>
-        <div class="px-4 py-2 flex flex-col gap-3" (click)="$event.stopPropagation()">
+        <div
+          class="px-4 py-2 flex flex-col gap-3"
+          (click)="$event.stopPropagation()"
+          tabindex="0"
+          (keydown)="$event.stopPropagation()"
+        >
           <span class="text-sm text-gray-500">Filter by price range</span>
 
           <div class="flex gap-2">

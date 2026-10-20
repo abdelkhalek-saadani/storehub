@@ -1,6 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatButton } from '@angular/material/button';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { MatInput, MatLabel } from '@angular/material/input';
 import { MatButtonToggle, MatButtonToggleGroup } from '@angular/material/button-toggle';
@@ -15,7 +14,6 @@ import { AddressType, CheckoutFormService } from '../checkout-form.service';
 @Component({
   selector: 'app-delivery-address-form',
   imports: [
-    MatButton,
     MatInput,
     MatLabel,
     MatButtonToggleGroup,
@@ -91,9 +89,10 @@ export class DeliveryAddressForm {
   isXSMobile = signal(false);
   formService = inject(CheckoutFormService);
   checkoutForm = this.formService.form;
+  bpo = inject(BreakpointObserver);
 
-  constructor(bpo: BreakpointObserver) {
-    bpo
+  constructor() {
+    this.bpo
       .observe(Breakpoints.xs)
       .pipe(takeUntilDestroyed())
       .subscribe((result) => this.isXSMobile.set(result.matches));

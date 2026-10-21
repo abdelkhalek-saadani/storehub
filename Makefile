@@ -1,15 +1,19 @@
-.PHONY: e2e e2e-up e2e-down e2e-seed e2e-test quickstart quickstart-up quickstart-seed quickstart-down
+.PHONY: e2e e2e-build e2e-up e2e-down e2e-seed e2e-test quickstart quickstart-up quickstart-seed quickstart-down
 
 # ---- E2E ----
 e2e:
 	$(MAKE) e2e-down
 	trap '$(MAKE) e2e-down' EXIT; \
+	$(MAKE) e2e-build && \
 	$(MAKE) e2e-up && \
 	$(MAKE) e2e-seed && \
-	$(MAKE) test
+	$(MAKE) e2e-test
+
+e2e-build:
+	docker compose -f compose.e2e.yml build
 
 e2e-up:
-	docker compose -f compose.e2e.yml -f frontend.override.yml up -d --build
+	docker compose -f compose.e2e.yml -f frontend.override.yml up -d
 
 e2e-seed:
 	cd frontend && npx cypress run --spec "cypress/e2e/seed/seed.cy.ts"

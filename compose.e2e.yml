@@ -16,6 +16,7 @@ services:
       retries: 5
 
   catalog:
+    image: ghcr.io/abdelkhalek-saadani/storehub/catalog-service:${IMAGE_TAG:-e2e}
     build: ./backend/catalog-service
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://catalog-db:5432/catalog_db
@@ -54,6 +55,7 @@ services:
       retries: 5
 
   payment:
+    image: ghcr.io/abdelkhalek-saadani/storehub/payment-service:${IMAGE_TAG:-e2e}
     build: ./backend/payment-service
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://payment-db:5432/payment_db
@@ -95,6 +97,7 @@ services:
       retries: 5
 
   order:
+    image: ghcr.io/abdelkhalek-saadani/storehub/order-service:${IMAGE_TAG:-e2e}
     build: ./backend/order-service
     environment:
       SPRING_R2DBC_URL: r2dbc:postgresql://order-db:5432/order_db

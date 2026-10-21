@@ -1,0 +1,232 @@
+name: production
+
+services:
+
+  frontend:
+    image: ghcr.io/abdelkhalek-saadani/storehub/frontend:${IMAGE_TAG}
+    environment:
+      KC_URL: ${KC_URL:-https://auth-server.storehub.abdelkhalek.dev}
+      ORDER_URL: ${ORDER_URL:-https://order.storehub.abdelkhalek.dev}
+      CATALOG_URL: ${CATALOG_URL:-https://catalog.storehub.abdelkhalek.dev}
+    ports:
+      - ${FRONTEND_PORT:-8080}:8080
+    depends_on:
+      - order
+      - catalog
+      - auth-server
+    restart: unless-stopped
+
+  auth-server:
+    image: quay.io/keycloak/keycloak:26.1.1
+    command: start-dev --import-realm
+    environment:
+      KC_HEALTH_ENABLED: "true"
+      KC_METRICS_ENABLED: "true"
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN:-admin}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      KC_HTTP_PORT: ${KC_PORT:-8088}
+      KC_HOSTNAME: ${KC_HOSTNAME:-https://auth-server.storehub.abdelkhalek.dev}
+      KC_HOSTNAME_PORT: ${KC_PORT:-8088}
+      KC_HOSTNAME_STRICT: "false"
+      KC_HTTP_ENABLED: "true"
+      KC_DB: postgres
+      KC_DB_URL_HOST: auth-server-db
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: password
+      KC_DB_SCHEMA: public
+
+      KC_PROXY_HEADERS: xforwarded
+
+    ports:
+      - ${KC_PORT:-8088}:${KC_PORT:-8088}
+      - ${KC_HEALTH_PORT:-9000}:9000
+    volumes:
+      - ./keycloak/realm-data/:/opt/keycloak/data/import
+      - ./keycloak/keycloak-themes/storehub:/opt/keycloak/themes/storehub
+    healthcheck:
+      test: [ "CMD-SHELL", "exec 3<>/dev/tcp/localhost/9000 && echo -e 'GET /health/live HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n' >&3 && cat <&3 | grep -q ' 200 '" ]
+      interval: 10s
+      timeout: 10s
+      retries: 20
+      start_period: 30s
+    restart: unless-stopped
+    depends_on:
+      auth-server-db:
+        condition: service_healthy
+
+  auth-server-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U keycloak" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - auth_server_data:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - ${MQ_PORT_CLIENT:-5672}:5672
+      - ${MQ_PORT_WEB:-15672}:15672
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  catalog:
+    image: ghcr.io/abdelkhalek-saadani/storehub/catalog-service:${IMAGE_TAG}
+    environment:
+      SERVER_PORT: 8080
+      SPRING_DATASOURCE_URL: jdbc:postgresql://catalog-db:5432/catalog_db
+      SPRING_DATASOURCE_USERNAME: catalog
+      SPRING_DATASOURCE_PASSWORD: catalog
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_PROFILES_ACTIVE: health
+      KC_BASE_URL: ${KC_URL:-https://auth-server.storehub.abdelkhalek.dev}
+      ORDER_BASE_URL: http://order:8080
+      FRONTEND_URL: ${FRONTEND_URL:-https://storehub.abdelkhalek.dev}     # This is important for CORS
+      ORDER_INTERNAL_SECRET: ${ORDER_INTERNAL_SECRET:-**********} # Order internal client secret for demo only, safe to expose, rotate freely, not production secrets
+      KC_ADMIN_CLIENT_SECRET: ${KC_ADMIN_CLIENT_SECRET:-**********} # Keycloak Admin client secret for demo only, safe to expose, rotate freely, not production secrets
+    ports:
+      - "${CATALOG_PORT:-8100}:8080"
+    depends_on:
+      catalog-db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  catalog-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: catalog_db
+      POSTGRES_USER: catalog
+      POSTGRES_PASSWORD: catalog
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U catalog -d catalog_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    volumes:
+      - catalog_data:/var/lib/postgresql/data
+
+  payment:
+    image: ghcr.io/abdelkhalek-saadani/storehub/payment-service:${IMAGE_TAG}
+    environment:
+      SERVER_PORT: 8080
+      SPRING_DATASOURCE_URL: jdbc:postgresql://payment-db:5432/payment_db
+      SPRING_DATASOURCE_USERNAME: payment
+      SPRING_DATASOURCE_PASSWORD: payment
+      SPRING_RABBITMQ_HOST: rabbitmq
+      PAYPAL_BASE_URL: ${PAYPAL_BASE_URL:-https://api.sandbox.paypal.com}
+      PAYPAL_CANCEL_URL: ${FRONTEND_URL:-https://storehub.abdelkhalek.dev}/checkout/cancel
+      PAYPAL_RETURN_URL: ${FRONTEND_URL:-https://storehub.abdelkhalek.dev}/checkout/return
+      SPRING_PROFILES_ACTIVE: health
+      KC_BASE_URL: ${KC_URL:-https://auth-server.storehub.abdelkhalek.dev}
+      PAYPAL_CLIENT_ID: ${PAYPAL_CLIENT_ID:-AaYcr5NvkOxKC4Kuxw927ADzt0eRO-9y3hFykTSAr1S0z_CKuWVXy5XHqhoP-S4aVY3EevLma1pH61E_} # Public sandbox demo credentials, safe to expose, rotate freely, not production secrets
+      PAYPAL_CLIENT_SECRET: ${PAYPAL_CLIENT_SECRET:-EFE4CyfVMKCfq_sspIXw2FttlAzuG-nP3hQbAQRlUyNKxc_1FNUJ7SaPvciu8vUIgjFllOH4lBO9s4y_} # # Public sandbox demo credentials, safe to expose, rotate freely, not production secrets
+      PAYPAL_WEBHOOK_ID: ${PAYPAL_WEBHOOK_ID:-772362731Y492950G}
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+    ports:
+      - ${PAYMENT_PORT:-8200}:8080
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      payment-db:
+        condition: service_healthy
+      auth-server:
+        condition: service_healthy
+    restart: unless-stopped
+
+
+  payment-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: payment_db
+      POSTGRES_USER: payment
+      POSTGRES_PASSWORD: payment
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U payment -d payment_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    volumes:
+      - payment_data:/var/lib/postgresql/data
+
+  order:
+    image: ghcr.io/abdelkhalek-saadani/storehub/order-service:${IMAGE_TAG}
+    environment:
+      SERVER_PORT: 8080
+      SPRING_R2DBC_URL: r2dbc:postgresql://order-db:5432/order_db
+      SPRING_R2DBC_USERNAME: order
+      SPRING_R2DBC_PASSWORD: order
+      SPRING_RABBITMQ_HOST: rabbitmq
+      CATALOG_BASE_URL: http://catalog:8080
+      PAYMENT_BASE_URL: http://payment:8080
+      KC_BASE_URL: ${KC_URL:-https://auth-server.storehub.abdelkhalek.dev}
+      SPRING_PROFILES_ACTIVE: health
+      FRONTEND_URL: ${FRONTEND_URL:-https://storehub.abdelkhalek.dev}     # This is important for CORS
+      ORDER_INTERNAL_SECRET: ${ORDER_INTERNAL_SECRET:-**********} # Order internal client secret for demo only, safe to expose, rotate freely, not production secrets
+      KC_ADMIN_CLIENT_SECRET: ${KC_ADMIN_CLIENT_SECRET:-**********} # Keycloak Admin client secret for demo only, safe to expose, rotate freely, not production secrets
+    ports:
+      - ${ORDER_PORT:-8090}:8080
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      order-db:
+        condition: service_healthy
+      catalog:
+        condition: service_healthy
+      payment:
+        condition: service_healthy
+      auth-server:
+        condition: service_started
+    healthcheck:
+      test: [ "CMD", "wget", "-qO-", "http://localhost:8080/actuator/health" ]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  order-db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: order_db
+      POSTGRES_USER: order
+      POSTGRES_PASSWORD: order
+    volumes:
+      - ./backend/order-service/src/main/resources/init-scripts:/docker-entrypoint-initdb.d
+      - order_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U order -d order_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+
+
+volumes:
+  auth_server_data:
+  order_data:
+  payment_data:
+  catalog_data:

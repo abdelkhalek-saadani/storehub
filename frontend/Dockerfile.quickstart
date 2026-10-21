@@ -19,6 +19,10 @@ RUN --mount=type=cache,target=/var/cache/apk \
   apk add --no-cache gettext
 
 
+# Tell Puppeteer to skip its own download and use system Chromium
+ENV PUPPETEER_SKIP_DOWNLOAD=true
+ENV CHROME_BIN=/usr/bin/chromium-browser
+
 # Copy only the dependency files first to optimize Docker caching
 COPY package.json package-lock.json* ./
 

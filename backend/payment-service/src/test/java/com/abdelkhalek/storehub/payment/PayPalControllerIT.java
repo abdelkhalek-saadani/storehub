@@ -71,6 +71,18 @@ class PayPalControllerIT {
                         }
                         """)));
 
+        stubFor(com.github.tomakehurst.wiremock.client.WireMock.post(
+                urlPathEqualTo("/v1/oauth2" +
+                        "/token"))
+                .willReturn(okJson("""
+                        {
+                              "access_token": "mock-access-token-12345",
+                              "token_type": "Bearer",
+                              "expires_in": 3600,
+                              "refresh_token": "mock-refresh-token-67890",
+                              "scope": "read write"
+                            }
+                        """)));
         var request = new CreatePaymentRequest(UUID.randomUUID(), UUID.randomUUID(), new BigDecimal("49.99"));
 
         mockMvc.perform(post("/api/payments/paypal")

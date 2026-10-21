@@ -11,6 +11,8 @@ import com.abdelkhalek.storehub.payment.repository.ProcessedWebhookEventReposito
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import org.awaitility.Awaitility;
+import org.junit.After;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -67,6 +69,8 @@ class WebhookIT {
     @Container
     @ServiceConnection
     static RabbitMQContainer rabbit = new RabbitMQContainer("rabbitmq:3.13-management-alpine");
+    @Autowired
+    private WireMockServer wireMockServer;
 
 
     @DynamicPropertySource
@@ -117,6 +121,29 @@ class WebhookIT {
                 .status(PaymentStatus.CREATED)
                 .build());
         paymentId = payment.getId();
+    }
+
+    @BeforeEach
+    public void stubPayPalOAuth(){
+        stubFor(com.github.tomakehurst.wiremock.client.WireMock.post(
+                        urlPathEqualTo("/v1/oauth2" +
+                                "/token"))
+                .willReturn(okJson("""
+                        {
+                              "access_token": "mock-access-token-12345",
+                              "token_type": "Bearer",
+                              "expires_in": 3600,
+                              "refresh_token": "mock-refresh-token-67890",
+                              "scope": "read write"
+                            }
+                        """)));
+    }
+
+    @AfterEach
+    public void cleanUp() {
+        paymentRepository.deleteAll();
+        processedWebhookEventRepository.deleteAll();
+        wireMockServer.resetAll();
     }
 
     @Test

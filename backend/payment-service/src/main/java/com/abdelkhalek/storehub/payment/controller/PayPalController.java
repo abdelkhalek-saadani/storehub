@@ -187,7 +187,7 @@ public class PayPalController {
     public ResponseEntity<PagedResponse<PaymentEntity>> getPayments(
             @RequestParam(required = false) String captureId,
             @RequestParam(required = false) String authorizationId,
-            @RequestParam(required = false) UUID customerId,
+            @RequestParam(required = false)  UUID customerId,
             @RequestParam(required = false) PaymentStatus status,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,

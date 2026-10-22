@@ -1,11 +1,11 @@
 spring:
   application:
     name: catalog
-    cors.allowed-origins: ${FRONTEND_URL}
+    cors.allowed-origins: ${FRONTEND_URL:http://localhost:4200}
   datasource:
     url: jdbc:postgresql://localhost:5432/catalog_db
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
   jpa:
     hibernate:
       ddl-auto: update
@@ -20,19 +20,19 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${KC_BASE_URL}/realms/storehub
-          jwk-set-uri: ${KC_BASE_URL}/realms/storehub/protocol/openid-connect/certs
+          issuer-uri: ${KC_BASE_URL:http://auth-server:8088}/realms/storehub
+          jwk-set-uri: ${KC_BASE_URL:http://auth-server:8088}/realms/storehub/protocol/openid-connect/certs
 
       client:
         registration:
           internal-service:
             provider: storehub-keycloak
             client-id: order-internal
-            client-secret: ${ORDER_INTERNAL_SECRET}
+            client-secret: ${ORDER_INTERNAL_SECRET:**********}
             authorization-grant-type: client_credentials
         provider:
           storehub-keycloak:
-            token-uri: ${KC_BASE_URL}/realms/storehub/protocol/openid-connect/token
+            token-uri: ${KC_BASE_URL:http://auth-server:8088}/realms/storehub/protocol/openid-connect/token
 
 logging:
   level:
@@ -49,9 +49,8 @@ logging:
 storehub:
   internal-client-registration: internal-service
   admin-client-registration: keycloak-admin
-  catalog-base-url: ${CATALOG_BASE_URL}
-  order-base-url: ${ORDER_BASE_URL}
-  kc-base-url: ${KC_BASE_URL}
+  order-base-url: ${ORDER_BASE_URL:http://localhost:8080}
+  kc-base-url: ${KC_BASE_URL:http://auth-server:8088}
   realm: storehub
   rabbit.exchange: storehub.exchange
 

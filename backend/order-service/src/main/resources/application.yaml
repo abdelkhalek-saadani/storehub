@@ -1,7 +1,7 @@
 spring:
   application:
     name: Order
-    cors.allowed-origins: ${FRONTEND_URL}
+    cors.allowed-origins: ${FRONTEND_URL:http://localhost:4200}
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/order_db
     username: postgres
@@ -17,25 +17,25 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${KC_BASE_URL}/realms/storehub
-          jwk-set-uri: ${KC_BASE_URL}/realms/storehub/protocol/openid-connect/certs
+          issuer-uri: ${KC_BASE_URL:http://auth-server:8088}/realms/storehub
+          jwk-set-uri: ${KC_BASE_URL:http://auth-server:8088}/realms/storehub/protocol/openid-connect/certs
 
       client:
         registration:   # this name = "credentials used when calling catalog or any other internal service"
           keycloak-admin:
             provider: storehub-keycloak
             client-id: order-admin
-            client-secret: ${KC_ADMIN_CLIENT_SECRET}
+            client-secret: ${KC_ADMIN_CLIENT_SECRET:**********}
             authorization-grant-type: client_credentials
             scope: openid
           internal-service:
             provider: storehub-keycloak
             client-id: order-internal
-            client-secret: ${ORDER_INTERNAL_SECRET}
+            client-secret: ${ORDER_INTERNAL_SECRET:**********}
             authorization-grant-type: client_credentials
         provider:
           storehub-keycloak:
-            token-uri: ${KC_BASE_URL}/realms/storehub/protocol/openid-connect/token
+            token-uri: ${KC_BASE_URL:http://auth-server:8088}/realms/storehub/protocol/openid-connect/token
 logging:
   level:
     com.abdelkhalek.storehub: DEBUG
@@ -43,11 +43,11 @@ logging:
 storehub:
   internal-client-registration: internal-service
   admin-client-registration: keycloak-admin
-  catalog-base-url: ${CATALOG_BASE_URL}
-  kc-base-url: ${KC_BASE_URL}
+  catalog-base-url: ${CATALOG_BASE_URL:http://localhost:8082}
+  kc-base-url: ${KC_BASE_URL:http://auth-server:8088}
   realm: storehub
   rabbit.exchange: storehub.exchange
-  payment-base-url: ${PAYMENT_BASE_URL}
+  payment-base-url: ${PAYMENT_BASE_URL:http://localhost:8083}
 
 
 management:

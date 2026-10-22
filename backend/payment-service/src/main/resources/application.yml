@@ -17,13 +17,13 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${KC_BASE_URL}/realms/storehub
-          jwk-set-uri: ${KC_BASE_URL}/realms/storehub/protocol/openid-connect/certs
+          issuer-uri: ${KC_BASE_URL:http://auth-server:8088}/realms/storehub
+          jwk-set-uri: ${KC_BASE_URL:http://auth-server:8088}/realms/storehub/protocol/openid-connect/certs
       client:
         registration:
           paypal:
-            client-id: ${PAYPAL_CLIENT_ID}
-            client-secret: ${PAYPAL_CLIENT_SECRET}
+            client-id: ${PAYPAL_CLIENT_ID:sandbox-client-id}
+            client-secret: ${PAYPAL_CLIENT_SECRET:sandbox-client-secret}
             authorization-grant-type: client_credentials
             provider: paypal
         provider:

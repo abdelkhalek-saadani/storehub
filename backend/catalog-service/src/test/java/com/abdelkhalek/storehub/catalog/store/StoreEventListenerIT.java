@@ -3,6 +3,7 @@ package com.abdelkhalek.storehub.catalog.store;
 import com.abdelkhalek.storehub.catalog.store.entity.StoreShadow;
 import com.abdelkhalek.storehub.catalog.store.event.StoreCreatedEvent;
 import com.abdelkhalek.storehub.catalog.store.repository.StoreShadowRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,11 @@ class StoreEventListenerIT {
 
     @Autowired
     private StoreShadowRepository storeShadowRepository;
+
+    @AfterEach
+    void cleanUp() {
+        storeShadowRepository.deleteAll();
+    }
 
     @Test
     void handleStoreCreated_persistsStoreShadow_whenEventReceived() {

@@ -1,5 +1,6 @@
 package com.abdelkhalek.storehub.catalog.user;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,11 @@ class UserEventListenerIT {
 
     @Autowired
     private UserShadowRepository userShadowRepository;
+
+    @AfterEach
+    void cleanUp() {
+        userShadowRepository.deleteAll();
+    }
 
     @Test
     void handleUserCreated_persistsUserShadow_whenEventReceived() {

@@ -144,8 +144,13 @@ jobs:
       - name: Start stack
         run: make e2e-up
 
-      - name: Seed
-        run: make e2e-seed
+      - name: Seed ( Using Cypress script)
+        uses: cypress-io/github-action@v6
+        with:
+          working-directory: frontend
+          spec: cypress/e2e/seed/seed.cy.ts
+          wait-on: http://localhost:8080
+          wait-on-timeout: 180
 
       - name: Run Cypress
         uses: cypress-io/github-action@v6

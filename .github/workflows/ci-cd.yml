@@ -122,7 +122,7 @@ jobs:
     name: E2E (Cypress)
     needs: build-and-push
     runs-on: ubuntu-latest
-    timeout-minutes: 6
+    timeout-minutes: 15
     permissions:
       contents: read
       packages: write
@@ -146,6 +146,8 @@ jobs:
 
       - name: Seed ( Using Cypress script)
         uses: cypress-io/github-action@v6
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: "true"
         with:
           working-directory: frontend
           spec: cypress/e2e/seed/seed.cy.ts

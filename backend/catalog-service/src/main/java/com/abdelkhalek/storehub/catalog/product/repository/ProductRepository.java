@@ -2,6 +2,7 @@ package com.abdelkhalek.storehub.catalog.product.repository;
 
 
 import com.abdelkhalek.storehub.catalog.product.entity.ProductEntity;
+import org.springframework.data.domain.Limit;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -17,7 +18,8 @@ import java.util.UUID;
 public interface ProductRepository extends JpaRepository<ProductEntity, UUID>,
         JpaSpecificationExecutor<ProductEntity> {
 
-    List<ProductEntity> findByStoreIdAndIdIn(UUID storeId, List<UUID> productIds);
+    List<ProductEntity> findByStoreIdAndNameContainingIgnoreCase(UUID storeId,String name,
+                                                                   Limit limit);
 
     List<ProductEntity> findByStoreId(UUID storeId, Pageable pageable);
 

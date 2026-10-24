@@ -1,5 +1,7 @@
 /// <reference types="cypress" />
 
+import { ProductPayload, SignupPayload, SlotConfigPayload, StorePayload } from './commands';
+
 declare namespace Cypress {
   interface Chainable {
     signup(user: SignupPayload): Chainable<Cypress.Response<any>>;

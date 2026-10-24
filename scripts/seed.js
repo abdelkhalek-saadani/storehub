@@ -287,9 +287,15 @@ async function createStore(token, store) {
             headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'application/json'},
             body: JSON.stringify(store),
         })
+
     if (res.status !== 201) {
-        throw new Error(`Store creation failed for ${store.name}: ${res.status}`);
+        if (res.status === 409) {
+            console.log('Conflict, Store maybe already exists from previous script run');
+        } else {
+            throw new Error(`Store creation failed for ${store.email}: ${res.status}`);
+        }
     }
+
     return res;
 }
 
@@ -302,7 +308,11 @@ async function createProduct(token, product) {
         })
 
     if (res.status !== 201) {
-        throw new Error(`Product creation failed for ${product.name}: ${res.status}`);
+        if (res.status === 409) {
+            console.log('Conflict, Product maybe already exists from previous script run');
+        } else {
+            throw new Error(`Product creation failed for ${product.name}: ${res.status}`);
+        }
     }
     return res;
 }

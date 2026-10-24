@@ -49,6 +49,14 @@ export class CatalogApi {
     return storeId;
   }
 
+  searchProducts(name: string, count = 6): Observable<Product[]> {
+    const params = new HttpParams()
+      .set('name', name)
+      .set('count', count)
+      .set('storeId', this.getStoreId());
+    return this.http.get<Product[]>(`${this.productsUrl}/search`, { params });
+  }
+
   getProducts(query: ProductQuery): Observable<PagedResponse<Product>> {
     let params = new HttpParams()
       .set('storeId', this.getStoreId())

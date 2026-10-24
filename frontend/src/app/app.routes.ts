@@ -88,9 +88,19 @@ export const routes: Routes = [
             path: 'product/:productId',
             loadComponent: () => import('./product-details/product-details'),
           },
+          {
+            path: '',
+            redirectTo: 'products-explorer',
+          },
         ],
       },
     ],
   },
+
+  {
+    path: 'not-found',
+    loadComponent: () => import('./not-found/not-found'),
+  },
+
   { path: '**', canActivate: [storeRequiredGuard], children: [] },
 ];

@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Limit;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -53,6 +54,19 @@ public class ProductController {
         CreateProductDto created = productService.create(storeId, request.name(), request.unitPrice(),
                 request.initialQty(), request.imageUrl(), request.isBestSeller());
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    @Operation(summary = "Search products by name")
+    @GetMapping("products/search")
+    public ResponseEntity<List<ProductResponse>> search(@RequestParam String name,
+                                                        @RequestParam(defaultValue = "6") Integer count,
+                                                        @RequestParam UUID storeId) {
+        List<ProductEntity> products =
+                productRepository.findByStoreIdAndNameContainingIgnoreCase(storeId,name,
+                        Limit.of(count));
+        List<ProductResponse> response = productMapper.toResponses(products);
+
+        return ResponseEntity.ok(response);
     }
 
     @Operation(summary = "List products with filtering and pagination")

@@ -14,8 +14,9 @@ import { MatButton } from '@angular/material/button';
 import { MatDialogClose } from '@angular/material/dialog';
 import { CartSidenav } from '@shared/service/cart-sidenav';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Cart } from '../../cart/cart/cart';
+import { CatalogApi, CategoryWithSubs } from '@shared/service/catalog-api';
 
 @Component({
   selector: 'app-sidenav-container',
@@ -31,10 +32,6 @@ import { Cart } from '../../cart/cart/cart';
     MatExpansionPanel,
     MatExpansionPanelTitle,
     MatExpansionPanelHeader,
-    MatDivider,
-    MatCheckbox,
-    MatButton,
-    MatDialogClose,
     Cart,
   ],
   template: `
@@ -45,43 +42,24 @@ import { Cart } from '../../cart/cart/cart';
           <div class="p-6">
             <h2 class="text-lg text-gray-900">Categories</h2>
             <mat-nav-list>
-              @for (category of categories; track category.label) {
+              @for (category of categories.value(); track category.id) {
                 <mat-expansion-panel class="nav-list">
                   <mat-expansion-panel-header>
-                    <mat-panel-title>{{ category.label }}</mat-panel-title>
+                    <mat-panel-title>{{ category.name }}</mat-panel-title>
                   </mat-expansion-panel-header>
 
-                  @for (sub of category.subcategories; track sub) {
-                    <a mat-list-item [routerLink]="['/products']" [queryParams]="{ category: sub }">
-                      {{ sub }}
+                  @for (sub of category.subCategories; track sub) {
+                    <a
+                      mat-list-item
+                      [routerLink]="['/products']"
+                      [queryParams]="{ categories: sub.name }"
+                    >
+                      {{ sub.name }}
                     </a>
                   }
                 </mat-expansion-panel>
               }
             </mat-nav-list>
-            <mat-divider></mat-divider>
-            <div class="mt-3">
-              <span class="font-semibold text-lg">Filters</span>
-              <div class="flex flex-col gap-3">
-                <div class="flex flex-col">
-                  <span class="p-3 pb-2 font-normal text-[#71717A] text-base"
-                    >Filter products by category</span
-                  >
-                  <mat-checkbox>Cat1</mat-checkbox>
-                  <mat-checkbox>Cat2</mat-checkbox>
-                  <mat-divider></mat-divider>
-                </div>
-                <div class="flex flex-col">
-                  <span class="p-3 pb-2 font-normal text-[#71717A] text-base"
-                    >Filter products by category</span
-                  >
-                  <mat-checkbox>Cat1</mat-checkbox>
-                  <mat-checkbox>Cat2</mat-checkbox>
-                </div>
-              </div>
-              <button matButton [mat-dialog-close]="true" cdkFocusInitial>Apply</button>
-              <button matButton mat-dialog-close>Reset</button>
-            </div>
           </div>
         </mat-sidenav>
 
@@ -100,15 +78,15 @@ import { Cart } from '../../cart/cart/cart';
 export default class Layout implements AfterViewInit {
   sidenavService = inject(SidenavService);
   cartSidenavService = inject(CartSidenav);
+  catalogApi = inject(CatalogApi);
 
   @ViewChild('sidenav') sidenav!: MatSidenav;
   @ViewChild('cartSidenav') cartSidenav!: MatSidenav;
 
-  categories = [
-    { label: 'Dairy', subcategories: ['Milk', 'Cheese', 'Butter'] },
-    { label: 'Fresh', subcategories: ['Fruits', 'Vegetables'] },
-    { label: 'Frozen', subcategories: ['Ice Cream', 'Frozen Meals'] },
-  ];
+  categories = rxResource<CategoryWithSubs[], unknown>({
+    stream: (params) => this.catalogApi.getCategoriesWithSubs(),
+    defaultValue: [],
+  });
 
   isMobile = signal(false);
   bpo = inject(BreakpointObserver);

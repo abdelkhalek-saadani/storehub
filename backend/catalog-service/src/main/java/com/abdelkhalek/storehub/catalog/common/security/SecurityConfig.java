@@ -50,6 +50,7 @@ public class SecurityConfig {
                                 "/api/delivery-slots/reservations/**").hasRole("SERVICE")
                         .requestMatchers(HttpMethod.PATCH, "/api/delivery-slots/*/override")
                         .hasRole("STORE_OWNER")
+                        .requestMatchers(HttpMethod.POST, "api/categories/*").hasRole("STORE_OWNER")
                         .requestMatchers(HttpMethod.GET, "api/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/inventory/check-availability")
                         .permitAll()

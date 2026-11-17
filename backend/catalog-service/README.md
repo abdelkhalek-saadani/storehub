@@ -16,6 +16,27 @@ docker run -e SPRING_PROFILES_ACTIVE=e2e --env-file .env --network host --name c
 Assuming rabbitmq broker is running on `5672,15672` and postgres database is running on `5432` and keycloak on
 `http://auth-server:8088`
 
+## Development
+To start the project with the `compose.dev.yml` environment, export these env variables 
+```shell 
+export \
+  SERVER_PORT="8100" \
+  SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5100/catalog_db" \
+  SPRING_DATASOURCE_USERNAME="catalog" \
+  SPRING_DATASOURCE_PASSWORD="catalog" \
+  SPRING_RABBITMQ_HOST="localhost" \
+  SPRING_PROFILES_ACTIVE="health" \
+  KC_BASE_URL="http://auth-server:8088" \
+  ORDER_BASE_URL="http://localhost:8090" \
+  FRONTEND_URL="http://localhost:4200" \
+  ORDER_INTERNAL_SECRET="**********" \
+  KC_ADMIN_CLIENT_SECRET="**********"
+```
+then start the project
+```shell
+mvn spring-boot:run
+```
+
 ## Authentication & Authorization
 
 Auth is JWT-based. Store owner endpoints are protected with the `STORE_OWNER` role, while inter-service endpoints

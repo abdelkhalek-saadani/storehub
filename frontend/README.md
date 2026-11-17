@@ -121,3 +121,16 @@ frontend at the correct service ports for the quickstart setup.
 
 Note: make sure to set `FRONTEND_URL`, or the order and catalog services will reject frontend requests due to CORS.
 
+## Development Against the Development Stack
+To run this project with in `comopose.dev.yml` environment, export these variables:
+```shell
+export \
+  KC_URL="http://auth-server:8088" \
+  ORDER_URL="http://localhost:8090" \
+  CATALOG_URL="http://localhost:8100" \
+  ;
+```
+Then run
+```shell
+ng serve
+```

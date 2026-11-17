@@ -31,6 +31,12 @@ export interface SlotDto {
   endTime: string;
 }
 
+export interface CategoryWithSubs {
+  id: string;
+  name: string;
+  subCategories: CategoryResponse[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class CatalogApi {
   private http = inject(HttpClient);
@@ -47,6 +53,14 @@ export class CatalogApi {
       throw new Error('CatalogApi called before storeId is available');
     }
     return storeId;
+  }
+
+  getCategoriesWithSubs(): Observable<CategoryWithSubs[]> {
+    const params = new HttpParams().set('storeId', this.getStoreId());
+    return this.http.get<CategoryWithSubs[]>(
+      `${this.config.get().catalogApiUrl}/api/categories/parents`,
+      { params },
+    );
   }
 
   searchProducts(name: string, count = 6): Observable<Product[]> {

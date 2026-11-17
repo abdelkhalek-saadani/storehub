@@ -52,7 +52,7 @@ public class ProductController {
                                                    @RequestBody CreateProductDto request) {
         UUID storeId = storeService.getStoreId(jwt.getSubject());
         CreateProductDto created = productService.create(storeId, request.name(), request.unitPrice(),
-                request.initialQty(), request.imageUrl(), request.isBestSeller());
+                request.initialQty(), request.imageUrl(), request.isBestSeller(), request.categoryId() );
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
@@ -126,7 +126,18 @@ public class ProductController {
                                                             @RequestBody SubCategoryDTO request) {
         UUID storeId = storeService.getStoreId(jwt.getSubject());
         SubCategoryDTO created = categoryService.create(storeId, request.name(),
-                request.imageUrl());
+                request.imageUrl(), request.parentId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    @SecurityRequirement(name = "bearerAuth")
+    @Operation(summary = "Create a new parent category")
+    @ApiResponse(responseCode = "201", description = "Parent Category created")
+    @PostMapping("categories/parents")
+    public ResponseEntity<CreateCategoryDto> createParentCategory(@AuthenticationPrincipal Jwt jwt,
+                                                            @RequestBody CreateCategoryDto request) {
+        UUID storeId = storeService.getStoreId(jwt.getSubject());
+        CreateCategoryDto created = categoryService.createParent(storeId, request.name());
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 

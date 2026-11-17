@@ -30,6 +30,11 @@ export const routes: Routes = [
     loadComponent: () => import('./auth/signup/signup').then((m) => m.Signup),
   },
   {
+    path: 'profile',
+    canActivate: [authGuard],
+    loadComponent: () => import('./profile/profile'),
+  },
+  {
     path: 'post-login',
     loadComponent: () => import('./auth/post-login/post-login').then((m) => m.PostLogin),
   },
@@ -90,6 +95,7 @@ export const routes: Routes = [
           },
           {
             path: '',
+            pathMatch: 'full',
             redirectTo: 'products-explorer',
           },
         ],

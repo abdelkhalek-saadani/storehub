@@ -168,16 +168,29 @@ const saleEvents = [
 ];
 
 
-const subcategories = [
-    ['Fresh', 'https://images.unsplash.com/photo-1610832958506-aa56368176cf'],
-    ['Bakery ', 'https://images.unsplash.com/photo-1509440159596-0249088772ff'],
-    ['Dairy ', 'https://images.unsplash.com/photo-1628088062854-d1870b4553da'],
-    ['Meat ', 'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f'],
-    ['Pantry ', 'https://images.unsplash.com/photo-1606787366850-de6330128bfc'],
-    ['Snacks ', 'https://images.unsplash.com/photo-1621939514649-280e2ee25f60'],
-    ['Beverages', 'https://images.unsplash.com/photo-1544145945-f90425340c7e'],
-    ['Ready', 'https://images.unsplash.com/photo-1547592180-85f173990554'],
-];
+const categories = [{
+    parent: 'Fresh Foods',
+    subcategories: [
+        ['Fresh', 'https://images.unsplash.com/photo-1610832958506-aa56368176cf'],
+        ['Dairy', 'https://images.unsplash.com/photo-1628088062854-d1870b4553da'],
+        ['Meat', 'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f'],
+    ]
+}, {
+    parent: 'Packaged Goods',
+    subcategories: [
+        ['Bakery', 'https://images.unsplash.com/photo-1509440159596-0249088772ff'],
+        ['Pantry', 'https://images.unsplash.com/photo-1606787366850-de6330128bfc'],
+        ['Snacks', 'https://images.unsplash.com/photo-1621939514649-280e2ee25f60'],
+    ]
+}, {
+    parent: 'Drinks',
+    subcategories: [['Beverages', 'https://images.unsplash.com/photo-1544145945-f90425340c7e'],
+    ]
+}, {
+    parent: 'Prepared Foods',
+    subcategories: [['Ready', 'https://images.unsplash.com/photo-1547592180-85f173990554'],
+    ]
+}]
 
 async function seed() {
     console.log('creates demo users and stores');
@@ -228,11 +241,39 @@ async function seed() {
     }
     console.log(`Seeded ${saleEvents.length} sale events`);
 
-    console.log('creates 8 subcategories');
-    for (const [name, imageUrl] of subcategories) {
-        await createSubCategory(token, {name, imageUrl});
+    console.log('creates categories and subcategories');
+    for (const {parent, subcategories} of categories) {
+        console.log(`creating parent category ${parent}`);
+        const res = await createParentCategory(token, {name: parent});
+        const resJson = await res.json();
+        const parentId = resJson.id;
+        console.log(`got category parentId ${parentId}`);
+        for (const [name, imageUrl] of subcategories) {
+            console.log(`creating sub category ${name}`);
+            const subRes = await createSubCategory(token, {name, imageUrl, parentId});
+            const subResJson = await subRes.json();
+            const subId = subResJson.id;
+            console.log(`creating products with category id ${subId}`);
+            await createProduct(token, {
+                name: `Demo product for category ${name}`,
+                unitPrice: 99,
+                initialQty: 9999,
+                imageUrl: imageUrl,
+                isBestSeller: true,
+                categoryId: subId
+            });
+            await createProduct(token, {
+                name: `Demo product2 for category ${name}`,
+                unitPrice: 99,
+                initialQty: 9999,
+                imageUrl: imageUrl,
+                isBestSeller: true,
+                categoryId: subId
+            });
+        }
     }
-    console.log(`Seeded ${saleEvents.length} subcategories`);
+
+    console.log(`Seeded ${categories.length} categories with ${categories.reduce((a,b) => a + b.subcategories.length, 0)} subcategories`);
 
 
 }
@@ -325,7 +366,11 @@ async function createSlotConfig(token, config) {
             body: JSON.stringify(config),
         });
     if (res.status !== 200) {
-        throw new Error(`Slot Config creation failed for ${config.dayOfWeek}: ${res.status}`);
+        if (res.status === 409) {
+            console.log('Conflict, Slot Config maybe already exists from previous script run');
+        } else {
+            throw new Error(`Slot Config creation failed for ${config.dayOfWeek}: ${res.status}`);
+        }
     }
     return res;
 }
@@ -337,7 +382,11 @@ async function createSaleEvent(token, saleEvent) {
         body: JSON.stringify(saleEvent)
     });
     if (res.status !== 201) {
-        throw new Error(`Sale Event creation failed for ${saleEvent.name}`);
+        if (res.status === 409) {
+            console.log('Conflict, sale event maybe already exists from previous script run');
+        } else {
+            throw new Error(`Sale Event creation failed for ${saleEvent.name}`);
+        }
     }
     return res;
 }
@@ -350,7 +399,28 @@ async function createSubCategory(token, subCategory) {
             body: JSON.stringify(subCategory),
         });
     if (res.status !== 201) {
-        throw new Error(`Subcategory creation failed for ${subCategory.name}`);
+        if (res.status === 409) {
+            console.log('Conflict, subCategory maybe already exists from previous script run');
+        } else {
+            throw new Error(`Subcategory creation failed for ${subCategory.name}`);
+        }
+    }
+    return res;
+}
+
+async function createParentCategory(token, category) {
+    const res = await fetch(`${catalogUrl}/api/categories/parents`,
+        {
+            method: 'POST',
+            headers: {Authorization: `Bearer ${token}`, 'Content-Type': 'application/json'},
+            body: JSON.stringify(category),
+        });
+    if (res.status !== 201) {
+        if (res.status === 409) {
+            console.log('Conflict, category maybe already exists from previous script run');
+        } else {
+            throw new Error(`category creation failed for ${category.name}`);
+        }
     }
     return res;
 }

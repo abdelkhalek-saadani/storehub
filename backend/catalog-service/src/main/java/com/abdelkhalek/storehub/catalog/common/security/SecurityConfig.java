@@ -44,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,
                                 "/api/delivery-slots/check-days",
                                 "/api/delivery-slots/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "api/products/**").permitAll()
                         .requestMatchers("/api/admin/slot-configs").hasRole("STORE_OWNER")
                         .requestMatchers(HttpMethod.POST,
                                 "/api/delivery-slots/reserve",

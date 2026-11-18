@@ -71,6 +71,9 @@ export class CatalogApi {
     return this.http.get<Product[]>(`${this.productsUrl}/search`, { params });
   }
 
+  getProduct(id: string): Observable<Product> {
+    return this.http.get<Product>(`${this.config.get().catalogApiUrl}/api/products/${id}`, {});
+  }
   getProducts(query: ProductQuery): Observable<PagedResponse<Product>> {
     let params = new HttpParams()
       .set('storeId', this.getStoreId())

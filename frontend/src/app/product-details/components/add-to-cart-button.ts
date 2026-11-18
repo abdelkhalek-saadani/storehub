@@ -1,0 +1,36 @@
+import { Component, input, output } from '@angular/core';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+
+@Component({
+  selector: 'app-add-to-cart-button',
+  imports: [MatIconButton, MatIcon, MatButton],
+  template: `
+    <div class="flex items-center gap-3 bg-white rounded-full">
+      <div class="inline-flex items-center">
+        @if (quantity() !== 0) {
+          <button matIconButton [disabled]="quantity() === 0" class="remove" data-cy="remove-btn">
+            <mat-icon (click)="qtyUpdated.emit('decrement')"> remove </mat-icon>
+          </button>
+          <div class="px-3 text-sm font-medium">{{ quantity() }}</div>
+
+          <button matIconButton class="add" data-cy="add-btn">
+            <mat-icon (click)="qtyUpdated.emit('increment')"> add </mat-icon>
+          </button>
+        } @else {
+          <button (click)="qtyUpdated.emit('increment')" matButton="filled" class="btn-pill">
+            Add To Cart
+            <mat-icon>add_shopping_cart</mat-icon>
+          </button>
+        }
+      </div>
+    </div>
+  `,
+  styles: ``,
+})
+export class AddToCartButton {
+  quantity = input<number>();
+  qtyUpdated = output<UpdateNature>();
+}
+
+export type UpdateNature = 'increment' | 'decrement';

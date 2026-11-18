@@ -13,7 +13,7 @@ import { Component, computed, input, signal } from '@angular/core';
         />
       </div>
       <div class="flex gap-4 md:gap-5 justify-center">
-        @for (image of images; track image.id) {
+        @for (image of images(); track image.id) {
           <div
             class="rounded-2xl overflow-hidden aspect-square h-13 md:aspect-none md:w-19 md:h-25 cursor-pointer"
             (click)="selectImage(image.id)"
@@ -40,19 +40,19 @@ import { Component, computed, input, signal } from '@angular/core';
 })
 export class Gallery {
   selectedImageId = signal(0);
-  someinput = input();
 
   selectedImageUrl = computed(
-    () => this.images.find((el) => el.id == this.selectedImageId())?.imgUrl,
+    () => this.images().find((el) => el.id == this.selectedImageId())?.imgUrl,
   );
 
-  images = [
-    { id: 0, imgUrl: 'https://dummyimage.com/400x400/000000/fff&text=Image0' },
-    { id: 1, imgUrl: 'https://dummyimage.com/400x400/000000/fff&text=Image1' },
-    { id: 2, imgUrl: 'https://dummyimage.com/400x400/000000/fff&text=Image2' },
-    { id: 3, imgUrl: 'https://dummyimage.com/400x400/000000/fff&text=Image3' },
-    { id: 4, imgUrl: 'https://dummyimage.com/400x400/000000/fff&text=Image4' },
-  ];
+  imgUrl = input.required<string>();
+  images = computed(() => [
+    { id: 0, imgUrl: this.imgUrl() },
+    { id: 1, imgUrl: this.imgUrl() },
+    { id: 2, imgUrl: this.imgUrl() },
+    { id: 3, imgUrl: this.imgUrl() },
+    { id: 4, imgUrl: this.imgUrl() },
+  ]);
 
   selectImage(id: number) {
     this.selectedImageId.set(id);

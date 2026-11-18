@@ -56,6 +56,15 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
+    @GetMapping("products/{id}")
+    public ResponseEntity<ProductResponse> get(@PathVariable UUID id) {
+        ProductEntity product = productRepository.findById(id).orElse(null);
+        if (product == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(productMapper.toResponse(product));
+    }
+
     @Operation(summary = "Search products by name")
     @GetMapping("products/search")
     public ResponseEntity<List<ProductResponse>> search(@RequestParam String name,

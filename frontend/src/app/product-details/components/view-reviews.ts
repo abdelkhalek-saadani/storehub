@@ -44,7 +44,7 @@ export class ViewReviews {
 
   productId = input<string>();
 
-  showWriteReview = signal(true);
+  showWriteReview = signal(false);
 
   openWR() {
     this.showWriteReview.set(true);

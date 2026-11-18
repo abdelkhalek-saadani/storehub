@@ -102,14 +102,11 @@ import { DecimalPipe } from '@angular/common';
               </button>
 
               <mat-menu #profileMenu="matMenu">
-                <button mat-menu-item>
+                <button mat-menu-item routerLink="/profile">
                   <mat-icon>person</mat-icon>
                   Profile
                 </button>
-                <button mat-menu-item>
-                  <mat-icon>settings</mat-icon>
-                  Settings
-                </button>
+
                 <mat-divider />
                 <button mat-menu-item class="text-red-500" (click)="keycloak.logout()">
                   <mat-icon class="text-red-500">logout</mat-icon>

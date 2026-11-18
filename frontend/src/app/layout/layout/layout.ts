@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, inject, signal, ViewChild } from '@angular/core';
-import { MatDivider, MatListItem, MatNavList } from '@angular/material/list';
+import { MatListItem, MatNavList } from '@angular/material/list';
 import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { SidenavService } from '../sidenav.service';
@@ -9,9 +9,6 @@ import {
   MatExpansionPanelHeader,
   MatExpansionPanelTitle,
 } from '@angular/material/expansion';
-import { MatCheckbox } from '@angular/material/checkbox';
-import { MatButton } from '@angular/material/button';
-import { MatDialogClose } from '@angular/material/dialog';
 import { CartSidenav } from '@shared/service/cart-sidenav';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -84,7 +81,7 @@ export default class Layout implements AfterViewInit {
   @ViewChild('cartSidenav') cartSidenav!: MatSidenav;
 
   categories = rxResource<CategoryWithSubs[], unknown>({
-    stream: (params) => this.catalogApi.getCategoriesWithSubs(),
+    stream: () => this.catalogApi.getCategoriesWithSubs(),
     defaultValue: [],
   });
 

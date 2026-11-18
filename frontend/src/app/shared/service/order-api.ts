@@ -5,6 +5,7 @@ import { StoreContext } from '../../store/service/store-context';
 import { UpdateCartItem } from '../../cart/model/update-cart-request';
 import { CartItemResponse, CartResponse } from '../../cart/model/cart-response';
 import { ConfigService } from '@core/config.service';
+import { ProfileDetails } from '../../profile/profile';
 
 export interface OrderRequest {
   slotId: string;
@@ -85,6 +86,14 @@ export class OrderApi {
       throw new Error('OrderApi called before storeId is available');
     }
     return storeId;
+  }
+
+  updateUser(changes: Partial<ProfileDetails>) {
+    return this.http.patch<ProfileDetails>(`${this.config.get().orderApiUrl}/api/user`, changes);
+  }
+
+  getCurrentUser(): Observable<ProfileDetails> {
+    return this.http.get<ProfileDetails>(`${this.config.get().orderApiUrl}/api/user/me`);
   }
 
   trackOrderStatus(orderId: string): Observable<OrderStatusDto> {

@@ -182,7 +182,12 @@ CREATE TABLE public.users (
                               address character varying(255),
                               phone_number character varying(50),
                               created_at timestamp without time zone DEFAULT now() NOT NULL,
-                              preferred_store_id uuid
+                              preferred_store_id uuid,
+                              date_of_birth date,
+                              gender character varying(50),
+                                country character varying(50),
+                            city character varying(50),
+                postal_code character varying(50)
 );
 
 

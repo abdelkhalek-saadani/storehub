@@ -1,5 +1,5 @@
 {
-  "name": "backoffice",
+  "name": "matero-keycloak",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -45,6 +45,7 @@
     "@ngxpert/hot-toast": "5.1.1",
     "base64-js": "^1.5.1",
     "date-fns": "^4.1.0",
+    "keycloak-js": "^26.2.5",
     "ng-matero": "^20.2.0",
     "ngx-permissions": "^19.0.0",
     "ngx-progressbar": "^14.0.0",

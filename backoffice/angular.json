@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "backoffice": {
+    "matero-keycloak": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -67,15 +67,15 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "backoffice:build:production"
+              "buildTarget": "matero-keycloak:build:production"
             },
             "development": {
-              "buildTarget": "backoffice:build:development"
+              "buildTarget": "matero-keycloak:build:development"
             }
           },
           "defaultConfiguration": "development",
           "options": {
-            "buildTarget": "backoffice:build",
+            "buildTarget": "matero-keycloak:build",
             "proxyConfig": "proxy.config.js"
           }
         },

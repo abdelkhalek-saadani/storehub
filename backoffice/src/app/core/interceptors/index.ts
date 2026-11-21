@@ -1,3 +1,5 @@
+import {keycloakInterceptor} from '@core/interceptors/keycloak-interceptor';
+
 export * from './noop-interceptor';
 export * from './base-url-interceptor';
 export * from './settings-interceptor';
@@ -19,7 +21,7 @@ export const interceptors = [
   noopInterceptor,
   baseUrlInterceptor,
   settingsInterceptor,
-  tokenInterceptor,
+  keycloakInterceptor,
   apiInterceptor,
   errorInterceptor,
   loggingInterceptor,

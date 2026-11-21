@@ -28,6 +28,8 @@ export class LoginService {
   }
 
   menu() {
-    return this.http.get<{ menu: Menu[] }>('/user/menu').pipe(map(res => res.menu));
+    return this.http
+      .get<{ menu: Menu[] }>('data/menu.json?_t=' + Date.now())
+      .pipe(map(res => res.menu));
   }
 }

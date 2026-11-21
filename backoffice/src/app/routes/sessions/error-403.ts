@@ -8,6 +8,7 @@ import { ErrorCode } from '@shared/components/error-code/error-code';
       code="403"
       title="Permission denied!"
       message="You do not have permission to access the requested data."
+      buttonType="logout"
     />
   `,
   imports: [ErrorCode],

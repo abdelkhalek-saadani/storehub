@@ -21,6 +21,7 @@ import { provideHotToastConfig } from '@ngxpert/hot-toast';
 import { NgxPermissionsModule } from 'ngx-permissions';
 
 import {
+  AuthService,
   BASE_URL,
   interceptors,
   SettingsService,
@@ -33,9 +34,11 @@ import { routes } from './app.routes';
 
 import { LoginService } from '@core/authentication/login.service';
 import { FakeLoginService } from './fake-login.service';
+import {initKeycloak} from '@core/keycloak';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideAppInitializer(() => inject(AuthService).init()),
     provideBrowserGlobalErrorListeners(),
     { provide: BASE_URL, useValue: environment.baseUrl },
     provideAppInitializer(() => inject(TranslateLangService).load()),
@@ -53,12 +56,7 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(
       NgxPermissionsModule.forRoot(),
     ),
-    // ==================================================
-    // 👇 ❌ Remove it in the realworld application
-    //
-    { provide: LoginService, useClass: FakeLoginService },
-    //
-    // ==================================================
+
     provideFormlyCore([...withFormlyMaterial()]),
     {
       provide: FORMLY_CONFIG,

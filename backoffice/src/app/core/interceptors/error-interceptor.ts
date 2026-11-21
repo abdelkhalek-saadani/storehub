@@ -3,6 +3,7 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngxpert/hot-toast';
 import { catchError, throwError } from 'rxjs';
+import {keycloak} from '@core/keycloak';
 
 export enum STATUS {
   UNAUTHORIZED = 401,
@@ -36,7 +37,7 @@ export function errorInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn)
         console.error('ERROR', error);
         toast.error(getMessage(error));
         if (error.status === STATUS.UNAUTHORIZED) {
-          router.navigateByUrl('/auth/login');
+          keycloak.login({ redirectUri: location.href });
         }
       }
 
